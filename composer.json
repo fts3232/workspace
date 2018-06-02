@@ -1,0 +1,37 @@
+{
+    "name": "administrator/workspace",
+    "type": "project",
+    "description": "项目创建脚手架",
+    "authors": [
+        {
+            "name": "tianshuo feng",
+            "email": "550610606@qq.com"
+        }
+    ],
+    "scripts": {
+        "laravel-frame-install": [
+            "composer create-project  --prefer-dist  laravel/laravel=5.5.* laravel-project",
+            "php -r \"copy('package.json', './laravel-project/package.json');\"",
+            "php -r \"copy('webpack.config.babel.js', './laravel-project/webpack.config.babel.js');\"",
+            "php -r \"copy('postcss.config.js', './laravel-project/postcss.config.js');\"",
+            "php -r \"copy('.babelrc', './laravel-project/.babelrc');\"",
+            "cd laravel-project",
+            "cnpm install"
+        ],
+        "lumen-frame-install": [
+            "composer create-project --prefer-dist laravel/lumen lumen-project",
+            "php -r \"copy('package.json', './lumen-project/package.json');\"",
+            "php -r \"copy('webpack.config.babel.js', './lumen-project/webpack.config.babel.js');\"",
+            "php -r \"copy('postcss.config.js', './lumen-project/postcss.config.js');\"",
+            "php -r \"copy('.babelrc', './lumen-project/.babelrc');\"",
+            "cd lumen-project",
+            "cnpm install"
+        ]
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
