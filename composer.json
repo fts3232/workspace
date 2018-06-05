@@ -9,8 +9,11 @@
         }
     ],
     "scripts": {
-        "test":[
+        "deployment":[
             "Vendor\\Installer::Install"
+        ],
+        "production":[
+            "@composer dump-autoload --optimize"
         ]
     },
     "autoload": {

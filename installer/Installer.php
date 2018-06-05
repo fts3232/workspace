@@ -27,8 +27,6 @@ class Installer
 
     public static function install(Event $event)
     {
-
-        //composer dump-autoload --optimize
         header('Content-type:text/html;charset=utf-8');
         self::$cwd = dirname(__FILE__);
         $io = $event->getIO();
@@ -54,8 +52,8 @@ class Installer
         $frontEnd = $io->select('Please Select Front End Frame:', self::$frontEndFrameMap, 0);
         self::$frontEndFrame = self::$frontEndFrameMap[$frontEnd];
 
-        $installCmd = "composer create-project --prefer-dist --optimize-autoloader {$backEndFrame} {$installPath}";
-        //exec($installCmd);
+        $installCmd = "composer create-project --prefer-dist {$backEndFrame} {$installPath}";
+        exec($installCmd);
 
         self::$installPath = $installPath . '/';
 
