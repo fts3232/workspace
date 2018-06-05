@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "build-dev": "webpack --watch --mode=development",
-    "build-pro": "webpack --mode=production --build-path=public --assets-path=assets",
-    "module-check-update": "ncu -a",
-    "cnpm-install": "npm install -g cnpm --registry=https://registry.npm.taobao.org",
-    "npm-check-update-install": "cnpm install -g npm-check-updates",
-    "start:dev": "webpack-dev-server --config webpack.config.babel.js --mode=development --mode=production --build-path=public --app-path=assets/js --template-path=assets/template"
+    "build:dev": "webpack --watch --mode=development --build-path=build --src-path=assets",
+    "build:pro": "webpack --mode=production --build-path=build --src-path=assets",
+    "module:update": "ncu -a",
+    "cnpm:install": "npm install -g cnpm --registry=https://registry.npm.taobao.org",
+    "npm-check-updates:install": "cnpm install -g npm-check-updates",
+    "start:dev": "webpack-dev-server --config webpack.config.babel.js --mode=development --build-path=build --src-path=assets"
   },
   "private": true,
   "devDependencies": {

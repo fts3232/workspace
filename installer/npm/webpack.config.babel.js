@@ -3,6 +3,7 @@
 import path from 'path';
 import webpack from 'webpack';
 //压缩js
+import UglifyJs from 'uglifyjs-webpack-plugin';
 //css整合成1个文件
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 //css自动补全头部信息
@@ -14,6 +15,7 @@ import PostCssSprites from 'postcss-sprites';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 //优化css
 import cssnano from 'cssnano';
+//生成html
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import VueLoaderPlugin from 'vue-loader/lib/plugin';
@@ -24,7 +26,8 @@ const ROOT_PATH = path.resolve(__dirname);
 
 let config = function (env, arg) {
     const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
-    const ASSET_PATH = path.resolve(ROOT_PATH, arg['assets-path']);
+    const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
+    const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
     let config = {
         /*
         source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
@@ -36,7 +39,7 @@ let config = function (env, arg) {
         //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
         //入口文件
         entry       : {
-            'app': ASSET_PATH + '/js/app.js'
+            'app': SRC_PATH + '/js/app.js'
             /* 'vendor': [
                  APP_PATH + '/components/Component.vue',
                  APP_PATH + '/views/Common/View.vue',
@@ -129,7 +132,7 @@ let config = function (env, arg) {
             ]
         },
         externals   : {
-            'Vue'                          : 'Vue',
+            'vue'                          : 'Vue',
             'element-ui'                   : 'ELEMENT',
             'element-ui/lib/locale/lang/en': 'ELEMENT.lang.en',
             'vue-i18n'                     : 'VueI18n',
@@ -165,7 +168,7 @@ let config = function (env, arg) {
         },
         optimization: {
             minimizer  : [
-                /*new UglifyJs({
+                new UglifyJs({
                     uglifyOptions: {
                         output  : {
                             comments: false,  // remove all comments
@@ -174,7 +177,7 @@ let config = function (env, arg) {
                             warnings: false
                         }
                     }
-                }),*/
+                }),
                 new OptimizeCSSAssetsPlugin({
                     assetNameRegExp    : /\.css$/g,
                     cssProcessor       : cssnano,
@@ -229,7 +232,7 @@ let config = function (env, arg) {
             new HtmlWebpackPlugin({
                 title   : 'My App',
                 filename: 'index.html',
-                template: ASSET_PATH + '/template/index.html'
+                template: TEMPLATE_PATH + '/index.html'
             })
         ]
     };
