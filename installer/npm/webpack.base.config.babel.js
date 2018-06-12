@@ -25,21 +25,45 @@ let config = function (env, arg) {
                     loader: 'vue-loader',
                 },
                 {
-                    test: /\.s?[ac]ss$/,
-                    use : [
-                        arg.mode == 'development' ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
-                        'css-loader',
-                        {
-                            loader : 'postcss-loader',
-                            options: {
-                                plugins: [
-                                    new PostCssAt2x(),
-                                    new AutoPrefixer()
-                                ]
-                            }
-                        },
-                        'sass-loader'
-                    ],
+                    test: /\.(sa|sc|c)ss$/,
+                    use : arg.ssr
+                        ? [
+                            {
+                                loader : 'css-loader',
+                                options: {// some options
+                                    minimize: arg.mode == 'production'
+                                }
+                            },
+                            {
+                                loader : 'postcss-loader',
+                                options: {
+                                    plugins: [
+                                        new PostCssAt2x(),
+                                        new AutoPrefixer()
+                                    ]
+                                }
+                            },
+                            'sass-loader'
+                        ]
+                        : [
+                            MiniCssExtractPlugin.loader,
+                            {
+                                loader : 'css-loader',
+                                options: {// some options
+                                    minimize: arg.mode == 'production'
+                                }
+                            },
+                            {
+                                loader : 'postcss-loader',
+                                options: {
+                                    plugins: [
+                                        new PostCssAt2x(),
+                                        new AutoPrefixer()
+                                    ]
+                                }
+                            },
+                            'sass-loader'
+                        ],
                 },
                 {
                     test   : /\.(js|jsx)$/,
@@ -119,7 +143,7 @@ let config = function (env, arg) {
                 // Options similar to the same options in webpackOptions.output
                 // both options are optional
                 filename     : 'css/[name].css?v=[contenthash]',
-                chunkFilename: "css/[id].css?v=[contenthash]"
+                //chunkFilename: "css/[id].css?v=[contenthash]"
             }),
         ]
     };

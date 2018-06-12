@@ -3,11 +3,17 @@ import {createBundleRenderer} from 'vue-server-renderer'
 import LRU from 'lru-cache'
 import fs from 'fs';
 import setDevServer from './setup-dev-server.js';
+import path from 'path';
 
 //import bundle from './build/vue-ssr-server-bundle.json';
 //import clientManifest from './build/vue-ssr-client-manifest.json';
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+const root = path.resolve(__dirname);
+const templateDir = path.resolve(root, process.env.TEMPLATE_DIR);
+const buildPath = path.resolve(root, process.env.BUILD_PATH);
+
 
 /*const renderer = createBundleRenderer(serverBundle, {
     runInNewContext: false, // 推荐
@@ -23,15 +29,16 @@ function createRenderer(bundle, options) {
 }
 
 const app = express();
-app.use(express.static('build'));
+app.use(express.static(buildPath));
 let renderer
 let readyPromise
-const templatePath = './assets/template/index.html'
+const templatePath = path.join(templateDir, '/index.html')
 
 if (isProduction) {
     const template = fs.readFileSync(templatePath, 'utf-8');
-    const bundle = require('./build/vue-ssr-server-bundle.json')
-    const clientManifest = require('./build/vue-ssr-client-manifest.json');
+
+    const bundle = require(path.join(buildPath, '/js/vue-ssr-server-bundle.json'))
+    const clientManifest = require(path.join(buildPath, '/js/vue-ssr-client-manifest.json'));
 
     renderer = createRenderer(bundle, {
         template,
@@ -48,7 +55,6 @@ if (isProduction) {
 }
 
 
-
 //缓存
 const microCache = LRU({
     max   : 100,
@@ -56,7 +62,7 @@ const microCache = LRU({
 })
 
 //渲染函数
-function render(req, res){
+function render(req, res) {
     const s = Date.now()
 
     res.setHeader("Content-Type", "text/html")
@@ -65,7 +71,7 @@ function render(req, res){
     const handleError = err => {
         if (err.url) {
             res.redirect(err.url)
-        } else if(err.code === 404) {
+        } else if (err.code === 404) {
             res.status(404).send('404 | Page Not Found')
         } else {
             // Render Error Page or Redirect
@@ -138,7 +144,8 @@ app.get('*', (req, res) => {
         }
     })
 })*/
-const server = app.listen(3000, function () {
+
+const server = app.listen(process.env.PORT || 3000, function () {
     var host = server.address().address;
     var port = server.address().port;
 

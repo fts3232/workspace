@@ -92,6 +92,12 @@ let config = function (env, arg) {
                         chunks  : "all",
                         priority: 10,
                     },
+                    styles: {
+                        name: 'styles',
+                        test: /\.css$/,
+                        chunks: 'all',
+                        enforce: true
+                    },
                     default: {
                         minChunks         : 2,
                         priority          : -20,

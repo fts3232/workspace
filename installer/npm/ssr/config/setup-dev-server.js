@@ -8,13 +8,13 @@ import getServerConfig from './webpack.server.config.babel.js'
 import webpackDevMiddleware from 'webpack-dev-middleware';
 
 const clientConfig = getClientConfig({},{
-    'mode':'production',
+    'mode': process.env.NODE_ENV,
     'build-path':'build',
     'src-path':'assets'
 });
 
 const serverConfig = getServerConfig({},{
-    'mode':'production',
+    'mode': process.env.NODE_ENV,
     'build-path':'build',
     'src-path':'assets'
 });
@@ -55,7 +55,7 @@ export default function (app, templatePath, cb) {
     // modify client config to work with hot middleware
     clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
     clientConfig.output.filename = '[name].js'
-    clientConfig.output.publicPath = 'http://localhost:3000/'
+    clientConfig.output.publicPath = 'http://localhost:' + process.env.PORT + '/'
     clientConfig.plugins.push(
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()

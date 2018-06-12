@@ -2,10 +2,14 @@
 
 import path from 'path';
 import webpack from 'webpack';
-import VueSSRClientPlugin from 'vue-server-renderer/client-plugin'
 //压缩js
 import UglifyJs from 'uglifyjs-webpack-plugin';
-//css 雪碧图
+//css整合成1个文件
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+//css自动补全头部信息
+import AutoPrefixer from 'autoprefixer';
+//css 2x图插件
+import PostCssAt2x from 'postcss-at2x';
 import PostCssSprites from 'postcss-sprites';
 //压缩css
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
@@ -14,12 +18,9 @@ import cssnano from 'cssnano';
 //生成html
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import baseConfig from './webpack.base.config.babel.js'
-
-import merge from 'webpack-merge'
+import VueLoaderPlugin from 'vue-loader/lib/plugin';
 
 import PrerenderSPAPlugin from 'prerender-spa-plugin';
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 //清理文件夹插件
 //import CleanWebpackPlugin from 'clean-webpack-plugin';
 //定义了一些文件夹的路径
@@ -29,7 +30,7 @@ let config = function (env, arg) {
     const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
     const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
     const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
-    let config = merge(baseConfig(env, arg), {
+    let config = {
         /*
         source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
         cheap-module-source-map 在一个单独的文件中生成一个不带列映射的map，不带列映射提高项目构建速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
@@ -40,19 +41,132 @@ let config = function (env, arg) {
         //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
         //入口文件
         entry       : {
-            'app': SRC_PATH + '/js/entry-client.js'
+            'app': SRC_PATH + '/js/app.js'
             /* 'vendor': [
                  APP_PATH + '/components/Component.vue',
                  APP_PATH + '/views/Common/View.vue',
                  APP_PATH + '/views/Common/Dialog.vue',
              ],*/
         },
+        resolve     : {
+            extensions: ['.js', '.jsx'],
+            alias     : {
+                'vue$': 'vue/dist/vue.js' // 'vue/dist/vue.common.js' for webpack 1
+            }
+        },
         //输出的文件名 合并以后的js会命名为bundle.js
         output      : {
             path         : BUILD_PATH,
             filename     : 'js/[name].js?v=[hash]',
             chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : 'http://localhost:3001/'
+            publicPath   : arg.mode == 'development' ? 'http://localhost:9090/' : 'http://localhost:8080/workspace/installer/npm/build/',
+        },
+        watchOptions: {
+            ignored: /node_modules/
+        },
+        //webpack-dev-server
+        devServer   : {//配置此静态文件服务器，可以用来预览打包后项目
+            inline    : true,//打包后加入一个websocket客户端
+            hot       : true,//热加载
+            host      : 'localhost',//主机地址
+            port      : 9090,//端口号
+            compress  : true,//开发服务器是否启动gzip等压缩
+            publicPath: "/"
+        },
+        module      : {
+            rules: [
+                {
+                    test  : /\.vue$/,
+                    loader: 'vue-loader'
+                },
+                {
+                    test: /\.(sa|sc|c)ss$/,
+                    use : [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        {
+                            loader : 'postcss-loader',
+                            options: {
+                                plugins: [
+                                    new PostCssAt2x(),
+                                    new AutoPrefixer()
+                                ]
+                            }
+                        },
+                        'sass-loader'
+                    ],
+                },
+                {
+                    test   : /\.(js|jsx)$/,
+                    loader : 'babel-loader',
+                    exclude: /(node_modules|bower_components)/,
+                },
+                {
+                    test  : /\.(png|jpg|svg)$/,
+                    loader: [
+                        {
+                            loader : 'url-loader',
+                            options: {
+                                limit     : 8192,
+                                fallback  : 'file-loader',
+                                publicPath: './images/',
+                                outputPath: 'images/',
+                                name      : '[name].[ext]?v=[hash:8]'
+                            }
+                        }
+                    ],
+                },
+                {
+                    test  : /\.(ttf|woff)$/,
+                    loader: [
+                        {
+                            loader : 'url-loader',
+                            options: {
+                                limit     : 8192,
+                                fallback  : 'file-loader',
+                                publicPath: './fonts/',
+                                outputPath: 'fonts/',
+                                name      : '[name].[ext]?v=[hash:8]'
+                            }
+                        }
+                    ],
+                },
+            ]
+        },
+        externals   : {
+            'vue'                          : 'Vue',
+            'element-ui'                   : 'ELEMENT',
+            'element-ui/lib/locale/lang/en': 'ELEMENT.lang.en',
+            'vue-i18n'                     : 'VueI18n',
+            'vuex'                         : 'Vuex',
+            'vue-router'                   : 'VueRouter',
+            'postcss-loader'               : 'postcss-loader',
+            'style-loader'                 : 'style-loader',
+            'css-loader'                   : 'css-loader',
+            'sass-loader'                  : 'sass-loader',
+            "lodash"                       : 'lodash',
+            "react"                        : 'React',
+            'mockjs'                       : 'Mock',
+            'superagent'                   : 'superagent',
+            'prop-types'                   : 'React.PropTypes',
+            'react-dom'                    : 'ReactDOM',
+            'react-router'                 : 'ReactRouter',
+            'react-router-dom'             : 'react-router-dom',
+            'history/createBrowserHistory' : 'history',//history插件
+            'moment/moment.js'             : 'moment',//时间插件
+            'pubsub-js'                    : 'PubSub',//pubSub插件
+            'react-quill'                  : 'ReactQuill',//富文本编辑器
+            'jquery'                       : '$',
+            'bootstrap'                    : true,
+            'fancybox'                     : true,
+            'co'                           : true,
+            '_'                            : true,
+            'async'                        : true,
+            'datetimepicker'               : true,
+            'selectpicker'                 : true,
+            'sweetalert'                   : true,
+            'highcharts'                   : true,
+            'director'                     : true
         },
         optimization: {
             minimizer  : [
@@ -110,29 +224,38 @@ let config = function (env, arg) {
             }
         },
         plugins     : [
+            new MiniCssExtractPlugin({
+                // Options similar to the same options in webpackOptions.output
+                // both options are optional
+                filename     : 'css/[name].css?v=[contenthash]',
+                //chunkFilename: "css/[id].css?v=[contenthash]"
+            }),
             /*new CleanWebpackPlugin(['js', 'css', 'images', 'fonts'], {
                 root   : BUILD_PATH,
                 verbose: true,
                 dry    : false
             }),*/
             new webpack.NamedModulesPlugin(),
+            new VueLoaderPlugin(),
             new HtmlWebpackPlugin({
                 title   : 'My App',
                 filename: 'index.html',
                 template: TEMPLATE_PATH + '/index.html'
             }),
-            new webpack.DefinePlugin({
-                'process.env.VUE_ENV': '"client"'
-            }),
-            new VueSSRClientPlugin({
-                filename: 'js/vue-ssr-client-manifest.json'
-            }),
             new PrerenderSPAPlugin({
                 staticDir: BUILD_PATH,
+                outputDir: BUILD_PATH + '/static',
                 routes   : ['/', '/foo', '/bar'],
             })
         ]
-    });
+    };
+    if (arg.mode == 'development') {
+        config.plugins.push(new webpack.HotModuleReplacementPlugin())
+        /*config.plugins.push(new HtmlWebpackPlugin({
+            title: 'My App',
+            template: TEMPLATE_PATH + '/index.html'
+        }))*/
+    }
     if (arg.mode == 'production') {
         config.module.rules[1]['use'][2]['options']['plugins'].push(new PostCssSprites({
             retina       : true,//支持retina，可以实现合并不同比例图片

@@ -10,6 +10,7 @@ let config = function (env, arg) {
     const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
     const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
     const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
+    arg.ssr = true;
     let config = merge(baseConfig(env, arg), {
         //入口文件
         entry: SRC_PATH + '/js/entry-server.js',
@@ -26,7 +27,9 @@ let config = function (env, arg) {
             whitelist: /\.css$/,
         }),
         plugins     : [
-            new VueSSRServerPlugin(),
+            new VueSSRServerPlugin({
+                filename: 'js/vue-ssr-server-bundle.json'
+            }),
             new webpack.DefinePlugin({
                 'process.env.VUE_ENV': '"server"'
             }),

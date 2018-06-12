@@ -28,7 +28,12 @@ let config = function (env, arg) {
                     test: /\.s?[ac]ss$/,
                     use : [
                         arg.mode == 'development' ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
-                        'css-loader',
+                        {
+                            loader : 'css-loader',
+                            options: {// some options
+                                minimize: arg.mode == 'production'
+                            }
+                        },
                         {
                             loader : 'postcss-loader',
                             options: {

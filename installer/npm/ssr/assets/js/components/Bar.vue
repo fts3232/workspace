@@ -3,6 +3,7 @@
 </template>
 
 <script type="text/babel">
+    import css from '../../css/style.css';
     import titleMixin from '../mixin/title.js';
     export default {
         mixins: [titleMixin],

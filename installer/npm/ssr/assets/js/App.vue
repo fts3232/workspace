@@ -9,13 +9,8 @@
     </div>
 </template>
 
-<style>
-    body{
-        color:red
-    }
-</style>
-
 <script type="text/babel">
+    import css from '../css/style.css';
     export default {
         name: 'App',
         componentName: 'App',
