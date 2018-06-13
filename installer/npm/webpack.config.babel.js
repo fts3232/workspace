@@ -18,9 +18,8 @@ import cssnano from 'cssnano';
 //生成html
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import VueLoaderPlugin from 'vue-loader/lib/plugin';
-
-import PrerenderSPAPlugin from 'prerender-spa-plugin';
+import merge from 'webpack-merge'
+import nodeExternals from 'webpack-node-externals';
 //清理文件夹插件
 //import CleanWebpackPlugin from 'clean-webpack-plugin';
 //定义了一些文件夹的路径
@@ -30,37 +29,7 @@ let config = function (env, arg) {
     const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
     const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
     const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
-    let config = {
-        /*
-        source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
-        cheap-module-source-map 在一个单独的文件中生成一个不带列映射的map，不带列映射提高项目构建速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
-        eval-source-map 使用eval打包源文件模块，在同一个文件中生成干净的完整的source map。这个选项可以在不影响构建速度的前提下生成完整的sourcemap，但是对打包后输出的JS文件的执行具有性能和安全的隐患。不过在开发阶段这是一个非常好的选项，但是在生产阶段一定不要用这个选项；
-        cheap-module-eval-source-map  这是在打包文件时最快的生成source map的方法，生成的Source Map 会和打包后的JavaScript文件同行显示，没有列映射，和eval-source-map选项具有相似的缺点；
-         */
-        //devtool: 'eval-source-map',//配置生成Source Maps，选择合适的选项
-        //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
-        //入口文件
-        entry       : {
-            'app': SRC_PATH + '/js/app.js'
-            /* 'vendor': [
-                 APP_PATH + '/components/Component.vue',
-                 APP_PATH + '/views/Common/View.vue',
-                 APP_PATH + '/views/Common/Dialog.vue',
-             ],*/
-        },
-        resolve     : {
-            extensions: ['.js', '.jsx'],
-            alias     : {
-                'vue$': 'vue/dist/vue.js' // 'vue/dist/vue.common.js' for webpack 1
-            }
-        },
-        //输出的文件名 合并以后的js会命名为bundle.js
-        output      : {
-            path         : BUILD_PATH,
-            filename     : 'js/[name].js?v=[hash]',
-            chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : arg.mode == 'development' ? 'http://localhost:9090/' : 'http://localhost:8080/workspace/installer/npm/build/',
-        },
+    let base = {
         watchOptions: {
             ignored: /node_modules/
         },
@@ -109,7 +78,7 @@ let config = function (env, arg) {
                             options: {
                                 limit     : 8192,
                                 fallback  : 'file-loader',
-                                publicPath: './images/',
+                                publicPath: '/images/',
                                 outputPath: 'images/',
                                 name      : '[name].[ext]?v=[hash:8]'
                             }
@@ -124,7 +93,7 @@ let config = function (env, arg) {
                             options: {
                                 limit     : 8192,
                                 fallback  : 'file-loader',
-                                publicPath: './fonts/',
+                                publicPath: '/fonts/',
                                 outputPath: 'fonts/',
                                 name      : '[name].[ext]?v=[hash:8]'
                             }
@@ -132,6 +101,65 @@ let config = function (env, arg) {
                     ],
                 },
             ]
+        }
+    };
+    let server = merge(base, {
+        entry    : SRC_PATH + '/js/entry-server.js',
+        target   : 'node',
+        //输出的文件名 合并以后的js会命名为bundle.js
+        output   : {
+            filename     : 'server/server.js',
+            path         : BUILD_PATH,
+            libraryTarget: 'commonjs2'
+        },
+        externals: nodeExternals({
+            // 不要外置化 webpack 需要处理的依赖模块。
+            // 你可以在这里添加更多的文件类型。例如，未处理 *.vue 原始文件，
+            // 你还应该将修改 `global`（例如 polyfill）的依赖模块列入白名单
+            whitelist: /\.css$/,
+        }),
+        plugins  : [
+            new webpack.DefinePlugin({
+                'process.env.VUE_ENV': '"server"'
+            }),
+            new MiniCssExtractPlugin({
+                // Options similar to the same options in webpackOptions.output
+                // both options are optional
+                filename     : 'css/[name].css?v=[contenthash]',
+                //chunkFilename: "css/[id].css?v=[contenthash]"
+            }),
+        ]
+    });
+    let client = merge(base,{
+        /*
+        source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
+        cheap-module-source-map 在一个单独的文件中生成一个不带列映射的map，不带列映射提高项目构建速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
+        eval-source-map 使用eval打包源文件模块，在同一个文件中生成干净的完整的source map。这个选项可以在不影响构建速度的前提下生成完整的sourcemap，但是对打包后输出的JS文件的执行具有性能和安全的隐患。不过在开发阶段这是一个非常好的选项，但是在生产阶段一定不要用这个选项；
+        cheap-module-eval-source-map  这是在打包文件时最快的生成source map的方法，生成的Source Map 会和打包后的JavaScript文件同行显示，没有列映射，和eval-source-map选项具有相似的缺点；
+         */
+        //devtool: 'eval-source-map',//配置生成Source Maps，选择合适的选项
+        //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
+        //入口文件
+        entry       : {
+            'app': SRC_PATH + '/js/entry-client.js'
+            /* 'vendor': [
+                 APP_PATH + '/components/Component.vue',
+                 APP_PATH + '/views/Common/View.vue',
+                 APP_PATH + '/views/Common/Dialog.vue',
+             ],*/
+        },
+        resolve     : {
+            extensions: ['.js', '.jsx'],
+            alias     : {
+                'vue$': 'vue/dist/vue.js' // 'vue/dist/vue.common.js' for webpack 1
+            }
+        },
+        //输出的文件名 合并以后的js会命名为bundle.js
+        output      : {
+            path         : BUILD_PATH,
+            filename     : 'js/[name].js?v=[hash]',
+            chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
+            publicPath   : '/',
         },
         externals   : {
             'vue'                          : 'Vue',
@@ -148,10 +176,9 @@ let config = function (env, arg) {
             "react"                        : 'React',
             'mockjs'                       : 'Mock',
             'superagent'                   : 'superagent',
-            'prop-types'                   : 'React.PropTypes',
             'react-dom'                    : 'ReactDOM',
             'react-router'                 : 'ReactRouter',
-            'react-router-dom'             : 'react-router-dom',
+            'react-router-dom'             : 'ReactRouterDOM',
             'history/createBrowserHistory' : 'history',//history插件
             'moment/moment.js'             : 'moment',//时间插件
             'pubsub-js'                    : 'PubSub',//pubSub插件
@@ -236,28 +263,27 @@ let config = function (env, arg) {
                 dry    : false
             }),*/
             new webpack.NamedModulesPlugin(),
-            new VueLoaderPlugin(),
             new HtmlWebpackPlugin({
                 title   : 'My App',
                 filename: 'index.html',
                 template: TEMPLATE_PATH + '/index.html'
             }),
-            new PrerenderSPAPlugin({
+            /*new PrerenderSPAPlugin({
                 staticDir: BUILD_PATH,
                 outputDir: BUILD_PATH + '/static',
-                routes   : ['/', '/foo', '/bar'],
-            })
+                routes   : ['/', '/yahoo'],
+            })*/
         ]
-    };
+    });
     if (arg.mode == 'development') {
-        config.plugins.push(new webpack.HotModuleReplacementPlugin())
+        client.plugins.push(new webpack.HotModuleReplacementPlugin())
         /*config.plugins.push(new HtmlWebpackPlugin({
             title: 'My App',
             template: TEMPLATE_PATH + '/index.html'
         }))*/
     }
     if (arg.mode == 'production') {
-        config.module.rules[1]['use'][2]['options']['plugins'].push(new PostCssSprites({
+        client.module.rules[1]['use'][2]['options']['plugins'].push(new PostCssSprites({
             retina       : true,//支持retina，可以实现合并不同比例图片
             verbose      : true,
             spritePath   : BUILD_PATH,//雪碧图合并后存放地址
@@ -293,6 +319,6 @@ let config = function (env, arg) {
             }
         }))
     }
-    return config;
+    return [client,server];
 }
 export default config;

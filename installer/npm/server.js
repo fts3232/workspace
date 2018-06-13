@@ -1,58 +1,31 @@
 import express from 'express';
-import {createBundleRenderer} from 'vue-server-renderer'
-import LRU from 'lru-cache'
-import fs from 'fs';
-import setDevServer from './setup-dev-server.js';
 import path from 'path';
 
-//import bundle from './build/vue-ssr-server-bundle.json';
-//import clientManifest from './build/vue-ssr-client-manifest.json';
-
-const isProduction = process.env.NODE_ENV === 'production'
-
-const root = path.resolve(__dirname);
-const templateDir = path.resolve(root, process.env.TEMPLATE_DIR);
-const buildPath = path.resolve(root, process.env.BUILD_PATH);
-
-
-/*const renderer = createBundleRenderer(serverBundle, {
-    runInNewContext: false, // 推荐
-    template       : fs.readFileSync('./assets/template/index.html', 'utf-8'),
-    clientManifest : clientManifest
-})*/
-
-//创建渲染器
-function createRenderer(bundle, options) {
-    return createBundleRenderer(bundle, Object.assign(options, {
-        runInNewContext: false // 推荐
-    }))
-}
+import React from 'react';
+import LRU from 'lru-cache'
+import fs from 'fs';
+import cheerio from 'cheerio';
+import App from './build/server/server.js';
 
 const app = express();
-app.use(express.static(buildPath));
-let renderer
-let readyPromise
-const templatePath = path.join(templateDir, '/index.html')
+app.use('/', express.static('./build'));
+const template = fs.readFileSync('./build/index.html','utf-8');
 
-if (isProduction) {
-    const template = fs.readFileSync(templatePath, 'utf-8');
+app.use('*', (req, res, next) => {
+    /*if (req.url.startsWith('/user/') || req.url.startsWith('/static/')) {
+        return next()
+    }*/
+    const context = {}
 
-    const bundle = require(path.join(buildPath, '/js/vue-ssr-server-bundle.json'))
-    const clientManifest = require(path.join(buildPath, '/js/vue-ssr-client-manifest.json'));
+    let $ = cheerio.load(template)
+    $('#app').html(App)
+    console.log($.html())
+    res.end($.html())
+    // return res.sendFile(path.resolve('build/index.html'))
+})
 
-    renderer = createRenderer(bundle, {
-        template,
-        clientManifest
-    })
-} else {
-    readyPromise = setDevServer(
-        app,
-        templatePath,
-        (bundle, options) => {
-            renderer = createRenderer(bundle, options)
-        }
-    )
-}
+
+
 
 
 //缓存
@@ -61,7 +34,7 @@ const microCache = LRU({
     maxAge: 1000 // 重要提示：条目在 1 秒后过期。
 })
 
-//渲染函数
+/*//渲染函数
 function render(req, res) {
     const s = Date.now()
 
@@ -106,7 +79,7 @@ app.get('*', isProduction ? render : (req, res) => {
     readyPromise.then(() => {
         render(req, res)
     })
-})
+})*/
 
 /*
 app.use(express.static('build'));

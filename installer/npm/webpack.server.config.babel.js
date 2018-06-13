@@ -13,10 +13,11 @@ let config = function (env, arg) {
     arg.ssr = true;
     let config = merge(baseConfig(env, arg), {
         //入口文件
-        entry: SRC_PATH + '/js/entry-server.js',
+        entry: SRC_PATH + '/js/app.js',
         target: 'node',
         //输出的文件名 合并以后的js会命名为bundle.js
         output      : {
+            filename:'server.js',
             path         : BUILD_PATH,
             libraryTarget: 'commonjs2'
         },
@@ -27,9 +28,6 @@ let config = function (env, arg) {
             whitelist: /\.css$/,
         }),
         plugins     : [
-            new VueSSRServerPlugin({
-                filename: 'js/vue-ssr-server-bundle.json'
-            }),
             new webpack.DefinePlugin({
                 'process.env.VUE_ENV': '"server"'
             }),
