@@ -8,7 +8,7 @@ import PostCssAt2x from 'postcss-at2x';
 
 let config = function (env, arg) {
     let config = {
-        mode: arg.mode,
+        mode        : arg.mode,
         resolve     : {
             extensions: ['.js', '.jsx'],
             alias     : {
@@ -117,10 +117,11 @@ let config = function (env, arg) {
             "react"                        : 'React',
             'mockjs'                       : 'Mock',
             'superagent'                   : 'superagent',
-            'prop-types'                   : 'React.PropTypes',
+            //'prop-types'                   : 'React.PropTypes',
             'react-dom'                    : 'ReactDOM',
             'react-router'                 : 'ReactRouter',
-            'react-router-dom'             : 'react-router-dom',
+            'react-router-dom'             : 'ReactRouterDOM',
+            'react-redux'                  : 'ReactRedux',
             'history/createBrowserHistory' : 'history',//history插件
             'moment/moment.js'             : 'moment',//时间插件
             'pubsub-js'                    : 'PubSub',//pubSub插件
@@ -142,7 +143,7 @@ let config = function (env, arg) {
             new MiniCssExtractPlugin({
                 // Options similar to the same options in webpackOptions.output
                 // both options are optional
-                filename     : 'css/[name].css?v=[contenthash]',
+                filename: 'css/[name].css?v=[contenthash]',
                 //chunkFilename: "css/[id].css?v=[contenthash]"
             }),
         ]

@@ -52,7 +52,7 @@ let config = function (env, arg) {
             path         : BUILD_PATH,
             filename     : 'js/[name].js?v=[hash]',
             chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : 'http://localhost:3001/'
+            publicPath   : arg.mode =='development' ? '/' : 'http://localhost:3001/'
         },
         optimization: {
             minimizer  : [

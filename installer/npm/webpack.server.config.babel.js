@@ -13,7 +13,7 @@ let config = function (env, arg) {
     arg.ssr = true;
     let config = merge(baseConfig(env, arg), {
         //入口文件
-        entry: SRC_PATH + '/js/app.js',
+        entry: SRC_PATH + '/js/entry-server.js',
         target: 'node',
         //输出的文件名 合并以后的js会命名为bundle.js
         output      : {
