@@ -50,4 +50,3 @@ mochawesome-report/
 build/
 stats.json
 Api/public/upload
-installer/npm/assets/
