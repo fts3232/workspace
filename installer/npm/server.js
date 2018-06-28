@@ -2,7 +2,7 @@ import LRU from 'lru-cache'
 import fs from 'fs';
 import cheerio from 'cheerio';
 import createApp from './build/server.js';
-
+import Loadable from 'react-loadable';
 import Koa from 'koa';
 import KoaStatic from 'koa-static';
 
@@ -56,10 +56,13 @@ app.on('error', err => {
     console.log('server error', err)
 });
 
-const server = app.listen(process.env.PORT || 3000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
+Loadable.preloadAll().then(() => {
+    const server = app.listen(process.env.PORT || 3000, function () {
+        var host = server.address().address;
+        var port = server.address().port;
 
-    console.log('Example app listening at http://%s:%s', host, port);
-});
+        console.log('Example app listening at http://%s:%s', host, port);
+    });
+})
+
 

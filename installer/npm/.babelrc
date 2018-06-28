@@ -1,4 +1,13 @@
 {
     "presets": ["env"],
-    "plugins": ['syntax-dynamic-import','transform-react-jsx','react-hot-loader/babel']
+    "plugins": [
+        'syntax-dynamic-import',
+        'transform-react-jsx',
+        'react-hot-loader/babel',
+        ["import-inspector", {
+            "serverSideRequirePath": true,
+            "webpackRequireWeakId": true
+        }],
+        "react-loadable/babel"
+    ]
 }
