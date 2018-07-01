@@ -122,15 +122,16 @@ let config = function (env, arg) {
                 template: TEMPLATE_PATH + '/index.html'
             }),
             new webpack.DefinePlugin({
-                'process.env.VUE_ENV': '"client"'
+                'process.env.VUE_ENV': '"client"',
+                'SSR': arg.ssr
             }),
-            new VueSSRClientPlugin({
+            /*new VueSSRClientPlugin({
                 filename: 'js/vue-ssr-client-manifest.json'
             }),
             new PrerenderSPAPlugin({
                 staticDir: BUILD_PATH,
                 routes   : ['/', '/foo', '/bar'],
-            })
+            })*/
         ]
     });
     if (arg.mode == 'production') {

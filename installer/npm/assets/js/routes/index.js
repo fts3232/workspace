@@ -6,10 +6,9 @@ import Loading from '../components/Loading.jsx';
 import React from 'react';
 
 const LoadableComponent = Loadable({
-    loader : () => import(/* webpackChunkName: "lazy" */'../components/Counter.jsx'),
+    loader : () => import(/* webpackChunkName: "Counter" */'../components/Counter'),
     loading: Loading,
 })
-
 
 const Child = ({ match }) => (
     <div>
