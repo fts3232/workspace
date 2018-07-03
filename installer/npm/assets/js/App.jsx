@@ -12,6 +12,9 @@ class App extends React.Component {
     getMenu(){
         return this.props.menu;
     }
+    componentWillMount(){
+        //document.title = 'test title'
+    }
     render() {
         return (
             <div className="nav">

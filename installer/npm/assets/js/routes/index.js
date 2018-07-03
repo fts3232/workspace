@@ -1,29 +1,31 @@
 // using an ES6 transpiler, like babel
-import {matchRoutes, renderRoutes} from 'react-router-config'
+import { matchRoutes, renderRoutes } from 'react-router-config'
 import Loadable from 'react-loadable';
-import App from '../App.jsx';
-import Loading from '../components/Loading.jsx';
+import App from '../App';
+import Loading from '../components/Loading';
 import React from 'react';
 
-const LoadableComponent = Loadable({
+const Counter = Loadable({
     loader : () => import(/* webpackChunkName: "Counter" */'../components/Counter'),
     loading: Loading,
 })
 
-const Child = ({ match }) => (
-    <div>
-        <h3>ID: {match.params.id}</h3>
-    </div>
-);
+const Child = Loadable({
+    loader : () => import(/* webpackChunkName: "Child" */'../components/Child'),
+    loading: Loading,
+})
 
 const routes = [
-    { component: App,
+    {
+        component: App,
         routes: [
-            { path: '/Counter',
+            {
+                path: '/Counter',
                 exact: true,
-                component: LoadableComponent
+                component: Counter
             },
-            { path: '/Todo',
+            {
+                path: '/:id',
                 exact: true,
                 component: Child,
             }

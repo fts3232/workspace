@@ -8,16 +8,6 @@ import { renderRoutes } from 'react-router-config'
 
 import Loadable from 'react-loadable';
 
-Loadable.preloadReady().then(() => {
-    //ssr用hydrate() 普通用render()
-    ReactDOM.hydrate(
-        <BrowserRouter>
-            {renderRoutes(routes)}
-        </BrowserRouter>,
-        document.getElementById('app')
-    )
-});
-
 if (SSR) {
     Loadable.preloadReady().then(() => {
         //ssr用hydrate() 普通用render()

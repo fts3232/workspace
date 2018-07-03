@@ -1,4 +1,3 @@
-import VueLoaderPlugin from 'vue-loader/lib/plugin';
 //css整合成1个文件
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 //补全css
@@ -26,44 +25,25 @@ let config = function (env, arg) {
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-                    use : arg.ssr
-                        ? [
-                            {
-                                loader : 'css-loader',
-                                options: {// some options
-                                    minimize: arg.mode == 'production'
-                                }
-                            },
-                            {
-                                loader : 'postcss-loader',
-                                options: {
-                                    plugins: [
-                                        new PostCssAt2x(),
-                                        new AutoPrefixer()
-                                    ]
-                                }
-                            },
-                            'sass-loader'
-                        ]
-                        : [
-                            MiniCssExtractPlugin.loader,
-                            {
-                                loader : 'css-loader',
-                                options: {// some options
-                                    minimize: arg.mode == 'production'
-                                }
-                            },
-                            {
-                                loader : 'postcss-loader',
-                                options: {
-                                    plugins: [
-                                        new PostCssAt2x(),
-                                        new AutoPrefixer()
-                                    ]
-                                }
-                            },
-                            'sass-loader'
-                        ],
+                    use : [
+                        MiniCssExtractPlugin.loader,
+                        {
+                            loader : 'css-loader',
+                            options: {// some options
+                                minimize: arg.mode == 'production'
+                            }
+                        },
+                        {
+                            loader : 'postcss-loader',
+                            options: {
+                                plugins: [
+                                    new PostCssAt2x(),
+                                    new AutoPrefixer()
+                                ]
+                            }
+                        },
+                        'sass-loader'
+                    ]
                 },
                 {
                     test   : /\.(js|jsx)$/,
@@ -139,7 +119,6 @@ let config = function (env, arg) {
             'director'                     : true
         },
         plugins     : [
-            new VueLoaderPlugin(),
             new MiniCssExtractPlugin({
                 // Options similar to the same options in webpackOptions.output
                 // both options are optional

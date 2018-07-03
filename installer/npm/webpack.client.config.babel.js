@@ -2,7 +2,6 @@
 
 import path from 'path';
 import webpack from 'webpack';
-import VueSSRClientPlugin from 'vue-server-renderer/client-plugin'
 //压缩js
 import UglifyJs from 'uglifyjs-webpack-plugin';
 //css 雪碧图
@@ -22,6 +21,8 @@ import PrerenderSPAPlugin from 'prerender-spa-plugin';
 const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 //清理文件夹插件
 //import CleanWebpackPlugin from 'clean-webpack-plugin';
+import { ReactLoadablePlugin } from 'react-loadable/webpack';
+
 //定义了一些文件夹的路径
 const ROOT_PATH = path.resolve(__dirname);
 
@@ -124,6 +125,9 @@ let config = function (env, arg) {
             new webpack.DefinePlugin({
                 'process.env.VUE_ENV': '"client"',
                 'SSR': arg.ssr
+            }),
+            new ReactLoadablePlugin({
+                filename: BUILD_PATH + '/react-loadable.json',
             }),
             /*new VueSSRClientPlugin({
                 filename: 'js/vue-ssr-client-manifest.json'
