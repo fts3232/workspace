@@ -5,11 +5,11 @@
     "module:update": "ncu -a",
     "cnpm:install": "npm install -g cnpm --registry=https://registry.npm.taobao.org",
     "npm-check-updates:install": "cnpm install -g npm-check-updates",
-    "start:dev": "webpack-dev-server --config webpack.client.config.babel.js --mode=development --build-path=build --src-path=assets",
-    "build:server": "webpack --mode=production --build-path=build --src-path=assets --config=webpack.server.config.babel.js",
-    "build:client": "webpack --ssr=1 --mode=production --build-path=build --src-path=assets --config=webpack.client.config.babel.js",
     "start": "cross-env PORT=3001 babel-node server.js",
-    "build": "cnpm run build:server && cnpm run build:client"
+    "start:dev": "webpack-dev-server --config webpack.client.config.babel.js --mode=development --build-path=build --src-path=assets",
+    "build": "cnpm run build:server && cnpm run build:client",
+    "build:server": "webpack --mode=production --build-path=build --src-path=assets --config=webpack.server.config.babel.js",
+    "build:client": "webpack --ssr=1 --mode=production --build-path=build --src-path=assets --config=webpack.client.config.babel.js"
   },
   "private": true,
   "devDependencies": {

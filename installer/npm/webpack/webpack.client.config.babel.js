@@ -1,27 +1,26 @@
 // /* webpack.config.js */
 
 import path from 'path';
-import webpack from 'webpack';
 //压缩js
 import UglifyJs from 'uglifyjs-webpack-plugin';
 //css 雪碧图
-import PostCssSprites from 'postcss-sprites';
 //压缩css
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 //优化css
 import cssnano from 'cssnano';
 //生成html
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import baseConfig from './webpack.base.config.babel.js'
 
 import merge from 'webpack-merge'
 
 import PrerenderSPAPlugin from 'prerender-spa-plugin';
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 //清理文件夹插件
 //import CleanWebpackPlugin from 'clean-webpack-plugin';
-import { ReactLoadablePlugin } from 'react-loadable/webpack';
+import {ReactLoadablePlugin} from 'react-loadable/webpack';
+
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
+
 
 //定义了一些文件夹的路径
 const ROOT_PATH = path.resolve(__dirname);
@@ -30,7 +29,8 @@ let config = function (env, arg) {
     const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
     const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
     const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
-    let config = merge(baseConfig(env, arg), {
+    const isServerRender = arg['server-render']
+    let config = merge(baseConfig(env, arg, isServerRender), {
         /*
         source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
         cheap-module-source-map 在一个单独的文件中生成一个不带列映射的map，不带列映射提高项目构建速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
@@ -53,7 +53,7 @@ let config = function (env, arg) {
             path         : BUILD_PATH,
             filename     : 'js/[name].js?v=[hash]',
             chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : arg.mode =='development' ? '/' : 'http://localhost:3001/'
+            publicPath   : arg.mode == 'development' ? '/' : 'http://localhost:3001/'
         },
         optimization: {
             minimizer  : [
@@ -96,10 +96,10 @@ let config = function (env, arg) {
                         chunks  : "all",
                         priority: 10,
                     },
-                    styles: {
-                        name: 'styles',
-                        test: /\.css$/,
-                        chunks: 'all',
+                    styles : {
+                        name   : 'styles',
+                        test   : /\.css$/,
+                        chunks : 'all',
                         enforce: true
                     },
                     default: {
@@ -110,70 +110,9 @@ let config = function (env, arg) {
                 }
             }
         },
-        plugins     : [
-            /*new CleanWebpackPlugin(['js', 'css', 'images', 'fonts'], {
-                root   : BUILD_PATH,
-                verbose: true,
-                dry    : false
-            }),*/
-            new webpack.NamedModulesPlugin(),
-            new HtmlWebpackPlugin({
-                title   : 'My App',
-                filename: 'index.html',
-                template: TEMPLATE_PATH + '/index.html'
-            }),
-            new webpack.DefinePlugin({
-                'SSR': arg.ssr
-            }),
-            new ReactLoadablePlugin({
-                filename: BUILD_PATH + '/server/react-loadable.json',
-            }),
-            /*new VueSSRClientPlugin({
-                filename: 'js/vue-ssr-client-manifest.json'
-            }),
-            new PrerenderSPAPlugin({
-                staticDir: BUILD_PATH,
-                routes   : ['/', '/foo', '/bar'],
-            })*/
-        ]
+        plugins     : []
     });
-    if (arg.mode == 'production') {
-        config.module.rules[1]['use'][2]['options']['plugins'].push(new PostCssSprites({
-            retina       : true,//支持retina，可以实现合并不同比例图片
-            verbose      : true,
-            spritePath   : BUILD_PATH,//雪碧图合并后存放地址
-            styleFilePath: BUILD_PATH + '/css',
-            basePath     : './',
-            filterBy     : function (image) {
-                //过滤一些不需要合并的图片，返回值是一个promise，默认有一个exist的filter
-                if (image.originalUrl.indexOf('?__sprites') === -1) {
-                    return Promise.reject();
-                }
-                return Promise.resolve();
-            },
-            groupBy      : function (image) {
-                //将图片分组，可以实现按照文件夹生成雪碧图
-                var groupName = '/sprite';
-                var url = path.dirname(image.url);
-                url = url.replace(/\.\.\//g, '');
-                url = url.replace(/\.\//g, '');
-                if (image.url.indexOf('@2x') !== -1) {
-                    groupName = '/sprite@2x';
-                }
-                else if (image.url.indexOf('@3x') !== -1) {
-                    groupName = '/sprite@3x';
-                }
-                return Promise.resolve(url + groupName);
-            },
-            hooks        : {
-                onSaveSpritesheet: function (opts, spritesheet) {
-                    // We assume that the groups is not an empty array
-                    var filenameChunks = spritesheet.groups.concat(spritesheet.extension);
-                    return path.join(opts.spritePath, filenameChunks.join('.'));
-                }
-            }
-        }))
-    }
+
     return config;
 }
 export default config;

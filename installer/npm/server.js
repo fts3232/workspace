@@ -6,7 +6,7 @@ import Loadable from 'react-loadable';
 import Koa from 'koa';
 import KoaStatic from 'koa-static';
 import {getBundles} from 'react-loadable/webpack'
-import stats from './build/react-loadable.json';
+import stats from './build/server/react-loadable.json';
 
 //缓存
 const microCache = LRU({

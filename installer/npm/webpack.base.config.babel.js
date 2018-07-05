@@ -1,11 +1,6 @@
-//css整合成1个文件
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-//补全css
-import AutoPrefixer from 'autoprefixer';
-//css 2x图插件
-import PostCssAt2x from 'postcss-at2x';
-
-let config = function (env, arg) {
+import getLoader from './getLoader';
+import getPlugin from './getPlugin';
+let config = function (env, arg, iServerRender = false, isServer = false) {
     let config = {
         mode        : arg.mode,
         resolve     : {
@@ -18,69 +13,7 @@ let config = function (env, arg) {
             ignored: /node_modules/
         },
         module      : {
-            rules: [
-                {
-                    test  : /\.vue$/,
-                    loader: 'vue-loader',
-                },
-                {
-                    test: /\.(sa|sc|c)ss$/,
-                    use : [
-                        MiniCssExtractPlugin.loader,
-                        {
-                            loader : 'css-loader',
-                            options: {// some options
-                                minimize: arg.mode == 'production'
-                            }
-                        },
-                        {
-                            loader : 'postcss-loader',
-                            options: {
-                                plugins: [
-                                    new PostCssAt2x(),
-                                    new AutoPrefixer()
-                                ]
-                            }
-                        },
-                        'sass-loader'
-                    ]
-                },
-                {
-                    test   : /\.(js|jsx)$/,
-                    loader : 'babel-loader',
-                    exclude: /(node_modules|bower_components)/,
-                },
-                {
-                    test  : /\.(png|jpg|svg)$/,
-                    loader: [
-                        {
-                            loader : 'url-loader',
-                            options: {
-                                limit     : 8192,
-                                fallback  : 'file-loader',
-                                publicPath: './images/',
-                                outputPath: 'images/',
-                                name      : '[name].[ext]?v=[hash:8]'
-                            }
-                        }
-                    ],
-                },
-                {
-                    test  : /\.(ttf|woff)$/,
-                    loader: [
-                        {
-                            loader : 'url-loader',
-                            options: {
-                                limit     : 8192,
-                                fallback  : 'file-loader',
-                                publicPath: './fonts/',
-                                outputPath: 'fonts/',
-                                name      : '[name].[ext]?v=[hash:8]'
-                            }
-                        }
-                    ],
-                },
-            ]
+            rules: getLoader(arg.mode, isServer);
         },
         externals   : {
             'vue'                          : 'Vue',
@@ -118,14 +51,7 @@ let config = function (env, arg) {
             'highcharts'                   : true,
             'director'                     : true
         },
-        plugins     : [
-            new MiniCssExtractPlugin({
-                // Options similar to the same options in webpackOptions.output
-                // both options are optional
-                filename: 'css/[name].css?v=[contenthash]',
-                //chunkFilename: "css/[id].css?v=[contenthash]"
-            }),
-        ]
+        plugins     : getPlugin(arg.mode, isServer, isServer);
     };
     return config;
 }
