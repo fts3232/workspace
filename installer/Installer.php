@@ -12,8 +12,7 @@ class Installer
     );
 
     private static $frontEndFrameMap = array(
-        0 => 'vue',
-        1 => 'react'
+        0 => 'react'
     );
 
     private static $phpVersionMap = array(
@@ -21,16 +20,9 @@ class Installer
         1 => '7.0'
     );
 
-    private static $pageTypeMap = array(
-        0 => 'spa',
-        1 => 'ssr'
-    );
-
     private static $installPath = null;
 
     private static $frontEndFrame = null;
-
-    private static $pageType = null;
 
     private static $cwd = null;
 
@@ -60,9 +52,6 @@ class Installer
 
         $frontEnd = $io->select('Please Select Front End Frame:', self::$frontEndFrameMap, 0);
         self::$frontEndFrame = self::$frontEndFrameMap[$frontEnd];
-
-        $pageType = $io->select('Please Select Page Type:', self::$pageTypeMap, 0);
-        self::$pageType = self::$pageTypeMap[$pageType];
 
         $installCmd = "composer create-project --prefer-dist {$backEndFrame} {$installPath}";
         exec($installCmd);

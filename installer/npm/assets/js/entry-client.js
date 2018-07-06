@@ -8,7 +8,7 @@ import { renderRoutes } from 'react-router-config'
 
 import Loadable from 'react-loadable';
 
-if (SSR) {
+if (IS_SERVER_RENDER) {
     Loadable.preloadReady().then(() => {
         //ssr用hydrate() 普通用render()
         ReactDOM.hydrate(

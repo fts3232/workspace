@@ -1,36 +1,13 @@
 // /* webpack.config.js */
-
-import path from 'path';
 //压缩js
 import UglifyJs from 'uglifyjs-webpack-plugin';
-//css 雪碧图
 //压缩css
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 //优化css
 import cssnano from 'cssnano';
-//生成html
 
-import baseConfig from './webpack.base.config.babel.js'
-
-import merge from 'webpack-merge'
-
-import PrerenderSPAPlugin from 'prerender-spa-plugin';
-//清理文件夹插件
-//import CleanWebpackPlugin from 'clean-webpack-plugin';
-import {ReactLoadablePlugin} from 'react-loadable/webpack';
-
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
-
-
-//定义了一些文件夹的路径
-const ROOT_PATH = path.resolve(__dirname);
-
-let config = function (env, arg) {
-    const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
-    const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
-    const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
-    const isServerRender = arg['server-render']
-    let config = merge(baseConfig(env, arg, isServerRender), {
+let getClientConfig = function (options) {
+    let config = {
         /*
         source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
         cheap-module-source-map 在一个单独的文件中生成一个不带列映射的map，不带列映射提高项目构建速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
@@ -41,7 +18,7 @@ let config = function (env, arg) {
         //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
         //入口文件
         entry       : {
-            'app': SRC_PATH + '/js/entry-client.js'
+            'app': options.srcPath + '/js/entry-client.js'
             /* 'vendor': [
                  APP_PATH + '/components/Component.vue',
                  APP_PATH + '/views/Common/View.vue',
@@ -50,10 +27,9 @@ let config = function (env, arg) {
         },
         //输出的文件名 合并以后的js会命名为bundle.js
         output      : {
-            path         : BUILD_PATH,
             filename     : 'js/[name].js?v=[hash]',
             chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : arg.mode == 'development' ? '/' : 'http://localhost:3001/'
+            publicPath   : options.publicPath
         },
         optimization: {
             minimizer  : [
@@ -109,10 +85,8 @@ let config = function (env, arg) {
                     }
                 }
             }
-        },
-        plugins     : []
-    });
-
+        }
+    };
     return config;
 }
-export default config;
+export default getClientConfig;

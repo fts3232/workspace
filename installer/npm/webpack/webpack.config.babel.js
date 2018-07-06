@@ -1,20 +1,23 @@
 import getLoader from './getLoader';
 import getPlugin from './getPlugin';
-let config = function (env, arg, iServerRender = false, isServer = false) {
+import getClientConfig from './getClientConfig';
+import getServerConfig from './getServerConfig';
+import path from 'path';
+import merge from 'webpack-merge'
+
+let getBaseConfig = (options) => {
     let config = {
-        mode        : arg.mode,
+        mode        : options.mode,
         resolve     : {
             extensions: ['.js', '.jsx'],
-            alias     : {
-                'vue$': 'vue/dist/vue.js' // 'vue/dist/vue.common.js' for webpack 1
-            }
+        },
+        output      : {
+            path: options.buildPath,
         },
         watchOptions: {
             ignored: /node_modules/
         },
-        module      : {
-            rules: getLoader(arg.mode, isServer);
-        },
+        module      : getLoader(options),
         externals   : {
             'vue'                          : 'Vue',
             'element-ui'                   : 'ELEMENT',
@@ -51,8 +54,35 @@ let config = function (env, arg, iServerRender = false, isServer = false) {
             'highcharts'                   : true,
             'director'                     : true
         },
-        plugins     : getPlugin(arg.mode, isServer, isServer);
+        plugins     : getPlugin(options)
     };
     return config;
+}
+
+let config = function (env, arg) {
+    const ROOT_PATH = path.resolve(__dirname);
+    const BUILD_PATH = path.resolve(ROOT_PATH, arg['build-path']);
+    const SRC_PATH = path.resolve(ROOT_PATH, arg['src-path']);
+    const TEMPLATE_PATH = path.resolve(SRC_PATH, 'template');
+
+    let options = {
+        'buildPath'     : BUILD_PATH,
+        'srcPath'       : SRC_PATH,
+        'templatePath'  : TEMPLATE_PATH,
+        'isServerRender': arg['is-server-render'] == 'true' ? true : false,
+        'isServer'      : false,
+        'publicPath'    : arg['public-path'] ? arg['public-path'] : '/',
+        'prerender'     : arg['prerender'] == 'true',
+        'mode'          : arg.mode
+    }
+    let client = merge(getBaseConfig(options), getClientConfig(options));
+
+    if (!options.isServerRender) {
+        return client;
+    } else {
+        options.isServer = true;
+        let server = merge(getBaseConfig(options), getServerConfig(options));
+        return [client, server]
+    }
 }
 export default config;
