@@ -26,7 +26,7 @@ const App = connect(
     mapDispatchToProps
 )(CounterUI)
 
-class Counter extends React.Component {
+/*class Counter extends React.Component {
     render() {
         return (
             <Provider store={store}>
@@ -34,6 +34,6 @@ class Counter extends React.Component {
             </Provider>
         )
     }
-}
+}*/
 
-export default Counter
+export default App

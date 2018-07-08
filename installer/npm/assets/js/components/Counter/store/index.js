@@ -1,4 +1,5 @@
 import { createStore } from 'redux'
+import axios from 'axios';
 
 // Reducer 返回state 或者 执行对state的操作
 function counter(state = { count: 100 }, action) {
