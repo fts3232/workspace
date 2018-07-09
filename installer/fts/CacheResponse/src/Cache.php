@@ -1,5 +1,5 @@
 <?php
-namespace CacheResponse;
+namespace fts\CacheResponse;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Container\Container;

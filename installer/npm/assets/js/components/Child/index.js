@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from "../../../../node_modules/.0.18.0@axios";
+import axios from "axios";
 
 class Child extends React.Component {
 

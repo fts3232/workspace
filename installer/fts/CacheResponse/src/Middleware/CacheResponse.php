@@ -1,6 +1,6 @@
 <?php
 
-namespace CacheResponse\Middleware;
+namespace fts\CacheResponse\Middleware;
 
 use Closure;
 use CacheResponse\Cache;

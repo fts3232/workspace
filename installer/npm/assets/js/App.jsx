@@ -5,7 +5,7 @@ import css from '../css/style.css';
 import img from '../images/a.jpg';
 import { renderRoutes } from 'react-router-config'
 import axios from 'axios'
-import {connect} from "../../node_modules/.5.0.7@react-redux/lib";
+import {connect} from "react-redux";
 import CounterUI from "./components/Counter/CounterUI";
 
 class App extends React.Component {

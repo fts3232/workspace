@@ -1,6 +1,6 @@
 <?php
 
-namespace CacheResponse;
+namespace fts\CacheResponse;
 
 use Illuminate\Support\ServiceProvider;
 

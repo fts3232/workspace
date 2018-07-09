@@ -8,7 +8,7 @@ import KoaStatic from 'koa-static';
 import {getBundles} from 'react-loadable/webpack'
 import stats from './build/server/react-loadable.json';
 import KoaRouter from 'Koa-router';
-import axios from "./node_modules/.0.18.0@axios";
+import axios from "axios";
 import { createStore } from 'redux'
 
 //缓存
@@ -51,21 +51,8 @@ router.get('/name', (ctx, next) => {
 });
 
 router.get('/*',async (ctx, next) => {
-    let options = {
-        encoding: 'utf8',
-    };
-    let name = fs.readFileSync("./static/name.json",options);
-    if(name == ''){
-        await axios.get('http://localhost:3001/name')
-            .then(function (response) {
-                name = response.data
-                //fs.writeFileSync('./static/name.json',response.data,{flag:'wx'})
-            })
-    }
 
-    let html = '';
-
-    /*await axios.get('http://localhost:3001/name')
+    await axios.get('http://localhost:3001/name')
         .then(function (response) {
             let preloadedState = {'name': response.data,count:100}
             let store = createStore((state = {name: '', count: 0}, action) => {
@@ -79,11 +66,11 @@ router.get('/*',async (ctx, next) => {
                 }
             }, preloadedState)
 
-            let {modules, htmlString} = createApp(ctx.request.url, store);
+            let {modules, html} = createApp(ctx.request.url, store);
 
             let bundles = getBundles(stats, modules);
             let $ = cheerio.load(template)
-            $('#app').html(htmlString)
+            $('#app').html(html)
             bundles.map(bundle => {
                 $('script').eq(3).after(`<script src="${bundle.file}"></script>`);
             })
@@ -93,35 +80,14 @@ router.get('/*',async (ctx, next) => {
             // http://redux.js.org/recipes/ServerRendering.html#security-considerations
             window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\\u003c')}
             </script>`)
-            html = $.html();
-            //ctx.body = $.html();
+            ctx.body = $.html();
             //microCache.set(ctx.request.url, $.html())
-        })*/
-    ctx.body = name
-    console.log('end')
-    return false;
+        })
 
-        //asda = 'asdasd'
-        //fs.writeSync(fd,$.html());
-        //fs.closeSync(fd)
-        //console.log('文件已创建')
-
-
-    try{
-        let options = {
-            encoding: 'utf8',
-        };
-        let html = fs.readFileSync("./static/"+ctx.request.url+".html",options);
-
-        ctx.body= html
-    }catch(err){
-        let fd = fs.openSync("./static/name.json", 'wx');
-        let name = fs.read(fd);
-        console.log(name)
-
-        console.log(asda)
-        ctx.body = asda
-    }
+    //asda = 'asdasd'
+    //fs.writeSync(fd,$.html());
+    //fs.closeSync(fd)
+    //console.log('文件已创建')
 });
 
 app.use(router.routes()).use(router.allowedMethods());
