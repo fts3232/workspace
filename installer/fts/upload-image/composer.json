@@ -1,6 +1,6 @@
 {
-    "name": "fts/captcha",
-    "description": "laravel 5 captcha package",
+    "name": "fts/upload-image",
+    "description": "laravel 5 upload package",
     "type": "package",
     "license":"MIT",
     "version":"1.0.0",
@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "fts\\Captcha\\": "src/"
+            "fts\\UploadImage\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -20,7 +20,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "fts\\Captcha\\Tests\\": "tests/"
+            "fts\\UploadImage\\Tests\\": "tests/"
         }
     },
     "require": {

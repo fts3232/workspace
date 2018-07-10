@@ -1,13 +1,13 @@
 <?php
+
 namespace fts\CacheResponse;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Contracts\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Redis\RedisManager;
 
-class Cache{
+class Cache
+{
     protected $files;
 
     protected $cachePath;
@@ -35,7 +35,7 @@ class Cache{
 
     public function getCachePath()
     {
-        $base = $this->cachePath ? $this->cachePath : 'static';
+        $base = $this->cachePath ? $this->cachePath : public_path('static');
         if (is_null($base)) {
             throw new Exception('Cache path not set.');
         }
@@ -46,8 +46,8 @@ class Cache{
     {
         $segments = explode('/', ltrim($request->getPathInfo(), '/'));
         $fileName = array_pop($segments);
-        $fileName = $fileName ? : 'index';
-        $file = $fileName.'.html';
+        $fileName = $fileName ?: 'index';
+        $file = $fileName . '.html';
         return [$this->getCachePath(implode('/', $segments)), $file];
     }
 
@@ -57,29 +57,25 @@ class Cache{
             return trim($path, '/');
         }, $paths);
         return $this->matchRelativity(
-            $paths[0], implode('/', array_filter($trimmed))
+            $paths[0],
+            implode('/', array_filter($trimmed))
         );
     }
 
     protected function matchRelativity($source, $target)
     {
-        return $source[0] == '/' ? '/'.$target : $target;
+        return $source[0] == '/' ? '/' . $target : $target;
     }
 
-    public function exists(Request $request){
+    public function exists(Request $request)
+    {
         list($path, $file) = $this->getDirectoryAndFileNames($request);
         $fileName = $this->join([$path, $file]);
-        if($this->files->exists($fileName)){
+
+        if ($this->files->exists($fileName)) {
             return $this->files->get($fileName);
         }
         return false;
-    }
-
-    public function forgetMany($slugs)
-    {
-        foreach ($slugs as $slug) {
-            $this->forget($slug);
-        }
     }
 
     public function forget($slug)
@@ -87,8 +83,17 @@ class Cache{
         return $this->files->delete($this->getCachePath($slug . '.html'));
     }
 
-    public function clear()
+    public function clear($slug = '')
     {
-        return $this->files->deleteDirectory($this->getCachePath(), true);
+        if (!empty($slug)) {
+            return $this->files->deleteDirectory($this->getCachePath($slug));
+        } else {
+            return $this->files->cleanDirectory($this->getCachePath());
+        }
+    }
+
+    public function AllCache()
+    {
+
     }
 }

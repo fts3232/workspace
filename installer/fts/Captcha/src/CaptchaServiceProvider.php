@@ -6,6 +6,12 @@ use Illuminate\Support\ServiceProvider;
 
 class CaptchaServiceProvider extends ServiceProvider
 {
+    /**
+     * 服务提供者加是否延迟加载.
+     *
+     * @var bool
+     */
+
     public function boot()
     {
         // Publish configuration files

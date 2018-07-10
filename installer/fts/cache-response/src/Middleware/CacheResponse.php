@@ -3,10 +3,9 @@
 namespace fts\CacheResponse\Middleware;
 
 use Closure;
-use CacheResponse\Cache;
+use fts\CacheResponse\Cache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 
 class CacheResponse
 {
