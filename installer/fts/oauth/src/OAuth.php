@@ -43,7 +43,10 @@ class OAuth
         $memory = new Memory($this->scope);
         $scopeUtil = new Scope($memory);
 
-        $server = new Server($storage);
+        $server = new Server($storage,array(
+            'access_lifetime'=>60,
+            'refresh_token_lifetime'         => 60,
+        ));
         $server->addGrantType(new AuthorizationCode($storage)); // or any grant type you like!
         $server->addGrantType(new ClientCredentials($storage)); //客户端模式
         $server->setScopeUtil($scopeUtil);
