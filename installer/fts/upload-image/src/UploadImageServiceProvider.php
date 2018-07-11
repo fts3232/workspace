@@ -26,7 +26,8 @@ class UploadImageServiceProvider extends ServiceProvider
         $this->app->singleton('uploadImage', function ($app) {
             return new UploadImage(
                 $app['request'],
-                $app['Illuminate\Config\Repository']
+                $app['Illuminate\Config\Repository'],
+                $app['Intervention\Image\ImageManager']
             );
         });
     }

@@ -2,7 +2,9 @@
 
 namespace fts\CacheResponse;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request as LaravelRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -92,8 +94,29 @@ class Cache
         }
     }
 
-    public function AllCache()
+    public function getCacheRoute()
     {
+        $app = app();
+        $routes = $app->routes->getRoutes();
+        $temp = array();
+        foreach ($routes as $route) {
+            $middleware = $route->action['middleware'];
+            if ((is_array($middleware) && in_array('cache', $middleware)) || $middleware == 'cache') {
+                $temp[] = $route->uri;
+            }
+        }
+    }
 
+    public function createCache($uri)
+    {
+        $kernel = app(Kernel::class);
+        $request = LaravelRequest::createFromBase(Request::create($uri));
+        $response = $kernel->handle($request);
+        return $this->shouldCache($request, $response);
+    }
+
+    private function shouldCache(Request $request, Response $response)
+    {
+        return $request->isMethod('GET') && $response->getStatusCode() == 200;
     }
 }

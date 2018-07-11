@@ -28,9 +28,8 @@
         "ext-gd": "*",
         "illuminate/config": "~5.0",
         "illuminate/filesystem": "~5.0",
-        "illuminate/support": "~5.0",
-        "illuminate/hashing": "~5.0",
-        "intervention/image": "~2.2"
+        "intervention/image": "~2.2",
+        "symfony/http-foundation": "2.6 - 4"
     },
     "minimum-stability": "dev"
 }
