@@ -21,6 +21,7 @@ class OAuthServiceProvider extends ServiceProvider
     {
         $this->app->singleton(OAuth::class, function ($app) {
             $instance = new OAuth(
+                $app['redis']
             );
             return $instance;
         });

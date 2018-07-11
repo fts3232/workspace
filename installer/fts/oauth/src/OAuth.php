@@ -11,6 +11,8 @@ use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\Storage\Memory;
 use OAuth2\Scope;
+use Illuminate\Redis\RedisManager;
+use OAuth2\Storage\Redis;
 
 class OAuth
 {
@@ -22,13 +24,9 @@ class OAuth
 
     protected $request;
 
-    public function __construct()
+    public function __construct(RedisManager $redis)
     {
-        //$this->request = $request;
-        $dsn = 'mysql:host=localhost;dbname=laravel';
-        $username = 'root';
-        $password = '';
-        $storage = new Pdo(array('dsn' => $dsn, 'username' => $username, 'password' => $password));
+
 
         $this->scope = array(
             'default_scope'=>'basic',
@@ -38,6 +36,9 @@ class OAuth
                 'getImage'
             )
         );
+
+        $storage = new Redis($redis,$this->scope);
+        $storage->setClientDetails('demoapp','123','');
 
         $memory = new Memory($this->scope);
         $scopeUtil = new Scope($memory);
@@ -51,9 +52,10 @@ class OAuth
         //$server->handleTokenRequest(Request::createFromGlobals())->send();
     }
 
-    public function token()
+    public function token($request,$response)
     {
-        return $this->server->grantAccessToken(Request::createFromGlobals());
+        $this->server->grantAccessToken($request,$response);
+        return $response->send();
     }
 
     private function fileMd5SignValid($id, $category, $type, $sign, $time, $from)
