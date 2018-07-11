@@ -14,6 +14,8 @@ class OAuthServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->app['router']->post('oauth/token', '\fts\OAuth\OAuthController@token');
+
+        $this->app['router']->post('oauth/resource', '\fts\OAuth\OAuthController@resource');
     }
 
 

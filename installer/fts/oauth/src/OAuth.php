@@ -54,27 +54,12 @@ class OAuth
 
     public function token($request,$response)
     {
-        $this->server->grantAccessToken($request,$response);
+        return $this->server->handleTokenRequest($request)->send();
+        var_dump($parameters = $response->getParameters());
         return $response->send();
     }
 
-    private function fileMd5SignValid($id, $category, $type, $sign, $time, $from)
-    {
-        //$timeout = config('app.MD5_KEY_TIMEOUT');
-        $timeout = 1800;
-        $time = intval($time);
-        $now = time() - $timeout;
-        $md5Sign = $this->getFileMd5Sign($id, $category, $type, $time, $from);
-        return $sign === $md5Sign && $now < $time;
-    }
-
-    private function getFileMd5Sign($id, $category, $type, $time, $from)
-    {
-        /* $key = config('app.MD5_KEY');
-        $md5 = md5($key."{$id}-{$time}-{$type}"); */
-        $md5Key = $this->md5KeyMap[$from];
-        $key = "uid={$id}&category={$category}&time={$time}&type={$type}&from={$from}www.202fx.com/" . $md5Key;
-        $md5 = md5($key);
-        return $md5;
+    public function resource($request,$response){
+        var_dump($this->server->verifyResourceRequest($request,$response,'basic'));
     }
 }
