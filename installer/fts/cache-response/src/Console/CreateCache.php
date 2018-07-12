@@ -1,25 +1,34 @@
 <?php
+
 namespace fts\CacheResponse\Console;
 
 use fts\CacheResponse\Cache;
 use Illuminate\Console\Command;
 
+/**
+ * 生成缓存类
+ *
+ * Class CreateCache
+ * @package fts\CacheResponse\Console
+ */
 class CreateCache extends Command
 {
     /**
-     * The name and signature of the console command.
+     * 命令名称 uri 可选项 可多个
      *
      * @var string
      */
     protected $signature = 'page-cache:create {uri?* : URL  of page to create}';
+
     /**
-     * The console command description.
+     * 命令描述
      *
      * @var string
      */
     protected $description = 'Create the page cache.';
+
     /**
-     * Execute the console command.
+     * 执行命令逻辑
      *
      * @return void
      */
@@ -29,15 +38,21 @@ class CreateCache extends Command
 
         $uris = $this->argument('uri');
         $time = date('Y/m/d H:i:s', time());
+        //判断是否指定了特定的缓存页面和特定的目录，不是生成所有页面缓存
         if (empty($uris)) {
-            $uris= $this->getShouldCacheRoute();
-            $this->info("[{$time}]: All router cache create");
+            $uris = $this->getShouldCacheRoute();
+            $this->info("[{$time}]: 生成所有页面缓存");
         }
         foreach ($uris as $uri) {
             $this->create($cache, $uri);
         }
     }
 
+    /**
+     * 获取所有应该缓存的路由
+     *
+     * @return array
+     */
     protected function getShouldCacheRoute()
     {
         $routes = $this->laravel->routes->getRoutes();
@@ -51,13 +66,19 @@ class CreateCache extends Command
         return $return;
     }
 
-    protected function create($cache, $uri)
+    /**
+     *  生成缓存文件
+     *
+     * @param Cache  $cache cache类
+     * @param string $uri   要生成缓存的uri
+     */
+    protected function create(Cache $cache, $uri)
     {
         $time = date('Y/m/d H:i:s', time());
         if ($cache->createCache($uri)) {
-            $this->info("[{$time}]: Page Cache create at {$uri}");
+            $this->info("[{$time}]: {$uri} 页面缓存生成成功");
         } else {
-            $this->warn("[{$time}]: Page Cache create fail at {$uri}");
+            $this->warn("[{$time}]: {$uri} 页面缓存生成失败");
         }
     }
 }

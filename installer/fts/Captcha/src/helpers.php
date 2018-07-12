@@ -1,9 +1,10 @@
 <?php
 
 if (!function_exists('captcha')) {
-
     /**
-     * @param string $config
+     * 返回验证码图片
+     *
+     * @param string $config 要读取的配置
      * @return mixed
      */
     function captcha($config = 'default')
@@ -14,7 +15,9 @@ if (!function_exists('captcha')) {
 
 if (!function_exists('captcha_src')) {
     /**
-     * @param string $config
+     * 返回验证码访问路径
+     *
+     * @param string $config 要读取的配置
      * @return string
      */
     function captcha_src($config = 'default')
@@ -24,9 +27,10 @@ if (!function_exists('captcha_src')) {
 }
 
 if (!function_exists('captcha_img')) {
-
     /**
-     * @param string $config
+     * 返回验证码img标签
+     *
+     * @param string $config 要读取的配置
      * @return mixed
      */
     function captcha_img($config = 'default')
@@ -38,7 +42,9 @@ if (!function_exists('captcha_img')) {
 
 if (!function_exists('captcha_check')) {
     /**
-     * @param $value
+     * 检查验证码是否正确
+     *
+     * @param string $value 要检查的值
      * @return bool
      */
     function captcha_check($value)

@@ -2,9 +2,9 @@
 
 namespace fts\CacheResponse;
 
-use Illuminate\Support\ServiceProvider;
 use fts\CacheResponse\Console\ClearCache;
 use fts\CacheResponse\Console\CreateCache;
+use Illuminate\Support\ServiceProvider;
 
 class CacheResponseServiceProvider extends ServiceProvider
 {
@@ -17,7 +17,9 @@ class CacheResponseServiceProvider extends ServiceProvider
 
     public function register()
     {
+        //添加清理缓存命令
         $this->commands(ClearCache::class);
+        //添加创建缓存命令
         $this->commands(CreateCache::class);
         $this->app->singleton(Cache::class, function () {
             $instance = new Cache($this->app->make('files'));

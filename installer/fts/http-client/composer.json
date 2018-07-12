@@ -1,0 +1,31 @@
+{
+    "name": "fts/http-client",
+    "description": "laravel 5 http",
+    "type": "package",
+    "license":"MIT",
+    "version":"1.0.0",
+    "authors": [
+        {
+            "name": "tianshuo feng",
+            "email": "550610606@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "fts\\HttpClient\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "fts\\HttpClient\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "minimum-stability": "dev"
+}

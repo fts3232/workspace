@@ -2,7 +2,10 @@
 
 namespace fts\OAuth;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\RequestGuard;
+use fts\OAuth\Guards\TokenGuard;
 
 class OAuthServiceProvider extends ServiceProvider
 {
@@ -10,12 +13,12 @@ class OAuthServiceProvider extends ServiceProvider
     {
         // Publish configuration files
         $this->publishes([
-            __DIR__ . '/../config/api.php' => config_path('api.php')
+            __DIR__ . '/../config/oauth2.php' => config_path('oauth2.php')
         ], 'config');
 
-        $this->app['router']->post('oauth/token', '\fts\OAuth\OAuthController@token');
-
-        $this->app['router']->post('oauth/resource', '\fts\OAuth\OAuthController@resource');
+        $this->app['router']
+            ->post('oauth/token', '\fts\OAuth\OAuthController@token')
+            ->middleware(['api']);
     }
 
 
@@ -23,19 +26,10 @@ class OAuthServiceProvider extends ServiceProvider
     {
         $this->app->singleton(OAuth::class, function ($app) {
             $instance = new OAuth(
-                $app['redis']
+                $app['redis'],
+                $app['Illuminate\Config\Repository']
             );
             return $instance;
         });
-    }
-
-    /**
-     * 获取由提供者提供的服务.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [OAuth::class];
     }
 }

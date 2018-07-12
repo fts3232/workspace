@@ -48,6 +48,5 @@ Test/
 mochawesome-report/
 *.log
 build/
-laravel
 stats.json
 Api/public/upload

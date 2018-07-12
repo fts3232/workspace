@@ -15,7 +15,7 @@ class UploadImageServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Publish configuration files
+        // 发布配置文件 run php artisan vendor:publish
         $this->publishes([
             __DIR__ . '/../config/uploadImage.php' => config_path('uploadImage.php')
         ], 'config');
