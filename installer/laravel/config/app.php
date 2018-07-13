@@ -180,7 +180,7 @@ return [
         fts\Captcha\CaptchaServiceProvider::class,
         fts\CacheResponse\CacheResponseServiceProvider::class,
         fts\UploadImage\UploadImageServiceProvider::class,
-        fts\OAuth\OAuthServiceProvider::class,
+        fts\OAuth2\OAuthServiceProvider::class,
     ],
 
     /*

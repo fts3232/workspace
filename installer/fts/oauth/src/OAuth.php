@@ -1,13 +1,14 @@
 <?php
 
-namespace fts\OAuth;
+namespace fts\OAuth2;
 
 use Illuminate\Config\Repository;
 use Illuminate\Redis\RedisManager;
-use OAuth2\GrantType;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
+use OAuth2\GrantType\JwtBearer;
 use OAuth2\GrantType\RefreshToken;
+use OAuth2\GrantType\UserCredentials;
 use OAuth2\HttpFoundationBridge\Request;
 use OAuth2\Response;
 use OAuth2\Scope;
@@ -16,11 +17,13 @@ use OAuth2\Storage\Memory;
 use OAuth2\Storage\Pdo;
 use OAuth2\Storage\Redis;
 
-class OAuth
+class OAuth2
 {
     protected $server;
 
     protected $scope;
+
+    protected $pdo;
 
     protected $grantType = array();
 
@@ -34,53 +37,63 @@ class OAuth
 
     protected $storage;
 
-    public function __construct(RedisManager $redis, Repository $config)
-    {
+    protected $keys = array();
 
+    public function __construct(Repository $config, RedisManager $redis, \PDO $pdo)
+    {
         $this->configRepository = $config;
+        $this->redis = $redis;
+        $this->pdo = $pdo;
+
         $this->configure();
 
-        switch ($this->storage) {
-            case 'redis':
-                $storage = new Redis($redis);
-                break;
+        if ($this->config['use_jwt_access_tokens']) {
+            $publicKey = file_get_contents(__DIR__ . '/../key/pubkey.pem');
+            $privateKey = file_get_contents(__DIR__ . '/../key/privkey.pem');
+            $this->keys = array(
+                'keys' => array(
+                    'public_key' => $publicKey,
+                    'private_key' => $privateKey,
+                )
+            );
+            $this->keys;
         }
 
-        foreach ($this->clients as $client) {
-            $storage->setClientDetails($client['client_id'], $client['client_secret'], $client['redirect_uri']);
-        }
+        $storage = $this->createStorage();
 
         $server = new Server($storage, $this->config);
         foreach ($this->grantType as $grantType) {
             switch ($grantType) {
                 case 'client_credentials':
-                    $server->addGrantType(new ClientCredentials($storage)); //客户端模式
+                    $server->addGrantType(new ClientCredentials($storage['client_credentials'])); //客户端模式
                     break;
                 case 'authorization_code':
-                    $server->addGrantType(new AuthorizationCode($storage)); // or any grant type you like!
+                    $server->addGrantType(new AuthorizationCode($storage['authorization_code'])); // or any grant type you like!
                     break;
                 case 'refresh_token':
-                    $server->addGrantType(new RefreshToken($storage)); // or any grant type you like!
+                    $server->addGrantType(new RefreshToken($storage['refresh_token'], array(
+                        'always_issue_new_refresh_token' => $this->config['always_issue_new_refresh_token'],
+                        'refresh_token_lifetime' => $this->config['refresh_token_lifetime'],
+                    ))); // or any grant type you like!
                     break;
-                case '':
+                case 'jwt_bearer':
+                    $server->addGrantType(new JwtBearer($storage['jwt_bearer']));
+                    break;
+                case 'user_credentials':
+                    $server->addGrantType(new UserCredentials($storage['user_credentials']));
                     break;
             }
         }
+
         if ($this->scope) {
-            $memory = new Memory($this->scope);
-            $scopeUtil = new Scope($memory);
+            $scopeUtil = new Scope($this->scope);
             $server->setScopeUtil($scopeUtil);
         }
 
         $this->server = $server;
     }
 
-    public function getServer()
-    {
-        return $this->server;
-    }
-
-    public function configure()
+    protected function configure()
     {
         if ($this->configRepository->has('oauth2')) {
             $config = $this->configRepository->get('oauth2');
@@ -88,6 +101,44 @@ class OAuth
                 $this->{$key} = $val;
             }
         }
+    }
+
+    protected function setClientDetails($storage)
+    {
+        foreach ($this->clients as $client) {
+            $storage->setClientDetails($client['client_id'], $client['client_secret'], $client['redirect_uri']);
+        }
+    }
+
+    protected function createStorage()
+    {
+        $storages = array();
+        foreach ($this->storage as $key => $storage) {
+            switch ($storage) {
+                case 'redis':
+                    if (!isset($redisStorage)) {
+                        $redisStorage = new Redis($this->redis);
+                    }
+                    $storages[$key] = $redisStorage;
+                    break;
+                case 'memory':
+                    if (!isset($memoryStorage)) {
+                        $memoryStorage = new Memory($this->keys);
+                    }
+                    $storages[$key] = $memoryStorage;
+                    break;
+                case 'pdo':
+                    if (!isset($pdoStorage)) {
+                        $pdoStorage = $storage = new PDO($this->pdo);
+                    }
+                    $storages[$key] = $pdoStorage;
+                    break;
+            }
+            if ($key == 'client_credentials') {
+                $this->setClientDetails($storages[$key]);
+            }
+        }
+        return $storages;
     }
 
     public function getAccessTokenData($request)

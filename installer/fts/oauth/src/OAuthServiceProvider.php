@@ -1,11 +1,8 @@
 <?php
 
-namespace fts\OAuth;
+namespace fts\OAuth2;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Auth\RequestGuard;
-use fts\OAuth\Guards\TokenGuard;
 
 class OAuthServiceProvider extends ServiceProvider
 {
@@ -17,17 +14,18 @@ class OAuthServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->app['router']
-            ->post('oauth/token', '\fts\OAuth\OAuthController@token')
+            ->post('oauth/token', '\fts\OAuth2\OAuthController@token')
             ->middleware(['api']);
     }
 
 
     public function register()
     {
-        $this->app->singleton(OAuth::class, function ($app) {
-            $instance = new OAuth(
+        $this->app->singleton(OAuth2::class, function ($app) {
+            $instance = new OAuth2(
+                $app['Illuminate\Config\Repository'],
                 $app['redis'],
-                $app['Illuminate\Config\Repository']
+                $app['Illuminate\Database\DatabaseManager']->getPDO()
             );
             return $instance;
         });

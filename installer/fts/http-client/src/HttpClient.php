@@ -23,6 +23,7 @@ class HttpClient
             'query' => [],//get
             'form_params' => [],//post
             'body' => '',
+            'auth'=>[],
             /*'multipart' => [//file
                 [
                     'name'     => 'field_name',

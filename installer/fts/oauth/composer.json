@@ -1,5 +1,5 @@
 {
-    "name": "fts/oauth",
+    "name": "fts/oauth2",
     "description": "laravel 5 oauth",
     "type": "package",
     "license": "MIT",
@@ -12,12 +12,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "fts\\OAuth\\": "src/"
+            "fts\\OAuth2\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "fts\\OAuth\\Tests\\": "tests/"
+            "fts\\OAuth2\\Tests\\": "tests/"
         }
     },
     "require": {

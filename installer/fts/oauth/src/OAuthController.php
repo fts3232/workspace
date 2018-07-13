@@ -1,6 +1,6 @@
 <?php
 
-namespace fts\OAuth;
+namespace fts\OAuth2;
 
 use App\Http\Controllers\Controller;
 
@@ -8,6 +8,11 @@ class OAuthController extends Controller
 {
     public function token()
     {
-        return response()->json(app('fts\OAuth\OAuth')->getToken(app('request')));
+        try {
+            $token = app('fts\OAuth2\OAuth2')->getToken(app('request'));
+            return response()->json($token);
+        } catch (\Exception $e) {
+            return response()->json(['error'=>'get token fail']);
+        }
     }
 }

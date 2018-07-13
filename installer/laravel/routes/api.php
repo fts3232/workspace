@@ -20,4 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('a', function () {
     return 'success';
-})->middleware(['api', 'oauth:resource']);
+})->middleware(['api', 'oauth:resource:cache']);

@@ -8,7 +8,7 @@
         "php": ">=5.6.4",
         "fts/cache-response": "*",
         "fts/captcha": "*",
-        "fts/oauth": "*",
+        "fts/oauth2": "*",
         "fts/upload-image": "*",
         "fts/http-client":"*",
         "laravel/framework": "5.4.*",
@@ -68,7 +68,7 @@
             "type": "path",
             "url": "../fts/upload-image"
         },
-        "fts/oauth" : {
+        "fts/oauth2" : {
             "type": "path",
             "url": "../fts/oauth"
         },

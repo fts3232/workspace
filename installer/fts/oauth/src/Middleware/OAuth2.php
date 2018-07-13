@@ -1,12 +1,12 @@
 <?php
 
-namespace fts\OAuth\Middleware;
+namespace fts\OAuth2\Middleware;
 
 use Closure;
-use fts\OAuth\OAuth as OAuthServer;
+use fts\OAuth2\OAuth2 as OAuthServer;
 use Symfony\Component\HttpFoundation\Request;
 
-class OAuth
+class OAuth2
 {
 
     protected $server;
@@ -29,7 +29,11 @@ class OAuth
             }
             return $next($request);
         } catch (\Exception $e) {
-            return response()->json($result, 401);
+            if (!empty($result['error'])) {
+                return response()->json($result, 401);
+            } else {
+                return response()->json(['error' => 'verify token fail'], 401);
+            }
         }
     }
 }
