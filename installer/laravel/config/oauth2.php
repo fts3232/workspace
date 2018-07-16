@@ -31,6 +31,29 @@ return [
         'always_issue_new_refresh_token' => true,
         'refresh_token_lifetime' => 2419200,
     ],
+    'pdoConfig' => [
+        'client_table' => 'oauth_clients',
+        'access_token_table' => 'oauth_access_tokens',
+        'refresh_token_table' => 'oauth_refresh_tokens',
+        'code_table' => 'oauth_authorization_codes',
+        'user_table' => 'user',
+        'jwt_table'  => 'oauth_jwt',
+        'jti_table'  => 'oauth_jti',
+        'scope_table'  => 'oauth_scopes',
+        'public_key_table'  => 'oauth_public_keys',
+        'user_column_name' => 'user_name',
+        'password_column_name' => 'password',
+        'password_encrypt' => 'md5'
+    ],
+    'redisConfig' => [
+        'client_key' => 'oauth_clients:',
+        'access_token_key' => 'oauth_access_tokens:',
+        'refresh_token_key' => 'oauth_refresh_tokens:',
+        'code_key' => 'oauth_authorization_codes:',
+        'user_key' => 'oauth_users:',
+        'jwt_key' => 'oauth_jwt:',
+        'scope_key' => 'oauth_scopes:',
+    ],
     'scope' => [
         'default_scope' => 'basic',
         'supported_scopes' => array(
@@ -52,5 +75,9 @@ return [
         'refresh_token',
         //'jwt_bearer',
         'user_credentials'
-    ]
+    ],
+    'keys' => array(
+        'public_key' => storage_path('key/pubkey.pem'),
+        'private_key' => storage_path('key/privkey.pem')
+    )
 ];

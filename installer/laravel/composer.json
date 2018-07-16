@@ -56,25 +56,9 @@
         "optimize-autoloader": true
     },
     "repositories": {
-        "fts/captcha" : {
-            "type": "path",
-            "url": "../fts/captcha"
-        },
-        "fts/cache-response" : {
-            "type": "path",
-            "url": "../fts/cache-response"
-        },
-        "fts/upload-image" : {
-            "type": "path",
-            "url": "../fts/upload-image"
-        },
-        "fts/oauth2" : {
-            "type": "path",
-            "url": "../fts/oauth"
-        },
-        "fts/http-client" : {
-            "type": "path",
-            "url": "../fts/http-client"
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
         }
     }
 }

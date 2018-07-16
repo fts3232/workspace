@@ -31,8 +31,6 @@ class OAuth2
         } catch (\Exception $e) {
             if (!empty($result['error'])) {
                 return response()->json($result, 401);
-            } else {
-                return response()->json(['error' => 'verify token fail'], 401);
             }
         }
     }

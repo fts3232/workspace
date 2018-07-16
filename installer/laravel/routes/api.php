@@ -13,11 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('cache/create', function (Request $request) {
+    $uri = $request->input('uri', '');
+    Artisan::call('page-cache:create', [
+        'uri' => $uri
+    ]);
+})->middleware(['api', 'oauth:resource:cache']);
 
-
-Route::post('a', function () {
-    return 'success';
+Route::post('cache/clear', function (Request $request) {
+    $uri = $request->input('uri', '');
+    Artisan::call('page-cache:clear', [
+        'uri' => $uri
+    ]);
 })->middleware(['api', 'oauth:resource:cache']);
