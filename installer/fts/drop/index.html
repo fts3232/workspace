@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <style>
+            .parent-box {
+                width:400px;
+                float:left;
+                margin:40px;
+                -moz-user-select:none;
+                -ms-user-select:none;
+                -webkit-user-select:none;
+            }
+            .list {
+                width:100%;
+                padding:10px;
+                margin:0;
+                position:relative;
+                padding-bottom:0;
+                border:1px solid #999;
+            }
+            .list li {
+                display:block;
+                width:400px;
+                height:50px;
+                border:1px solid #999;
+                margin-bottom:10px;
+                background:#ccc;
+                box-sizing:border-box;
+            }
+            li.edit-able {
+                cursor:move;
+                border-style:dashed;
+                border-color:#eee;
+                transition:all .3s ease;
+            }
+            .list li.move-item {
+                box-shadow:4px 4px 4px #AAAAAA;
+                opacity:0.5;
+            }
+            button {
+                padding:0 10px;
+                height:30px;
+                margin-bottom:30px;
+                margin-right:10px;
+                border:none;
+                background:#aaa;
+                cursor:pointer;
+                outline:none;
+            }
+            button.on {
+                background:#eee;
+            }
+            .dashed-box {
+                position:absolute;
+                background:#fff9c4;
+                border:1px dashed #ff9800;
+                box-sizing:border-box;
+                z-index:-1;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="dd1" class="parent-box">
+            <button class="editOrder ddd" data-for="#dd1">编辑顺序</button>
+
+            <ul class="list ee">
+                <li>01</li>
+                <li>02</li>
+                <li>03</li>
+                <li>04</li>
+                <li>05</li>
+                <li>06</li>
+                <li>07</li>
+                <li>08</li>
+                <li>09</li>
+                <li>10</li>
+            </ul>
+        </div>
+
+        <script src="drop.js"></script>
+    </body>
+</html>
