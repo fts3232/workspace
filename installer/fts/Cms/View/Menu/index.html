@@ -1,4 +1,5 @@
 <include file="Common:header" />
+<button  class="btn btn-primary"  data-toggle="modal" data-target="#myModal">添加菜单</button>
 <form action="{:U('batch')}" method="post" class="form-inline" style="margin-top:60px">
     <div class="data auto">
         <table class="table table-bordered">
@@ -25,39 +26,50 @@
     </div>
     <div class="page">{$page}</div>
 </form>
-<script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
-<script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
-<script type="text/javascript">
-    $(function () {
-        $('#day_inject').datetimepicker({
-            format    : 'yyyy-mm-dd',
-            weekStart : 1,
-            autoclose : true,
-            startView : 2,
-            minView   : 2,
-            forceParse: false,
-            language  : 'zh-CN'
-        });
-
-        $('#count_inject').datetimepicker({
-            format    : 'yyyy-mm',
-            weekStart : 1,
-            autoclose : true,
-            startView : 3,
-            minView   : 3,
-            forceParse: false,
-            language  : 'zh-CN'
-        });
-
-        $('#year').datetimepicker({
-            format    : 'yyyy',
-            weekStart : 1,
-            autoclose : true,
-            startView : 4,
-            minView   : 4,
-            forceParse: false,
-            language  : 'zh-CN'
-        });
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加菜单</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-3 control-label">菜单名</label>
+                        <div class="col-sm-9">
+                            <input type="text"  class="form-control" id="inputName" name="name"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary add" data-loading-text="Loading...">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-dismissible fade out" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <p></p>
+</div>
+<script>
+    function alertMessage(message){
+        $('.alert').addClass('in alert-success').removeClass('out');
+        $('.alert p').html(message);
+        setTimeout(function(){
+            $('.alert').removeClass('in').addClass('out');
+        },5000)
+    }
+    $(document).ready(function(){
+        $('button.add').on('click',function () {
+            $('#myModal').modal('hide')
+            var $btn = $(this).button('loading')
+            alertMessage('修改成功')
+            $btn.button('reset')
+            return false;
+        })
     })
 </script>
 <include file="Common:footer" />

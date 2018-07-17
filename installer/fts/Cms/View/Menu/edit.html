@@ -32,6 +32,11 @@
     .panel-footer{
         overflow: hidden;
     }
+    .alert{
+        position: absolute;
+        width: 100%;
+        top: 60px;
+    }
 </style>
 <div class="table-responsive inject" style="margin: 70px auto;width:1024px">
     <div class="panel panel-default" style="width:300px;float: left; margin-right: 10px;">
@@ -66,185 +71,24 @@
         </div>
         <div class="panel-body">
             <ul id="sortable">
-                <li class="ui-state-default" data-index="1">
-                    <span>首页</span>
-                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-1" aria-expanded="false" aria-controls="collapseExampleIndex-1">
-                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
-                    </a>
-                    <div class="collapse" id="collapseExampleIndex-1">
-                        <div class="well">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger right delete">删除</button>
-                                        <button type="submit" class="btn btn-default right save" style="margin-right: 10px;">修改</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </li>
-                <li class="ui-state-default" data-index="2">
-                    <span>菜单1</span>
-                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-2" aria-expanded="false" aria-controls="collapseExampleIndex-2">
-                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
-                    </a>
-                    <div class="collapse" id="collapseExampleIndex-2">
-                        <div class="well">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger right delete">删除</button>
-                                        <button type="submit" class="btn btn-default right save">修改</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </li>
-                <li class="ui-state-default" data-index="3">
-                    <span>菜单2</span>
-                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-3" aria-expanded="false" aria-controls="collapseExampleIndex-3">
-                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
-                    </a>
-                    <div class="collapse" id="collapseExampleIndex-3">
-                        <div class="well">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger right delete">删除</button>
-                                        <button type="submit" class="btn btn-default right save">修改</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </li>
-                <li class="ui-state-default" data-index="4">
-                    <span>菜单3</span>
-                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-4" aria-expanded="false" aria-controls="collapseExampleIndex-4">
-                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
-                    </a>
-                    <div class="collapse" id="collapseExampleIndex-4">
-                        <div class="well">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger right delete">删除</button>
-                                        <button type="submit" class="btn btn-default right save">修改</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </li>
-                <li class="ui-state-default" data-index="5">
-                    <span>菜单4</span>
-                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-5" aria-expanded="false" aria-controls="collapseExampleIndex-5">
-                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
-                    </a>
-                    <div class="collapse" id="collapseExampleIndex-5">
-                        <div class="well">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
-                                    <div class="col-sm-9">
-                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger right delete">删除</button>
-                                        <button type="submit" class="btn btn-default right save">修改</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </li>
+
             </ul>
         </div>
         <div class="panel-footer">
-            <button type="submit" class="btn btn-primary right save-menu">保存</button>
+            <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading...">保存</button>
         </div>
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
+<div class="alert alert-dismissible fade out" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <p></p>
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-    function create_item(name,url,index) {
-        var li = $('<li class="ui-state-default" data-index="'+index+'"></li>')
+    function create_item(name,url,index,parent,depth) {
+
+        var li = $('<li class="ui-state-default" data-index="'+index+'" data-parent="'+parent+'" data-depth="'+depth+'"></li>')
+        li.css('marginLeft',depth * 30 + 'px')
         var itemName = $('<span>'+name+'</span>')
 
         var collapseID = 'item-index-'+index;
@@ -273,7 +117,6 @@
         var button = $('<div class="form-group"></div>');
         var buttonWrapper = $('<div class="col-sm-offset-2 col-sm-10"></div>');
         $('<button type="submit" class="btn btn-danger right delete">删除</button>').appendTo(buttonWrapper);
-        $('<button type="submit" class="btn btn-default right save" style="margin-right:10px">修改</button>').appendTo(buttonWrapper);
         buttonWrapper.appendTo(button);
 
         nameGroup.appendTo(form);
@@ -290,7 +133,38 @@
         return li
     }
 
+    function alertMessage(message){
+        $('.alert').addClass('in alert-success').removeClass('out');
+        $('.alert p').html(message);
+        setTimeout(function(){
+            $('.alert').removeClass('in').addClass('out');
+        },5000)
+    }
+
+    function create_menu(menu,depth){
+        var depth = depth == undefined ? 0 : depth;
+        menu.map(function(v,k){
+            var item = create_item(v.name,v.url,v.id,v.parent,depth)
+            item.appendTo('#sortable')
+            if(typeof v.child != 'undefined'){
+                create_menu(v.child,depth + 1)
+            }
+        })
+    }
+
     $(function () {
+        var menu = [
+            {'id':1,'name':'首页','url':'','parent':0},
+            {'id':2,'name':'菜单1','url':'','child':[
+                {'id':6,'name':'菜单6','url':'','parent':2,'child':[
+                    {'id':7,'name':'菜单7','url':'','parent':6},
+                ]}
+            ]},
+            {'id':3,'name':'菜单2','url':'','parent':0},
+            {'id':4,'name':'菜单3','url':'','parent':0},
+            {'id':5,'name':'菜单4','url':'','parent':0}
+        ]
+        create_menu(menu, 0)
         var sort = $("#sortable").sortable({
             revert     : true,
             containment: "document",
@@ -322,40 +196,48 @@
                     if (ui.position.left - ui.originalPosition.left > 30) {
                         var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
                         //console.log(offset);
+                        var depth = parseInt($(ui.item).attr('data-depth'));
+                        depth += 1;
+                        $(ui.item).attr('data-depth',depth)
+                        var parent = $(ui.item).prev("[data-depth='"+depth+"']").attr('data-parent')
+                        if(parent == undefined){
+                            parent = $(ui.item).prev('li').attr('data-index')
+                        }
+                        $(ui.item).attr('data-parent',parent);
                         $(ui.item).css('margin-left', offset + 'px')
                     } else if (ui.originalPosition.left - ui.position.left > 30) {
                         var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
                         $(ui.item).css('margin-left', offset + 'px')
-                        //console.log(1)
+                        var depth = parseInt($(ui.item).attr('data-depth'));
+                        depth -= 1
+                        $(ui.item).attr('data-depth',depth)
+                        if(depth == 0){
+                            parent = 0;
+                        }else{
+                            var parent = $(ui.item).prev("[data-depth='"+depth+"']").attr('data-parent')
+                        }
+                        $(ui.item).attr('data-parent',parent);
                     }
                 }
             }
         });
-        $('button.get').on('click', function () {
-            var list = $("#sortable li")
-            list.map(function(k){
-                console.log(list.eq(k).attr('id'))
-            })
-        })
-        $('button.save').on('click', function () {
-            $('#myModal').modal('show')
-            return false;
-        })
+
         $('button.add').on('click', function () {
-            var index = $('#sortable li').length + 1;
+            var index = $('#sortable li').length;
             var name = $('input[name="name"]').val();
             var url =  $('input[name="url"]').val();
             var item = create_item(name,url,index )
             item.appendTo('#sortable')
             return false;
         })
-        $('button.delete').on('click', function () {
-            var index = $('#sortable li').length + 1;
-            var name = $('input[name="name"]').val();
-            var url =  $('input[name="url"]').val();
-            var item = create_item(name,url,index )
-            item.appendTo('#sortable')
+        $(document).on('click','button.delete', function () {
+            $(this).parents('li').remove();
             return false;
+        })
+        $('button.save-menu').on('click',function(){
+            var $btn = $(this).button('loading')
+            alertMessage('修改成功')
+            $btn.button('reset')
         })
     });
 </script>
