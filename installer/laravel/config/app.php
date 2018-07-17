@@ -120,7 +120,7 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+    'log' => env('APP_LOG', 'daily'),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
@@ -181,6 +181,7 @@ return [
         fts\CacheResponse\CacheResponseServiceProvider::class,
         fts\UploadImage\UploadImageServiceProvider::class,
         fts\OAuth2\OAuthServiceProvider::class,
+        App\Providers\LogServiceProvider::class,
     ],
 
     /*

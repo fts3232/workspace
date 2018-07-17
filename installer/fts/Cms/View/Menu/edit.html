@@ -1,0 +1,362 @@
+<include file="Common:header" />
+<style>
+    #sortable { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px;margin-left:50px}
+    #sortable li{ margin: 5px 0px; padding: 5px 10px; width: 400px;user-select: none;line-height: 33px}
+    .ui-state-highlight{
+        background: #fff;
+        border:1px dashed #000;
+        height: 45px;
+    }
+    #sortable li>span{
+        font-size: 13px;
+        font-weight: 600;
+        color: #23282d;
+    }
+    #sortable li .glyphicon{
+        line-height: 33px;
+    }
+    #sortable .well{
+        margin-top:10px;
+        margin-bottom: 0;
+        height: 173px;
+    }
+    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+        border: 1px solid #d3d3d3;
+        background: none;
+        font-weight: normal;
+        color: #555555;
+    }
+    .modal-dialog{
+        margin-top:90px;
+    }
+    .panel-footer{
+        overflow: hidden;
+    }
+</style>
+<div class="table-responsive inject" style="margin: 70px auto;width:1024px">
+    <div class="panel panel-default" style="width:300px;float: left; margin-right: 10px;">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加菜单项</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputName" class="col-sm-3 control-label">菜单名</label>
+                    <div class="col-sm-9">
+                        <input type="text"  class="form-control" id="inputName" name="name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputUrl" class="col-sm-3 control-label">URL</label>
+                    <div class="col-sm-9">
+                        <input type="text"  class="form-control" id="inputUrl" name="url"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default right add">添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-default" style="width:700px;float: left;">
+        <div class="panel-heading">
+            <h3 class="panel-title">菜单</h3>
+        </div>
+        <div class="panel-body">
+            <ul id="sortable">
+                <li class="ui-state-default" data-index="1">
+                    <span>首页</span>
+                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-1" aria-expanded="false" aria-controls="collapseExampleIndex-1">
+                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
+                    </a>
+                    <div class="collapse" id="collapseExampleIndex-1">
+                        <div class="well">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-danger right delete">删除</button>
+                                        <button type="submit" class="btn btn-default right save" style="margin-right: 10px;">修改</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="ui-state-default" data-index="2">
+                    <span>菜单1</span>
+                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-2" aria-expanded="false" aria-controls="collapseExampleIndex-2">
+                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
+                    </a>
+                    <div class="collapse" id="collapseExampleIndex-2">
+                        <div class="well">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-danger right delete">删除</button>
+                                        <button type="submit" class="btn btn-default right save">修改</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="ui-state-default" data-index="3">
+                    <span>菜单2</span>
+                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-3" aria-expanded="false" aria-controls="collapseExampleIndex-3">
+                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
+                    </a>
+                    <div class="collapse" id="collapseExampleIndex-3">
+                        <div class="well">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-danger right delete">删除</button>
+                                        <button type="submit" class="btn btn-default right save">修改</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="ui-state-default" data-index="4">
+                    <span>菜单3</span>
+                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-4" aria-expanded="false" aria-controls="collapseExampleIndex-4">
+                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
+                    </a>
+                    <div class="collapse" id="collapseExampleIndex-4">
+                        <div class="well">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-danger right delete">删除</button>
+                                        <button type="submit" class="btn btn-default right save">修改</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="ui-state-default" data-index="5">
+                    <span>菜单4</span>
+                    <a role="button" data-toggle="collapse" href="#collapseExampleIndex-5" aria-expanded="false" aria-controls="collapseExampleIndex-5">
+                        <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span>
+                    </a>
+                    <div class="collapse" id="collapseExampleIndex-5">
+                        <div class="well">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputNameEdit" class="col-sm-3 control-label">菜单名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputNameEdit" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUrlEdit" class="col-sm-3 control-label">URL</label>
+                                    <div class="col-sm-9">
+                                        <input type="text"  class="form-control" id="inputUrlEdit" name="url"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-danger right delete">删除</button>
+                                        <button type="submit" class="btn btn-default right save">修改</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-primary right save-menu">保存</button>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    function create_item(name,url,index) {
+        var li = $('<li class="ui-state-default" data-index="'+index+'"></li>')
+        var itemName = $('<span>'+name+'</span>')
+
+        var collapseID = 'item-index-'+index;
+
+        var collapseButton = $('<a role="button" data-toggle="collapse" href="#'+collapseID+'" aria-expanded="false" aria-controls="'+collapseID+'"> <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span> </a>');
+
+        var collapse = $('<div class="collapse" id="'+collapseID+'"></div>')
+        var well = $('<div class="well"></div>')
+
+        var form = $('<form class="form-horizontal"></form>')
+        var nameGroup = $('<div class="form-group"></div>')
+        var nameLabel = $('<label for="input-name-edit-'+index+'" class="col-sm-3 control-label">菜单名</label>')
+        var nameInputWrapper = $('<div class="col-sm-9"></div>')
+        $('<input type="text"  class="form-control" id="input-name-edit-'+index+'" name="name" value="'+name+'"/>').appendTo(nameInputWrapper);
+        nameLabel.appendTo(nameGroup);
+        nameInputWrapper.appendTo(nameGroup);
+
+
+        var urlGroup = $('<div class="form-group"></div>')
+        var urlLabel = $('<label for="input-url-edit-'+index+'" class="col-sm-3 control-label">URL</label>');
+        var urlInputWrapper = $('<div class="col-sm-9"></div>')
+        $('<input type="text"  class="form-control" id="input-url-edit-'+index+'" name="url" value="'+url+'"/>').appendTo(urlInputWrapper);
+        urlLabel.appendTo(urlGroup);
+        urlInputWrapper.appendTo(urlGroup);
+
+        var button = $('<div class="form-group"></div>');
+        var buttonWrapper = $('<div class="col-sm-offset-2 col-sm-10"></div>');
+        $('<button type="submit" class="btn btn-danger right delete">删除</button>').appendTo(buttonWrapper);
+        $('<button type="submit" class="btn btn-default right save" style="margin-right:10px">修改</button>').appendTo(buttonWrapper);
+        buttonWrapper.appendTo(button);
+
+        nameGroup.appendTo(form);
+        urlGroup.appendTo(form);
+        button.appendTo(form);
+
+        form.appendTo(well);
+        well.appendTo(collapse);
+
+        itemName.appendTo(li);
+        collapseButton.appendTo(li);
+        collapse.appendTo(li);
+
+        return li
+    }
+
+    $(function () {
+        var sort = $("#sortable").sortable({
+            revert     : true,
+            containment: "document",
+            placeholder: "ui-state-highlight",
+            start      : function (event, ui) {
+                var ownLeft = parseInt($(ui.item).css('marginLeft'));
+                $('.ui-state-highlight').css('marginLeft', ownLeft);
+            },
+            sort       : function (event, ui) {
+                if ($(ui.item).prev('.ui-sortable-handle').length > 0) {
+                    var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
+                    var ownLeft = parseInt($(ui.item).css('marginLeft'));
+                    var maxLeft = parentLeft + 30;
+                    if (ui.position.left - ui.originalPosition.left > 30) {
+                        var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
+                        $('.ui-state-highlight').css('margin-left', offset + 'px')
+                    } else if (ui.originalPosition.left - ui.position.left > 30) {
+                        var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
+                        $('.ui-state-highlight').css('margin-left', offset + 'px')
+                    }
+                }
+            },
+            beforeStop : function (event, ui) {
+                if ($(ui.item).prev('.ui-sortable-handle').length > 0) {
+                    var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
+                    var ownLeft = parseInt($(ui.item).css('marginLeft'));
+                    var maxLeft = parentLeft + 30;
+                    //console.log(ownLeft)
+                    if (ui.position.left - ui.originalPosition.left > 30) {
+                        var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
+                        //console.log(offset);
+                        $(ui.item).css('margin-left', offset + 'px')
+                    } else if (ui.originalPosition.left - ui.position.left > 30) {
+                        var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
+                        $(ui.item).css('margin-left', offset + 'px')
+                        //console.log(1)
+                    }
+                }
+            }
+        });
+        $('button.get').on('click', function () {
+            var list = $("#sortable li")
+            list.map(function(k){
+                console.log(list.eq(k).attr('id'))
+            })
+        })
+        $('button.save').on('click', function () {
+            $('#myModal').modal('show')
+            return false;
+        })
+        $('button.add').on('click', function () {
+            var index = $('#sortable li').length + 1;
+            var name = $('input[name="name"]').val();
+            var url =  $('input[name="url"]').val();
+            var item = create_item(name,url,index )
+            item.appendTo('#sortable')
+            return false;
+        })
+        $('button.delete').on('click', function () {
+            var index = $('#sortable li').length + 1;
+            var name = $('input[name="name"]').val();
+            var url =  $('input[name="url"]').val();
+            var item = create_item(name,url,index )
+            item.appendTo('#sortable')
+            return false;
+        })
+    });
+</script>
+<include file="Common:footer" />

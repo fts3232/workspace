@@ -1,0 +1,63 @@
+<include file="Common:header" />
+<form action="{:U('batch')}" method="post" class="form-inline" style="margin-top:60px">
+    <div class="data auto">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>菜单名</th>
+                    <th nowrap>创建时间</th>
+                    <th nowrap>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>菜单1</td>
+                    <td>2018-09-03 10:10:10</td>
+                    <td>
+                        <a href="{:U('edit',array('id'=>1))}"><b>编辑</b></a>
+                        <a href="{:U('delete',array('id'=>1))}"><b>删除</b></a>
+                    </td>
+                </tr>
+            </tbody>
+        <table>
+    </div>
+    <div class="page">{$page}</div>
+</form>
+<script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#day_inject').datetimepicker({
+            format    : 'yyyy-mm-dd',
+            weekStart : 1,
+            autoclose : true,
+            startView : 2,
+            minView   : 2,
+            forceParse: false,
+            language  : 'zh-CN'
+        });
+
+        $('#count_inject').datetimepicker({
+            format    : 'yyyy-mm',
+            weekStart : 1,
+            autoclose : true,
+            startView : 3,
+            minView   : 3,
+            forceParse: false,
+            language  : 'zh-CN'
+        });
+
+        $('#year').datetimepicker({
+            format    : 'yyyy',
+            weekStart : 1,
+            autoclose : true,
+            startView : 4,
+            minView   : 4,
+            forceParse: false,
+            language  : 'zh-CN'
+        });
+    })
+</script>
+<include file="Common:footer" />

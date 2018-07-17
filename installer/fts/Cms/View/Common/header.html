@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title></title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/datetimepicker.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/dropdown.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="nav" style="margin:0 auto;">
+            <div class="left" style="margin:10px 0 0 10px;">
+                <div class="btn-group">
+                    <div class="btn btn-default dropdown-toggle" data-toggle="dropdown" <if condition="($Think.const.CONTROLLER_NAME eq 'Ib') OR ($Think.const.CONTROLLER_NAME eq 'Member')">style="background:#dff0d8;font-weight:700;"</if>>
+                        <if condition="$Think.const.CONTROLLER_NAME eq 'Ib'">
+                            Ib中心
+                        <elseif condition="$Think.const.CONTROLLER_NAME eq 'Member'" />
+                            修改密码
+                        <else />
+                            选择类型
+                        </if>
+                        &nbsp;&nbsp;<span class="caret"></span>
+                     </div>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="{:U('User/index')}" class="<if condition="$Think.const.CONTROLLER_NAME eq 'User'">bj</if>">真实账户</a></li>
+                        <if condition="(authcheck('Home/Ib/index')) OR (authcheck('Home/IbRebate/index')) OR (authcheck('Home/IbGivegold/index')) OR (authcheck('Home/IbInject/index')) OR (authcheck('Home/IbWithdraw/index'))">
+                        <li><a href="
+                        <if condition="authcheck('Home/Ib/index')">
+                        {:U('Home/Ib/index')}
+                        <elseif condition="authcheck('Home/IbRebate/index')"/>
+                        {:U('Home/IbRebate/index')}
+                        <elseif condition="authcheck('Home/IbGivegold/index')"/>
+                        {:U('Home/IbGivegold/index')}
+                        <elseif condition="authcheck('Home/IbInject/index')"/>
+                        {:U('Home/IbInject/index')}
+                        <elseif condition="authcheck('Home/IbWithdraw/index')"/>
+                        {:U('Home/IbWithdraw/index')}
+                        </if>
+                        ">IB中心</a></li>
+                        </if>
+
+
+                        <if condition="authcheck('Admin/Index/index')">
+                            <li><a href="{:U('Admin/Index/index')}">管理中心</a></li>
+                        </if>
+                        <if condition="authcheck('Home/Wx/index') OR authcheck('Home/Handan/index')">
+                            <li class="toggle" style="position: relative;"><a>微信喊单</a>
+                                <ul class="dropdown-menu" style="top: -1px;;left: 159px;">
+                                    <if condition="authcheck('Home/Wx/index')">
+                                        <li><a href="{:U('Home/Wx/index')}">微信用户</a></li>
+                                    </if>
+                                    <if condition="authcheck('Home/Handan/index')">
+                                        <li><a href="{:U('Home/Handan/index')}">喊单管理</a></li>
+                                    </if>
+                                </ul>
+                            </li>
+                        </if>
+                        <li class="toggle" style="position: relative;"><a>客服功能</a>
+                            <ul class="dropdown-menu" style="top: -1px;;left: 159px;">
+                                <li><a href="{:U('Home/Exchange/index')}">每日汇率</a></li>
+                                <if condition="authcheck('Home/Calendar/index')">
+                                    <li><a href="{:U('Home/calendar/index')}">市场日历</a></li>
+                                </if>
+                                <if condition="authcheck('Admin/Index/index')">
+                                    <li><a href="{:U('Datesetinfo/index')}">休市时间设置</a></li>
+                                </if>
+                                <if condition="authcheck('Home/UserGroup/index')">
+                                    <li><a href="{:U('Home/UserGroup/index')}">客户分组设置</a></li>
+                                </if>
+                                <if condition="authcheck('Home/Logininfo/index')">
+                                    <li><a href="{:U('Logininfo/index')}">登录记录</a></li>
+                                </if>
+                                <if condition="authcheck('Home/GiveGoldProject/index')">
+                                    <li><a href="{:U('GiveGoldProject/index')}">赠金项目</a></li>
+                                </if>
+                                <if condition="authcheck('Home/Notice/index')">
+                                    <li><a href="{:U('Notice/index')}">弹窗公告设置</a></li>
+                                </if>
+                                <if condition="authcheck('Home/User/banListIndex')">
+                                    <li><a href="{:U('User/banListIndex')}">黑名单管理</a></li>
+                                </if>
+                            </ul>
+                        </li>
+                          <li class="toggle" style="position: relative;"><a>注资管理</a>
+                              <ul class="dropdown-menu" style="top: -1px;;left: 159px;">
+                                  <if condition="authcheck('Home/Inject/setAutoDeposit')">
+                                      <li><a href="{:U('Inject/setAutoDeposit')}">自动入金</a></li>
+                                  </if>
+                                  <if condition="authcheck('Home/Inject/setQuota')">
+                                      <li><a href="{:U('Inject/setQuota')}">支付配额</a></li>
+                                  </if>
+                                  <if condition="authcheck('Home/Inject/setSettings')">
+                                      <li><a href="{:U('Inject/setSettings')}">支付渠道</a></li>
+                                  </if>
+                                  <if condition="authcheck('Home/Inject/privateBanks')">
+                                      <li><a href="{:U('Inject/privateBanks')}">线下汇款</a></li>
+                                  </if>
+                              </ul>
+                          </li>
+                        <li class="toggle" style="position: relative;"><a>推广功能</a>
+                            <ul class="dropdown-menu" style="top: -1px;;left: 159px;">
+                                <if condition="authcheck('Home/Common/exportKeyWord')">
+                                    <li><a href="{:U('Common/exportKeyWord')}">导出KeyWord</a></li>
+                                </if>
+                                <if condition="authcheck('Home/Count/index')">
+                                    <li><a href="{:U('Home/Count/index')}">来访统计</a></li>
+                                </if>
+
+                                <if condition="authcheck('Home/Channel/index')">
+                                    <li><a href="{:U('Home/Channel/index')}">Channel管理</a></li>
+                                </if>
+
+                                <if condition="authcheck('Home/Promotion/index')">
+                                    <li><a href="{:U('Home/Promotion/index')}">Refer管理</a></li>
+                                </if>
+
+                            </ul>
+                        </li>
+                        <li class="toggle" style="position: relative;"><a>积分商城</a>
+                            <ul class="dropdown-menu" style="top: -1px;;left: 159px;">
+                                <if condition="authcheck('Home/ShopProduct/index')">
+                                    <li><a href="{:U('Home/ShopProduct/index')}">积分兑换商品</a></li>
+                                </if>
+                                <if condition="authcheck('Home/ShopOrder/index')">
+                                    <li><a href="{:U('Home/ShopOrder/index')}">积分兑换订单</a></li>
+                                </if>
+                                <if condition="authcheck('Home/ShopOrderDetail/index')">
+                                    <li><a href="{:U('Home/ShopOrderDetail/index')}">积分兑换明细</a></li>
+                                </if>
+                                <if condition="authcheck('Home/MebPoint/index')">
+                                    <li><a href="{:U('Home/MebPoint/index')}">会员积分表</a></li>
+                                </if>
+                                <if condition="authcheck('Home/MebCoupons/index')">
+                                    <li><a href="{:U('Home/MebCoupons/index')}">会员抵用券</a></li>
+                                </if>
+                                <if condition="authcheck('Home/MebCouponsType/index')">
+                                    <li><a href="{:U('Home/MebCouponsType/index')}">抵用券类型</a></li>
+                                </if>
+                                <if condition="authcheck('Home/ArticleRecommended/index')">
+                                    <li><a href="{:U('Home/ArticleRecommended/index')}">文章推荐区</a></li>
+                                </if>
+                            </ul>
+                        </li>
+
+                        <li><a href="{:U('Member/setpwd')}">修改密码</a></li>
+                        <li><a href="{:U('Index/logout')}">退出登录</a></li>
+                      </ul>
+                </div>
+            </div>
+            <div style="height:36px;color:#fff;font-size:16px;font-weight:500;width:70px;position:relative;top:0px;left:320px;">
+                <span style="position:absolute;top:15px;left:0;">{$Think.session.username}</span>
+            </div>
+
+            <div style="font-weight:500;color:#fff;font-size: 12px;position:relative;left:417px;width:400px;
+                        <if condition='$msg[0] AND $msg[1] AND $msg[2] AND $msg[3]'>top:-35px;
+                                    <elseif condition='($msg[0] AND $msg[1]) OR ($msg[2] AND $msg[3])' />top:-35px;
+                                    <else />top:-25px;</if>">
+                <div style="    position: absolute;top: 9px;">
+                    <div style="text-align:left;">
+                        今日汇率: 美元 {$excinfo[0]['exchange_usd']} 港元 {$excinfo[0]['exchange_hkd']} 美元兑港币 {$excinfo[0]['usd_hkd']}
+                    </div>
+                    <div style="text-align:left;">
+                        <if condition="($msg[0] AND $msg[1]) OR ($msg[2] AND $msg[3])">
+                            下次休市:
+                            <span style="display: inline-block;">
+                                <if condition="$msg[0] AND $msg[1]">{$msg[0]|strtotime|date="m-d(星期w) H:i",###} 至 {$msg[1]|strtotime|date="m-d(星期w) H:i",###}</if>
+                                <if condition="$msg[2] AND $msg[3]"><br/>{$msg[2]|strtotime|date="m-d(星期w) H:i",###} 至 {$msg[3]|strtotime|date="m-d(星期w) H:i",###}</if>
+                            </span>
+                        </if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
