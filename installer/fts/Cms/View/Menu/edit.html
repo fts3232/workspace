@@ -1,21 +1,23 @@
 <include file="Common:header" />
 <style>
-    #sortable { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px;margin-left:50px}
-    #sortable li{ margin: 5px 0px; padding: 5px 10px; width: 400px;user-select: none;line-height: 33px}
+    .sortable { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px;margin-left:50px}
+    .sortable .sortable{margin-left:0px}
+    .sortable li{width: 400px;}
+    .sortable li .ui-state-default{ margin: 5px 0px; padding: 5px 10px; user-select: none;line-height: 33px}
     .ui-state-highlight{
         background: #fff;
         border:1px dashed #000;
         height: 45px;
     }
-    #sortable li>span{
+    .sortable li>span{
         font-size: 13px;
         font-weight: 600;
         color: #23282d;
     }
-    #sortable li .glyphicon{
+    .sortable li .glyphicon{
         line-height: 33px;
     }
-    #sortable .well{
+    .sortable .well{
         margin-top:10px;
         margin-bottom: 0;
         height: 173px;
@@ -70,47 +72,57 @@
             <h3 class="panel-title">菜单</h3>
         </div>
         <div class="panel-body">
-            <ul id="sortable">
+            <ul class="sortable">
 
             </ul>
         </div>
         <div class="panel-footer">
-            <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading...">保存</button>
+            <a href="{:U('index')}"><button type="submit" class="btn btn-default right" >返回</button></a>
+            <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">保存</button>
         </div>
     </div>
 </div>
-<div class="alert alert-dismissible fade out" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+<div class="alert alert-dismissible fade out" role="alert" style="    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 100%;
+    z-index: 9999999;">
+    <button type="button" class="close"><span aria-hidden="true">×</span></button>
     <p></p>
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-    function create_item(name,url,index,parent,depth) {
-
-        var li = $('<li class="ui-state-default" data-index="'+index+'" data-parent="'+parent+'" data-depth="'+depth+'"></li>')
+    function create_item(data,depth) {
+        var li = $('<li data-index="'+data.index+'" data-id="'+data.ITEM_ID+'" data-parent="'+data.PARENT_ID+'" data-depth="'+depth+'" data-order="'+data.ITEM_ORDER+'"></li>')
         li.css('marginLeft',depth * 30 + 'px')
-        var itemName = $('<span>'+name+'</span>')
 
-        var collapseID = 'item-index-'+index;
+        var div = $('<div class="ui-state-default"></div>');
+        var itemName = $('<span>'+data.ITEM_NAME+'</span>')
+
+        var collapseID = 'item-index-'+data.index;
 
         var collapseButton = $('<a role="button" data-toggle="collapse" href="#'+collapseID+'" aria-expanded="false" aria-controls="'+collapseID+'"> <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span> </a>');
+
+        itemName.appendTo(div);
+        collapseButton.appendTo(div);
+
 
         var collapse = $('<div class="collapse" id="'+collapseID+'"></div>')
         var well = $('<div class="well"></div>')
 
         var form = $('<form class="form-horizontal"></form>')
         var nameGroup = $('<div class="form-group"></div>')
-        var nameLabel = $('<label for="input-name-edit-'+index+'" class="col-sm-3 control-label">菜单名</label>')
+        var nameLabel = $('<label for="input-name-edit-'+data.index+'" class="col-sm-3 control-label">菜单名</label>')
         var nameInputWrapper = $('<div class="col-sm-9"></div>')
-        $('<input type="text"  class="form-control" id="input-name-edit-'+index+'" name="name" value="'+name+'"/>').appendTo(nameInputWrapper);
+        $('<input type="text"  class="form-control" id="input-name-edit-'+data.index+'" name="name" value="'+data.ITEM_NAME+'"/>').appendTo(nameInputWrapper);
         nameLabel.appendTo(nameGroup);
         nameInputWrapper.appendTo(nameGroup);
 
 
         var urlGroup = $('<div class="form-group"></div>')
-        var urlLabel = $('<label for="input-url-edit-'+index+'" class="col-sm-3 control-label">URL</label>');
+        var urlLabel = $('<label for="input-url-edit-'+data.index+'" class="col-sm-3 control-label">URL</label>');
         var urlInputWrapper = $('<div class="col-sm-9"></div>')
-        $('<input type="text"  class="form-control" id="input-url-edit-'+index+'" name="url" value="'+url+'"/>').appendTo(urlInputWrapper);
+        $('<input type="text"  class="form-control" id="input-url-edit-'+data.index+'" name="url" value="'+data.URL+'"/>').appendTo(urlInputWrapper);
         urlLabel.appendTo(urlGroup);
         urlInputWrapper.appendTo(urlGroup);
 
@@ -126,55 +138,114 @@
         form.appendTo(well);
         well.appendTo(collapse);
 
-        itemName.appendTo(li);
-        collapseButton.appendTo(li);
+        div.appendTo(li);
         collapse.appendTo(li);
+
+        var clone = $('<ul></ul>');
+        clone.appendTo(li);
 
         return li
     }
 
+    var timer = null;
     function alertMessage(message){
+        clearTimeout(timer);
         $('.alert').addClass('in alert-success').removeClass('out');
         $('.alert p').html(message);
-        setTimeout(function(){
+        timer = setTimeout(function(){
             $('.alert').removeClass('in').addClass('out');
         },5000)
     }
 
+    var i = 0;
     function create_menu(menu,depth){
         var depth = depth == undefined ? 0 : depth;
         menu.map(function(v,k){
-            var item = create_item(v.name,v.url,v.id,v.parent,depth)
-            item.appendTo('#sortable')
-            if(typeof v.child != 'undefined'){
-                create_menu(v.child,depth + 1)
+            v['index'] = i;
+            i++;
+            var item = create_item(v,depth)
+            item.appendTo($('.sortable'))
+            if(v.CHILD != ''){
+                create_menu(v.CHILD,depth + 1)
+            }
+        })
+    }
+
+    function clone_item(item,child){
+        var height = item.height();
+        child.map(function(i){
+            item.find('ul').eq(0).append(child.eq(i).clone())
+            var childID = child.eq(i).attr('data-id')
+            height += child.eq(i).height()
+            child.eq(i).remove()
+
+            var temp = item.parent('ul').find('[data-parent="'+childID+'"]');
+            clone_item(item, temp)
+        })
+
+        $('.ui-state-highlight').css('height',height + 'px')
+    }
+
+    function calculate_depth(item,direction){
+        var parentLeft = parseInt(item.prev('.ui-sortable-handle').css('marginLeft'));
+        if(isNaN(parentLeft)){
+            parentLeft = parseInt(item.parents('li').css('marginLeft'));
+        }
+        var ownLeft = parseInt(item.css('marginLeft'));
+        var maxLeft = parentLeft + 30;
+        if(direction == 'right'){
+            var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
+        }else {
+            var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
+        }
+        var depth = offset / 30;
+        item.attr('data-depth',depth)
+        item.css('margin-left', offset + 'px')
+        if(offset != ownLeft){
+            var child = item.find('ul').eq(0).find('li')
+            child.map(function(i){
+                calculate_depth(child.eq(i),direction)
+            })
+        }
+    }
+
+    function reset_order(){
+        var root = $('.sortable')
+        var list = root.find('li');
+        //排序
+        var checkParent = [];
+        list.map(function (i, v) {
+            var parent = list.eq(i).attr('data-parent')
+            if (checkParent.indexOf(parent) == -1) {
+                var siblings = root.find('[data-parent="' + parent + '"]')
+                siblings.map(function (i, v) {
+                    siblings.eq(i).attr('data-order', i)
+                })
+                checkParent.push[parent];
             }
         })
     }
 
     $(function () {
-        var menu = [
-            {'id':1,'name':'首页','url':'','parent':0},
-            {'id':2,'name':'菜单1','url':'','child':[
-                {'id':6,'name':'菜单6','url':'','parent':2,'child':[
-                    {'id':7,'name':'菜单7','url':'','parent':6},
-                ]}
-            ]},
-            {'id':3,'name':'菜单2','url':'','parent':0},
-            {'id':4,'name':'菜单3','url':'','parent':0},
-            {'id':5,'name':'菜单4','url':'','parent':0}
-        ]
-        create_menu(menu, 0)
-        var sort = $("#sortable").sortable({
+        var menu = {$list};
+        if(menu != null){
+            create_menu(menu, 0)
+        }
+        var sort = $(".sortable").sortable({
             revert     : true,
             containment: "document",
             placeholder: "ui-state-highlight",
             start      : function (event, ui) {
+                var height = $(ui.item).height();
                 var ownLeft = parseInt($(ui.item).css('marginLeft'));
+                var id = $(ui.item).attr('data-id')
                 $('.ui-state-highlight').css('marginLeft', ownLeft);
+                var child = $(ui.item).parent('ul').find('[data-parent="'+id+'"]');
+                clone_item($(ui.item),child)
+                $(".sortable").sortable( "refreshPositions" );
             },
             sort       : function (event, ui) {
-                if ($(ui.item).prev('.ui-sortable-handle').length > 0) {
+                if ($(ui.item).prev('.ui-sortable-handle').length > 0 || $(ui.item).parents('.child').length > 0) {
                     var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
                     var ownLeft = parseInt($(ui.item).css('marginLeft'));
                     var maxLeft = parentLeft + 30;
@@ -187,57 +258,104 @@
                     }
                 }
             },
+            stop: function (event, ui) {
+                var root = $(ui.item).parent('ul')
+                var list = root.find('li');
+                //parent
+                list.map(function (i, v) {
+                    var depth = list.eq(i).attr('data-depth')
+                    if(depth == 0){
+                        list.eq(i).attr('data-parent',0)
+                    } else {
+                        depth = depth - 1
+                        var parent = list.eq(i).prevAll('[data-depth="'+depth+'"]').attr('data-id')
+                        list.eq(i).attr('data-parent',parent)
+                    }
+                })
+                //排序
+                reset_order()
+
+                //释放child
+                list = $(ui.item).find('ul li')
+                var after = $(ui.item)
+                list.map(function(i){
+                    after.after(list.eq(i));
+                    after = list.eq(i)
+                })
+            },
             beforeStop : function (event, ui) {
-                if ($(ui.item).prev('.ui-sortable-handle').length > 0) {
+                if ($(ui.item).prev('.ui-sortable-handle').length > 0  || $(ui.item).parents('.child').length > 0) {
                     var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
                     var ownLeft = parseInt($(ui.item).css('marginLeft'));
                     var maxLeft = parentLeft + 30;
-                    //console.log(ownLeft)
+                    var child = $(ui.item).find('ul').eq(0).find('li')
                     if (ui.position.left - ui.originalPosition.left > 30) {
-                        var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
-                        //console.log(offset);
-                        var depth = parseInt($(ui.item).attr('data-depth'));
-                        depth += 1;
-                        $(ui.item).attr('data-depth',depth)
-                        var parent = $(ui.item).prev("[data-depth='"+depth+"']").attr('data-parent')
-                        if(parent == undefined){
-                            parent = $(ui.item).prev('li').attr('data-index')
-                        }
-                        $(ui.item).attr('data-parent',parent);
-                        $(ui.item).css('margin-left', offset + 'px')
+                        calculate_depth($(ui.item),'right')
                     } else if (ui.originalPosition.left - ui.position.left > 30) {
-                        var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
-                        $(ui.item).css('margin-left', offset + 'px')
-                        var depth = parseInt($(ui.item).attr('data-depth'));
-                        depth -= 1
-                        $(ui.item).attr('data-depth',depth)
-                        if(depth == 0){
-                            parent = 0;
-                        }else{
-                            var parent = $(ui.item).prev("[data-depth='"+depth+"']").attr('data-parent')
-                        }
-                        $(ui.item).attr('data-parent',parent);
+                        calculate_depth($(ui.item),'left')
                     }
                 }
             }
         });
 
         $('button.add').on('click', function () {
-            var index = $('#sortable li').length;
+            var index = $('.sortable li').length + 1;
             var name = $('input[name="name"]').val();
             var url =  $('input[name="url"]').val();
-            var item = create_item(name,url,index )
-            item.appendTo('#sortable')
+            var item = create_item({'ITEM_NAME':name,'URL':url,'index':index,'ITEM_ORDER':0,'PARENT_ID':0,'ITEM_ID':0},0)
+            item.appendTo('.sortable')
+
+            var root = $('.sortable');
+            var list = root.find('li');
+            //排序
+            reset_order()
+
             return false;
         })
         $(document).on('click','button.delete', function () {
             $(this).parents('li').remove();
+            reset_order()
             return false;
         })
         $('button.save-menu').on('click',function(){
             var $btn = $(this).button('loading')
-            alertMessage('修改成功')
-            $btn.button('reset')
+            var data = [];
+            var add = [];
+            $('.sortable li').map(function(v){
+                var arr = {
+                    'ITEM_ID':$('.sortable li').eq(v).attr('data-id'),
+                    'PARENT_ID':$('.sortable li').eq(v).attr('data-parent'),
+                    'ITEM_NAME':$('.sortable li').eq(v).find('[name="name"]').val(),
+                    'URL':$('.sortable li').eq(v).find('[name="url"]').val(),
+                    'ITEM_ORDER':$('.sortable li').eq(v).attr('data-order'),
+                }
+                if (arr['ITEM_ID'] == 0) {
+                    add.push(arr)
+                } else {
+                    data.push(arr)
+                }
+            })
+            $.ajax({
+                'url':"{:U('update')}",
+                'type':'post',
+                'data':{
+                    'list':data,
+                    'add':add,
+                    'MENU_ID':{$menuID}
+                },
+                'success':function(){
+                    alertMessage('修改成功')
+                },
+                'complete':function(){
+                    $btn.button('reset')
+                }
+            })
+
+
+        })
+        $('.alert .close').on('click', function () {
+            // do something…
+            $('.alert').removeClass('in').addClass('out');
         })
     });
 </script>

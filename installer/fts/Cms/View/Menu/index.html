@@ -1,74 +1,122 @@
 <include file="Common:header" />
-<button  class="btn btn-primary"  data-toggle="modal" data-target="#myModal">添加菜单</button>
-<form action="{:U('batch')}" method="post" class="form-inline" style="margin-top:60px">
-    <div class="data auto">
-        <table class="table table-bordered">
-            <thead>
+<div style="margin-top:70px;margin-bottom: 20px;" class="text-right auto">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="menu">菜单名</label>
+            <input type="text" class="form-control" id="menu" placeholder="">
+        </div>
+        <button  class="btn btn-primary add">添加菜单</button>
+    </form>
+</div>
+<div class="data auto">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>菜单名</th>
+                <th nowrap>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <foreach name="list" item="v" key="k">
                 <tr>
-                    <th>ID</th>
-                    <th>菜单名</th>
-                    <th nowrap>创建时间</th>
-                    <th nowrap>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>菜单1</td>
-                    <td>2018-09-03 10:10:10</td>
+                    <td>{$v.MENU_ID}</td>
+                    <td>{$v.MENU_NAME}</td>
                     <td>
-                        <a href="{:U('edit',array('id'=>1))}"><b>编辑</b></a>
-                        <a href="{:U('delete',array('id'=>1))}"><b>删除</b></a>
+                        <a href="{:U('edit',array('id'=>$v['MENU_ID']))}"><button class="btn btn-primary"><b>编辑</b></button></a>
+                        <button class="btn btn-danger delete" menu-id="{$v['MENU_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
-            </tbody>
-        <table>
-    </div>
-    <div class="page">{$page}</div>
-</form>
+            </foreach>
+        </tbody>
+    <table>
+</div>
+<div class="page">{$page}</div>
+<div class="alert alert-dismissible fade out" role="alert" style="    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 100%;
+    z-index: 9999999;">
+    <button type="button" class="close"><span aria-hidden="true">×</span></button>
+    <p></p>
+</div>
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="margin-top:90px">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">添加菜单</h4>
+                <h4 class="modal-title" id="myModalLabel">删除</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label for="inputName" class="col-sm-3 control-label">菜单名</label>
-                        <div class="col-sm-9">
-                            <input type="text"  class="form-control" id="inputName" name="name"/>
-                        </div>
-                    </div>
-                </form>
+                是否确认删除该菜单？
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary add" data-loading-text="Loading...">添加</button>
+                <button type="button" class="btn btn-danger delete-confirm" data-loading-text="Loading...">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">取消</button>
             </div>
         </div>
     </div>
 </div>
-<div class="alert alert-dismissible fade out" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-    <p></p>
-</div>
 <script>
+    var deleteIndex = 0;
+    var timer = null;
     function alertMessage(message){
         $('.alert').addClass('in alert-success').removeClass('out');
         $('.alert p').html(message);
-        setTimeout(function(){
+        timer = setTimeout(function(){
             $('.alert').removeClass('in').addClass('out');
         },5000)
     }
-    $(document).ready(function(){
-        $('button.add').on('click',function () {
-            $('#myModal').modal('hide')
-            var $btn = $(this).button('loading')
-            alertMessage('修改成功')
-            $btn.button('reset')
-            return false;
+    $('.alert .close').on('click', function () {
+        // do something…
+        $('.alert').removeClass('in').addClass('out');
+    })
+    $('button.add').on('click',function () {
+        var name = $('#menu').val();
+        var $btn = $(this).button('loading')
+        $.ajax({
+            'url':"{:U('addMenu')}",
+            'type':'post',
+            'data':{
+                'name':name
+            },
+            'success':function(data){
+                alertMessage('添加成功')
+                var url = data.url;
+                var tr = $('<tr></tr>');
+                var td = $('<td>'+data.id+'</td><td>'+name+'</td><td><a href="'+url+'"><button class="btn btn-primary"><b>编辑</b></button></a> <button class="btn btn-danger delete" menu-id="'+data.id+'"><b>删除</b></button></td>');
+                td.appendTo(tr);
+                tr.appendTo($('tbody'));
+            },
+            'complete':function(){
+                $btn.button('reset')
+            }
+        })
+        return false;
+    })
+    $(document).on('click','button.delete',function(){
+        $('#myModal').modal('show')
+        deleteIndex = $(this).parents('tr').index()
+        $('.delete-confirm').attr('menu-id',$(this).attr('menu-id'));
+        return false;
+    })
+    $('.delete-confirm').on('click',function(){
+        var $btn = $(this).button('loading')
+        $.ajax({
+            'url':"{:U('deleteMenu')}",
+            'type':'post',
+            'data':{
+                'MENU_ID':$(this).attr('menu-id')
+            },
+            'success':function(data){
+                alertMessage('删除成功')
+                $('#myModal').modal('hide')
+                $('.data tbody tr').eq(deleteIndex).remove();
+            },
+            'complete':function(){
+                $btn.button('reset')
+            }
         })
     })
 </script>
