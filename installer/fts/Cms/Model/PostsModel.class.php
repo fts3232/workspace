@@ -4,13 +4,13 @@ namespace Cms\Model;
 
 use Think\Model;
 
-class MenuModel extends Model
+class PostsModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
     public function get()
     {
-        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID ASC')->select();
+        $result = $this->field('POST_ID,TITLE,CONTENT')->order('PUBLISHED_TIME DESC')->limit(20)->select();
         return $result ? $result : array();
     }
 

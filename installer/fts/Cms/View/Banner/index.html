@@ -20,12 +20,12 @@
         <tbody>
             <foreach name="list" item="v" key="k">
                 <tr>
-                    <td>{$v.MENU_ID}</td>
-                    <td>{$v.MENU_NAME}</td>
+                    <td>{$v.BANNER_ID}</td>
+                    <td>{$v.BANNER_NAME}</td>
                     <td>
-                        <a href="{:U('showItem',array('id'=>$v['MENU_ID']))}"><button class="btn btn-default"><b>查看</b></button></a>
-                        <button class="btn btn-primary edit" menu-id="{$v['MENU_ID']}"><b>修改</b></button>
-                        <button class="btn btn-danger delete" menu-id="{$v['MENU_ID']}"><b>删除</b></button>
+                        <a href="{:U('showItem',array('id'=>$v['BANNER_ID']))}"><button class="btn btn-default"><b>查看</b></button></a>
+                        <button class="btn btn-primary edit" menu-id="{$v['BANNER_ID']}"><b>修改</b></button>
+                        <button class="btn btn-danger delete" menu-id="{$v['BANNER_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>
@@ -46,7 +46,7 @@
                 <h4 class="modal-title" id="deleteModalLabel">删除</h4>
             </div>
             <div class="modal-body">
-                是否确认删除该菜单？
+                是否确认删除该banner？
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger delete-confirm" data-loading-text="Loading...">删除</button>
@@ -88,7 +88,7 @@
             }
             var $btn = $(this).button('loading')
             $.ajax({
-                'url'     : "{:U('addMenu')}",
+                'url'     : "{:U('addBanner')}",
                 'type'    : 'post',
                 'data'    : {
                     'name': name
@@ -132,7 +132,7 @@
             }
             var _this = $(this);
             $.ajax({
-                'url'     : "{:U('editMenu')}",
+                'url'     : "{:U('editBanner')}",
                 'type'    : 'post',
                 'data'    : {
                     'id': _this.attr('menu-id'),
@@ -166,7 +166,7 @@
             var $btn = $(this).button('loading')
             var _this = $(this);
             $.ajax({
-                'url'     : "{:U('deleteMenu')}",
+                'url'     : "{:U('deleteBanner')}",
                 'type'    : 'post',
                 'data'    : {
                     'id': _this.attr('menu-id')

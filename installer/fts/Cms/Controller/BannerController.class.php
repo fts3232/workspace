@@ -1,70 +1,152 @@
 <?php
+
 namespace Cms\Controller;
+
 use Think\Controller;
 
-class MenuController extends Controller {
-    //查
-    function index(){
-        $count=M('Calendar','','DB_CONFIG1')->count();
-        $Page = new \Think\Page($count,10);
-        $show = $Page->show();
-        $this->list = M('Calendar','','DB_CONFIG1')->order('created_at desc,id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        $this->assign('page',$show);
+class BannerController extends Controller
+{
+    public function index()
+    {
+        $model = D('Banner');
+        $list = $model->get();
+        $this->assign('list', $list);
         $this->display();
     }
-    //搜索
-    function search(){
-        $count=M('Calendar','','DB_CONFIG1')->count();
-        $Page = new \Think\Page($count,10);
-        $show = $Page->show();
-        $where=array(
-            'title'=>array('like','%'.I('field').'%')
-        );
-        $this->list = M('Calendar','','DB_CONFIG1')->where($where)->order('created_at desc,id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        $this->assign('page',$show);
-        $this->display('index');
-    }
-    //增
-    function add(){
-        if(IS_POST){
-            $date=date('Y-m-d H:i:s',time());
-            $_POST['post']['created_at']=$date;
-            $result=M('Calendar','','DB_CONFIG1')->add(I('post.post'));
-            if($result){
-                $this->success('添加成功',U('index'));
+
+    public function addBanner()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '添加成功');
+            try {
+                $name = I('post.name');
+                $model = D('Banner');
+                $id = $model->addBanner($name);
+                if (!$id) {
+                    throw new \Exception('添加失败', 100);
+                }
+                $return['id'] = $id;
+                $return['url'] = U('edit', array('id' => $id));
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
             }
-            else{
-                $this->error('添加失败'.M('Calendar','','DB_CONFIG1')->getLastSql());
+            $this->ajaxReturn($return);
+        }
+    }
+
+    public function editBanner()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '修改成功');
+            try {
+                $name = I('post.name');
+                $id = I('post.id', false, 'int');
+                $model = D('Banner');
+                $result = $model->updateBanner($id, $name);
+                if (!$result) {
+                    throw new \Exception('修改失败', 100);
+                }
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
             }
-            
-        }
-        else{
-            $this->display();
+            $this->ajaxReturn($return);
         }
     }
-    //改
-    function edit(){
-        if(IS_POST){
-            M('Calendar','','DB_CONFIG1')->save(I('post.post'));
-            $this->success('修改成功',U('index'));
-        }
-        else{
-            $result= M('Calendar','','DB_CONFIG1')->where(array('id'=>I('id')))->find();
-            $this->assign('result',$result);
-            $this->display();
+
+    public function deleteBanner()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '删除成功');
+            try {
+                $id = I('post.id', false, 'int');
+                $model = D('Banner');
+                $result = $model->deleteBanner($id);
+                if (!$result) {
+                    throw new \Exception('删除失败', 100);
+                }
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
         }
     }
-    //删
-    function delete(){
-        header('Content-type:application/json');
-        $result=M('Calendar','','DB_CONFIG1')->delete(I('id'));
-        if($result){
-            echo json_encode(array('status'=>0));
+
+    /**
+     * 显示菜单项
+     */
+    public function showItem()
+    {
+        $model = D('BannerItem');
+        $id = I('get.id', false, 'int');
+        $items = $model->getItem($id);
+        $this->assign('items', $items);
+        $this->assign('bannerID', $id);
+        $this->display();
+    }
+
+    public function uploadImage()
+    {
+        if (IS_AJAX) {
+            try {
+                $return = array('status' => true, 'msg' => '上传成功');
+                $upload = new \Think\Upload();// 实例化上传类
+                $upload->maxSize = 102400;// 设置附件上传大小
+                $upload->exts = array('jpg', 'gif', 'png', 'jpeg', 'pdf');// 设置附件上传类型
+                $upload->rootPath = './Uploads'; // 设置附件上传根目录
+                $upload->savePath = 'cms_banner/'; // 设置附件上传（子）目录
+                // 上传文件
+                $info = $upload->upload();
+                //print_r($info);
+                if (!$info) {// 上传错误提示错误信息
+                    throw \Exception($upload->getError(), 100);
+                }
+                foreach ($info as $file) {
+                    $return['img'] = '/Uploads/'.$file['savepath'] . $file['savename'];
+                }
+            } catch (\Exception $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
         }
-        else{
-            echo json_encode(array('status'=>1,'msg'=>'删除失败'));
+    }
+
+    public function updateItem()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '更新成功');
+            try {
+                $items = I('post.items');
+                $bannerID = I('post.bannerID', false, 'int');
+                $addItems = I('post.addItems');
+                $model = D('BannerItem');
+                $result = $model->updateItem($bannerID, $items, $addItems);
+                if (!$result) {
+                    throw new \Exception('更新失败', 100);
+                }
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
         }
-        
     }
 }
-?>

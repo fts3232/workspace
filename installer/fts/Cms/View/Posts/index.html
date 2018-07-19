@@ -1,0 +1,95 @@
+<include file="Common:header" />
+<div class="text-right auto tool-area">
+    <button  class="btn btn-primary add">添加</button>
+</div>
+<div class="data auto">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>标题</th>
+                <th>作者</th>
+                <th>创建时间</th>
+                <th>发布时间</th>
+                <th>更新时间</th>
+                <th nowrap width="250">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <foreach name="list" item="v" key="k">
+                <tr>
+                    <td>{$v.POST_ID}</td>
+                    <td>{$v.TITLE}</td>
+                    <td>{$v.AUTHOR}</td>
+                    <td>{$v.CREATED_TIME}</td>
+                    <td>{$v.PUBLISHED_TIME}</td>
+                    <td>{$v.UPDATED_TIME}</td>
+                    <td>
+                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary edit" role="button"><b>修改</b></a>
+                        <button class="btn btn-danger delete" menu-id="{$v['MENU_ID']}"><b>删除</b></button>
+                    </td>
+                </tr>
+            </foreach>
+        </tbody>
+    <table>
+</div>
+<div class="page">{$page}</div>
+<div class="alert alert-dismissible fade out" role="alert">
+    <button type="button" class="close"><span aria-hidden="true">×</span></button>
+    <p></p>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="deleteModalLabel">删除</h4>
+            </div>
+            <div class="modal-body">
+                是否确认删除该文章？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger delete-confirm" data-loading-text="Loading...">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        //删除菜单
+        $(document).on('click', 'button.delete', function () {
+            $('#deleteModal').modal('show')
+            $('.delete-confirm').attr('menu-index', $(this).parents('tr').index())
+            $('.delete-confirm').attr('menu-id', $(this).attr('menu-id'));
+            return false;
+        })
+
+        //删除菜单确认
+        $('.delete-confirm').on('click', function () {
+            var $btn = $(this).button('loading')
+            var _this = $(this);
+            $.ajax({
+                'url'     : "{:U('delete')}",
+                'type'    : 'post',
+                'data'    : {
+                    'id': _this.attr('menu-id')
+                },
+                'success' : function (data) {
+                    if (data.status) {
+                        alertMessage('success', data.msg)
+                        $('#deleteModal').modal('hide')
+                        $('.data tbody tr').eq(_this.attr('menu-index')).remove();
+                    } else {
+                        alertMessage('danger', data.msg, data.code)
+                    }
+                },
+                'complete': function () {
+                    $btn.button('reset')
+                }
+            })
+        })
+    })
+</script>
+<include file="Common:footer" />

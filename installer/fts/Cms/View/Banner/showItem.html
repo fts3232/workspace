@@ -1,0 +1,184 @@
+<include file="Common:header" />
+<div class="table-responsive inject item-body banner">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Banner</h3>
+        </div>
+        <div class="panel-body">
+            <div class="file-upload">
+                <form method="post" id="file" action="" enctype="multipart/form-data">
+                    <input name="input-image" type="file" accept="image/*">
+                    <button class="btn btn-primary">点击上传</button>
+                </form>
+            </div>
+            <div class="well">
+                <ul class="sortable">
+                </ul>
+            </div>
+
+        </div>
+        <div class="panel-footer">
+            <a href="{:U('index')}"><button type="submit" class="btn btn-default right" >返回</button></a>
+            <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">保存</button>
+        </div>
+    </div>
+</div>
+<div class="alert alert-dismissible fade out" role="alert">
+    <button type="button" class="close"><span aria-hidden="true">×</span></button>
+    <p></p>
+</div>
+<div class="modal fade banner" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editModalLabel">查看详情</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width: 125px;height: 125px;float:left;margin-right:10px">
+                    <img class="img-thumbnail"/>
+                </div>
+                <form style="float: left;">
+                    <div class="form-group">
+                        <label for="editUrl">URL</label>
+                        <input type="text" class="form-control" id="editUrl" name="edit_item_url" placeholder="" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary edit" data-loading-text="Loading...">修改</button>
+                <button type="button" class="btn btn-danger delete" data-loading-text="Loading...">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    function create_item(index, data) {
+        var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="'+data.ITEM_URL+'" class="ui-sortable-handle"></li>')
+        var img = $('<img src="'+data.ITEM_IMG+'" class="img-thumbnail"/>');
+        img.appendTo(li)
+        return li
+    }
+
+    function create_banner(banner) {
+        banner.map(function (v, i) {
+            var item = create_item(i, v)
+            item.appendTo($('.sortable'))
+        })
+    }
+
+    $(function () {
+        var banner = {$items};
+        if(banner != null){
+            create_banner(banner)
+        }
+        var sort = $(".sortable").sortable({
+            revert     : true,
+            containment: "document",
+            placeholder: "ui-state-highlight",
+        });
+        $( "#sortable" ).disableSelection();
+
+        //添加菜单项
+        $('[name="input-image"]').on('change',function(){
+            var formData = new FormData();
+            formData.append('file', $(this)[0].files[0])
+            var _this = $(this)
+            $.ajax({
+                url        : '{:U("uploadImage")}',
+                type       : 'POST',
+                data       : formData,
+                async      : false,
+                cache      : false,
+                contentType: false, //不设置内容类型
+                processData: false, //不处理数据
+                success    : function (data) {
+                    if(data.status){
+                        alertMessage('success', data.msg)
+                        var index = $('.sortable li').length + 1;
+                        var data = {
+                            'ITEM_ID'   : 0,
+                            'ITEM_IMG'  : data.img,
+                            'ITEM_URL'  : '',
+                        };
+                        var item = create_item(index,data);
+                        item.appendTo('.sortable');
+                    }else{
+                        alertMessage('danger', data.msg,data.code)
+                    }
+                    //alert(data.msg);
+                },
+                'complete':function(){
+                    _this.val('')
+                }
+            })
+        })
+
+        //查看详情
+        $(document).on('click','.sortable li',function(){
+            $('#imgModal').modal('show')
+            $('#imgModal .edit').attr('banner-index', $(this).index())
+            $('#imgModal .delete').attr('banner-index', $(this).index())
+            $('#imgModal img').attr('src',$(this).find('img').attr('src'))
+            $('#imgModal [name="edit_item_url"]').val($(this).attr('data-url'))
+        })
+
+        //删除菜单项
+        $(document).on('click','button.delete', function () {
+            var index= $(this).attr('banner-index');
+            $('.sortable li').eq(index).remove();
+            $('#imgModal').modal('hide')
+            return false;
+        })
+        //修改
+        $(document).on('click','button.edit', function () {
+            var url =  $('#imgModal [name="edit_item_url"]').val();
+            var index= $(this).attr('banner-index');
+            $('.sortable li').eq(index).attr('data-url',url);
+            $('#imgModal').modal('hide')
+            return false;
+        })
+
+        //保存
+        $('button.save-menu').on('click',function(){
+            var $btn = $(this).button('loading')
+            var items = [];
+            var addItems = [];
+            $('.sortable li').map(function(v){
+                var arr = {
+                    'ITEM_ID'   : $('.sortable li').eq(v).attr('data-id'),
+                    'ITEM_IMG'  : $('.sortable li').eq(v).find('img').attr('src'),
+                    'ITEM_URL'  : $('.sortable li').eq(v).attr('data-url'),
+                    'ITEM_ORDER': v
+                }
+                if (arr['ITEM_ID'] == 0) {
+                    addItems.push(arr)
+                } else {
+                    items.push(arr)
+                }
+            })
+            $.ajax({
+                'url':"{:U('updateItem')}",
+                'type':'post',
+                'data':{
+                    'items':items,
+                    'addItems':addItems,
+                    'bannerID':{$bannerID}
+                },
+                'success':function(data){
+                    if (data.status) {
+                        alertMessage('success', data.msg)
+                    } else {
+                        alertMessage('danger', data.msg, data.code)
+                    }
+                },
+                'complete':function(){
+                    $btn.button('reset')
+                }
+            })
+        })
+    });
+</script>
+<include file="Common:footer" />
