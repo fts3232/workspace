@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-19 18:11:36
+Date: 2018-07-19 23:57:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -118,7 +118,7 @@ CREATE TABLE `menu_item` (
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`ITEM_ID`),
   KEY `MENU_ID` (`MENU_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='菜单项表';
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='菜单项表';
 
 -- ----------------------------
 -- Records of menu_item
@@ -140,7 +140,8 @@ CREATE TABLE `posts` (
   `POST_ID` int(11) NOT NULL AUTO_INCREMENT,
   `TRANSLATE_ID` int(11) DEFAULT NULL,
   `TITLE` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `CONTENT` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `CATEGORY_ID` int(11) DEFAULT NULL,
+  `CONTENT` text CHARACTER SET latin1,
   `KEYWORD` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `DESCRIPTION` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `AUTHOR` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
@@ -149,9 +150,11 @@ CREATE TABLE `posts` (
   `PUBLISHED_TIME` datetime DEFAULT NULL,
   `MODIFIED_TIME` datetime DEFAULT NULL,
   PRIMARY KEY (`POST_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of posts
 -- ----------------------------
-INSERT INTO `posts` VALUES ('1', '0', '123', '31231', '12', '1231', '1', 'cn', null, null, null);
+INSERT INTO `posts` VALUES ('2', null, '31', '3', '', '1231', '', null, null, null, null, null);
+INSERT INTO `posts` VALUES ('3', '0', '123', '3', '', '131', '313', null, 'zh_CN', null, null, null);
+INSERT INTO `posts` VALUES ('4', '0', '123', '7', '&lt;p&gt;1313&lt;/p&gt;', '131', '313', null, 'zh_CN', null, null, null);

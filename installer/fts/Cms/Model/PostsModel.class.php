@@ -8,27 +8,30 @@ class PostsModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
-    public function get()
+    public function getList()
     {
-        $result = $this->field('POST_ID,TITLE,CONTENT')->order('PUBLISHED_TIME DESC')->limit(20)->select();
+        $result = $this->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,CREATED_TIME,MODIFIED_TIME')->order('PUBLISHED_TIME DESC')->limit(20)->select();
         return $result ? $result : array();
     }
 
-    public function addMenu($name)
+    public function addPost($title,$keyword,$description,$category,$content)
     {
         $data = array(
-            'MENU_NAME' => $name
+            'TITLE' => $title,
+            'KEYWORD' => $keyword,
+            'DESCRIPTION' => $description,
+            'CATEGORY_ID' =>$category,
+            'CONTENT' => $content,
+            'TRANSLATE_ID' => 0,
+            'LANG'=>'zh_CN'
         );
-        return $result = $this->add($data);
+        return $this->add($data);
     }
 
-    public function updateMenu($id, $name)
+    public function get($id)
     {
-        $data = array(
-            'MENU_NAME' => $name,
-            'MODIFIED_TIME' => array('exp', 'NOW()')
-        );
-        return $result = $this->where(array('MENU_ID' => $id))->save($data);
+
+        return $this->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,KEYWORD,DESCRIPTION,CATEGORY_ID')->where(array('POST_ID' => $id))->find();
     }
 
     public function deleteMenu($id)

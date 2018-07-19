@@ -1,6 +1,6 @@
 <include file="Common:header" />
 <div class="text-right auto tool-area">
-    <button  class="btn btn-primary add">添加</button>
+    <a href="{:U('add')}" class="btn btn-primary" role="button">添加</a>
 </div>
 <div class="data auto">
     <table class="table table-bordered">
@@ -26,7 +26,7 @@
                     <td>{$v.UPDATED_TIME}</td>
                     <td>
                         <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary edit" role="button"><b>修改</b></a>
-                        <button class="btn btn-danger delete" menu-id="{$v['MENU_ID']}"><b>删除</b></button>
+                        <button class="btn btn-danger delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>
@@ -61,8 +61,8 @@
         //删除菜单
         $(document).on('click', 'button.delete', function () {
             $('#deleteModal').modal('show')
-            $('.delete-confirm').attr('menu-index', $(this).parents('tr').index())
-            $('.delete-confirm').attr('menu-id', $(this).attr('menu-id'));
+            $('.delete-confirm').attr('data-index', $(this).parents('tr').index())
+            $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
         })
 
@@ -71,16 +71,16 @@
             var $btn = $(this).button('loading')
             var _this = $(this);
             $.ajax({
-                'url'     : "{:U('delete')}",
-                'type'    : 'post',
-                'data'    : {
-                    'id': _this.attr('menu-id')
+                'url': "{:U('delete')}",
+                'type': 'post',
+                'data': {
+                    'id': _this.attr('data-id')
                 },
-                'success' : function (data) {
+                'success': function (data) {
                     if (data.status) {
                         alertMessage('success', data.msg)
                         $('#deleteModal').modal('hide')
-                        $('.data tbody tr').eq(_this.attr('menu-index')).remove();
+                        $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
                         alertMessage('danger', data.msg, data.code)
                     }
