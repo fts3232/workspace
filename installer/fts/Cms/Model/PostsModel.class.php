@@ -8,30 +8,33 @@ class PostsModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
-    public function getList()
+    public function getList($offset, $size)
     {
-        $result = $this->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,CREATED_TIME,MODIFIED_TIME')->order('PUBLISHED_TIME DESC')->limit(20)->select();
+        $result = $this
+            ->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,CREATED_TIME,MODIFIED_TIME')
+            ->order('PUBLISHED_TIME DESC')
+            ->limit($offset . ',' . $size)
+            ->select();
         return $result ? $result : array();
     }
 
-    public function addPost($title,$keyword,$description,$category,$content)
+    public function addPost($data)
     {
-        $data = array(
-            'TITLE' => $title,
-            'KEYWORD' => $keyword,
-            'DESCRIPTION' => $description,
-            'CATEGORY_ID' =>$category,
-            'CONTENT' => $content,
-            'TRANSLATE_ID' => 0,
-            'LANG'=>'zh_CN'
-        );
         return $this->add($data);
+    }
+
+    public function editPost($id, $data)
+    {
+        $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+        return $this->where(array('POST_ID' => $id))->save($data);
     }
 
     public function get($id)
     {
-
-        return $this->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,KEYWORD,DESCRIPTION,CATEGORY_ID')->where(array('POST_ID' => $id))->find();
+        return $this
+            ->field('POST_ID,TITLE,CONTENT,AUTHOR,PUBLISHED_TIME,KEYWORD,DESCRIPTION,CATEGORY_ID,TAGS_ID,TRANSLATE_ID,LANG')
+            ->where(array('POST_ID' => $id))
+            ->find();
     }
 
     public function deleteMenu($id)

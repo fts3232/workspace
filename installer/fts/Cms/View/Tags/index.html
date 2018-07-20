@@ -1,32 +1,24 @@
 <include file="Common:header" />
 <div class="text-right auto tool-area">
-    <a href="{:U('add')}" class="btn btn-primary" role="button">添加</a>
+    <a class="btn btn-primary" role="button" href="{:U('add')}">添加</a>
 </div>
 <div class="data auto">
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>标题</th>
-                <th>作者</th>
-                <th>创建时间</th>
-                <th>发布时间</th>
-                <th>更新时间</th>
+                <th>名称</th>
                 <th nowrap width="250">操作</th>
             </tr>
         </thead>
         <tbody>
             <foreach name="list" item="v" key="k">
                 <tr>
-                    <td>{$v.POST_ID}</td>
-                    <td>{$v.TITLE}</td>
-                    <td>{$v.AUTHOR}</td>
-                    <td>{$v.CREATED_TIME}</td>
-                    <td>{$v.PUBLISHED_TIME}</td>
-                    <td>{$v.UPDATED_TIME}</td>
+                    <td>{$v.TAG_ID}</td>
+                    <td>{$v.TAG_NAME}</td>
                     <td>
-                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary edit" role="button"><b>修改</b></a>
-                        <button class="btn btn-danger delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                        <a class="btn btn-primary" role="button" href="{:U('edit',array('id'=>$v['TAG_ID']))}"><b>修改</b></a>
+                        <button class="btn btn-danger delete" data-id="{$v['TAG_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>
@@ -43,7 +35,7 @@
                 <h4 class="modal-title" id="deleteModalLabel">删除</h4>
             </div>
             <div class="modal-body">
-                是否确认删除该文章？
+                是否确认删除该Tag？
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger delete-confirm" data-loading-text="Loading...">删除</button>
@@ -67,12 +59,12 @@
             var $btn = $(this).button('loading')
             var _this = $(this);
             $.ajax({
-                'url': "{:U('delete')}",
-                'type': 'post',
-                'data': {
+                'url'     : "{:U('delete')}",
+                'type'    : 'post',
+                'data'    : {
                     'id': _this.attr('data-id')
                 },
-                'success': function (data) {
+                'success' : function (data) {
                     if (data.status) {
                         alertMessage('success', data.msg)
                         $('#deleteModal').modal('hide')

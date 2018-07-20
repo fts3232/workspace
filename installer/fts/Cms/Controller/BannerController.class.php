@@ -9,8 +9,16 @@ class BannerController extends Controller
     public function index()
     {
         $model = D('Banner');
-        $list = $model->get();
+        //每页显示多少条
+        $pageSize = C('PAGE');
+        //获取总条数
+        $count = $model->count();
+        //分页器
+        $page = new \Think\Page($count, $pageSize);
+        $pagination = $page->show();
+        $list = $model->getAll($page->firstRow, $pageSize);
         $this->assign('list', $list);
+        $this->assign('pagination', $pagination);
         $this->display();
     }
 

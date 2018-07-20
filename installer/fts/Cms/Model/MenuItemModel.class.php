@@ -15,7 +15,6 @@ class MenuItemModel extends Model
             if ($v['ITEM_PARENT'] == $parent) {        //父亲找到儿子
                 $v['CHILD'] = $this->getTree($data, $v['ITEM_ID']);
                 $tree[] = $v;
-                //unset($data[$k]);
             }
         }
         return $tree;

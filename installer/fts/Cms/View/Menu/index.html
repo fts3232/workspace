@@ -2,10 +2,10 @@
 <div class="text-right auto tool-area">
     <form class="form-inline">
         <div class="form-group">
-            <label for="menu">名称</label>
-            <input type="text" class="form-control" id="menu" name="add_menu_name" placeholder="">
+            <label for="add-menu">名称</label>
+            <input type="text" class="form-control" id="add-menu" name="add-menu-name" placeholder="">
         </div>
-        <button  class="btn btn-primary add">添加</button>
+        <button class="btn btn-primary add">添加</button>
     </form>
 </div>
 <div class="data auto">
@@ -23,27 +23,23 @@
                     <td>{$v.MENU_ID}</td>
                     <td>{$v.MENU_NAME}</td>
                     <td>
-                        <a href="{:U('showItem',array('id'=>$v['MENU_ID']))}"><button class="btn btn-default"><b>查看</b></button></a>
-                        <button class="btn btn-primary edit" menu-id="{$v['MENU_ID']}"><b>修改</b></button>
-                        <button class="btn btn-danger delete" menu-id="{$v['MENU_ID']}"><b>删除</b></button>
+                        <a href="{:U('showItem', array('id' => $v['MENU_ID']))}" class="btn btn-default" role="button"><b>查看</b></a>
+                        <button class="btn btn-primary edit" data-id="{$v['MENU_ID']}"><b>修改</b></button>
+                        <button class="btn btn-danger delete" data-id="{$v['MENU_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>
         </tbody>
     <table>
 </div>
-<div class="page">{$page}</div>
-<div class="alert alert-dismissible fade out" role="alert">
-    <button type="button" class="close"><span aria-hidden="true">×</span></button>
-    <p></p>
-</div>
+<div class="page">{$pagination}</div>
 <!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="deleteModalLabel">删除</h4>
+                <h4 class="modal-title">删除</h4>
             </div>
             <div class="modal-body">
                 是否确认删除该菜单？
@@ -55,18 +51,18 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="editModalLabel">修改</h4>
+                <h4 class="modal-title">修改</h4>
             </div>
             <div class="modal-body">
                 <form class="form-inline">
                     <div class="form-group">
-                        <label for="editMenu">名称</label>
-                        <input type="text" class="form-control" id="editMenu" name="edit_menu_name" placeholder="" value="">
+                        <label for="edit-menu-name">名称</label>
+                        <input type="text" class="form-control" id="edit-menu-name" name="edit-menu-name" placeholder="" value="">
                     </div>
                 </form>
             </div>
@@ -78,15 +74,15 @@
     </div>
 </div>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         //添加菜单
         $('button.add').on('click', function () {
-            var name = $.trim($('[name="add_menu_name"]').val());
+            var name = $.trim($('[name="add-menu-name"]').val());
             if (name == '') {
-                alertMessage('warning', '请输入名称！')
+                alertMessage('warning', '请输入名称！');
                 return false;
             }
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             $.ajax({
                 'url'     : "{:U('addMenu')}",
                 'type'    : 'post',
@@ -97,7 +93,7 @@
                     if (data.status) {
                         var url = data.url;
                         var tr = $('<tr></tr>');
-                        var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"><button class="btn btn-default"><b>查看</b></button></a>  <button class="btn btn-primary edit" menu-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-danger delete" menu-id="' + data.id + '"><b>删除</b></button></td>');
+                        var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"  class="btn btn-default" role="button"><b>查看</b></a>  <button class="btn btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
                         td.appendTo(tr);
                         tr.appendTo($('tbody'));
                         alertMessage('success', data.msg)
@@ -108,26 +104,26 @@
                 'complete': function () {
                     $btn.button('reset')
                 }
-            })
+            });
             return false;
-        })
+        });
 
         //修改菜单
         $(document).on('click', 'button.edit', function () {
-            $('#editModal').modal('show')
-            var name = $(this).parents('tr').find('td').eq(1).html()
-            $('[name="edit_menu_name"]').val(name)
-            $('.edit-confirm').attr('menu-index', $(this).parents('tr').index())
-            $('.edit-confirm').attr('menu-id', $(this).attr('menu-id'));
+            $('#edit-modal').modal('show');
+            var name = $(this).parents('tr').find('td').eq(1).html();
+            $('[name="edit-menu-name"]').val(name);
+            $('.edit-confirm').attr('data-index', $(this).parents('tr').index());
+            $('.edit-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
-        })
+        });
 
         //修改菜单提交
         $('.edit-confirm').on('click', function () {
-            var $btn = $(this).button('loading')
-            var name = $.trim($('[name="edit_menu_name"]').val())
+            var $btn = $(this).button('loading');
+            var name = $.trim($('[name="edit-menu-name"]').val());
             if (name == '') {
-                alertMessage('warning', '请输入名称！')
+                alertMessage('warning', '请输入名称！');
                 return false;
             }
             var _this = $(this);
@@ -135,56 +131,56 @@
                 'url'     : "{:U('editMenu')}",
                 'type'    : 'post',
                 'data'    : {
-                    'id': _this.attr('menu-id'),
+                    'id'  : _this.attr('data-id'),
                     'name': name
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
-                        $('#editModal').modal('hide')
-                        $('.data tbody tr').eq(_this.attr('menu-index')).find('td').eq(1).html(name);
+                        alertMessage('success', data.msg);
+                        $('#edit-modal').modal('hide');
+                        $('.data tbody tr').eq(_this.attr('data-index')).find('td').eq(1).html(name);
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
-            })
-        })
+            });
+        });
 
         //删除菜单
         $(document).on('click', 'button.delete', function () {
-            $('#deleteModal').modal('show')
-            $('.delete-confirm').attr('menu-index', $(this).parents('tr').index())
-            $('.delete-confirm').attr('menu-id', $(this).attr('menu-id'));
+            $('#delete-modal').modal('show');
+            $('.delete-confirm').attr('data-index', $(this).parents('tr').index());
+            $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
-        })
+        });
 
         //删除菜单确认
         $('.delete-confirm').on('click', function () {
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             var _this = $(this);
             $.ajax({
                 'url'     : "{:U('deleteMenu')}",
                 'type'    : 'post',
                 'data'    : {
-                    'id': _this.attr('menu-id')
+                    'id': _this.attr('data-id')
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
-                        $('#deleteModal').modal('hide')
+                        alertMessage('success', data.msg);
+                        $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('menu-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
-            })
-        })
+            });
+        });
     })
 </script>
 <include file="Common:footer" />

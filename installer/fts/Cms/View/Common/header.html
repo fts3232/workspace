@@ -7,22 +7,35 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/cms.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/cms/style.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body>
+    <div class="alert alert-dismissible fade out" role="alert">
+        <button type="button" class="close"><span aria-hidden="true">×</span></button>
+        <p></p>
+    </div>
     <div class="header">
-        <div class="nav" style="margin:0 auto;">
-            <div class="left" style="margin:10px 0 0 10px;">
+        <div class="nav">
+            <div class="left">
                 <div class="btn-group">
+                    <div class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        导航
+                        <span class="caret"></span>
+                    </div>
                     <ul class="dropdown-menu" role="menu">
+                        <li><a href="{:U('Menu/index')}">菜单管理</a></li>
+                        <li><a href="{:U('Banner/index')}">Banner管理</a></li>
+                        <li><a href="{:U('Category/index')}">栏目管理</a></li>
+                        <li><a href="{:U('Posts/index')}">文章管理</a></li>
+                        <li><a href="{:U('Tags/index')}">标签管理</a></li>
                         <li><a href="{:U('Member/setpwd')}">修改密码</a></li>
                         <li><a href="{:U('Index/logout')}">退出登录</a></li>
                     </ul>
                 </div>
             </div>
-            <div style="height:36px;color:#fff;font-size:16px;font-weight:500;width:70px;position:relative;top:0px;left:320px;">
-                <span style="position:absolute;top:15px;left:0;">{$Think.session.username}</span>
+            <div class="username left">
+                <span>{$Think.session.username}</span>
             </div>
         </div>
     </div>

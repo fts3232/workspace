@@ -8,9 +8,9 @@ class BannerModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
-    public function get()
+    public function getAll($offset, $size)
     {
-        $result = $this->field('BANNER_ID,BANNER_NAME')->order('BANNER_ID ASC')->select();
+        $result = $this->field('BANNER_ID, BANNER_NAME')->order('BANNER_ID ASC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 

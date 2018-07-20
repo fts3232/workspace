@@ -1,0 +1,80 @@
+<include file="Common:header"/>
+<div class="table-responsive inject item-body tags">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Tag</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$id|default=''}"/>
+                <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">名称</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputName" name="name" value="{$result['TAG_NAME']|default=''}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputTitle" class="col-sm-2 control-label">SEO标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['TITLE']|default=''}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputKeyword" class="col-sm-2 control-label">关键词</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputKeyword" name="keyword" value="{$result['KEYWORD']|default=''}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputDesc" class="col-sm-2 control-label">描述</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDesc" name="description" value="{$result['DESCRIPTION']|default=''}"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <a href="{:U('index')}">
+                <button type="submit" class="btn btn-default right">返回</button>
+            </a>
+            <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..."
+                    style="margin-right: 10px">保存
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        //保存
+        $('button.save-menu').on('click', function () {
+            var $btn = $(this).button('loading')
+            var action = "{$action}"
+
+            var data = {
+                'name': $('[name="name"]').val(),
+                'title': $('[name="title"]').val(),
+                'keyword': $('[name="keyword"]').val(),
+                'description': $('[name="description"]').val()
+            }
+            if(action == 'edit'){
+                data.id = $('[name="id"]').val()
+            }
+            $.ajax({
+                'url': "{:U($action)}",
+                'type': 'post',
+                'data': data,
+                'success': function (data) {
+                    if (data.status) {
+                        alertMessage('success', data.msg)
+                    } else {
+                        alertMessage('danger', data.msg, data.code)
+                    }
+                },
+                'complete': function () {
+                    $btn.button('reset')
+                }
+            })
+        })
+    });
+</script>
+<include file="Common:footer"/>

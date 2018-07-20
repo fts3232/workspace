@@ -8,9 +8,9 @@ class MenuModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
-    public function get()
+    public function getAll($offset, $size)
     {
-        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID ASC')->select();
+        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID ASC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 
@@ -19,7 +19,7 @@ class MenuModel extends Model
         $data = array(
             'MENU_NAME' => $name
         );
-        return $result = $this->add($data);
+        return $this->add($data);
     }
 
     public function updateMenu($id, $name)
@@ -28,7 +28,7 @@ class MenuModel extends Model
             'MENU_NAME' => $name,
             'MODIFIED_TIME' => array('exp', 'NOW()')
         );
-        return $result = $this->where(array('MENU_ID' => $id))->save($data);
+        return $this->where(array('MENU_ID' => $id))->save($data);
     }
 
     public function deleteMenu($id)
