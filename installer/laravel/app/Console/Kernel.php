@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -24,11 +26,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-        $schedule->command('page-cache:clear')
-            ->everyFiveMinutes()
-            ->appendOutputTo(storage_path('logs/cron.log'));
+        //php artisan schedule:run
+        $slugs = Redis::ZRANGEBYSCORE('www_page_cache_clear', '-inf', time());
+        $temp = array();
+        foreach($slugs as $slug){
+            Redis::ZREM('www_page_cache_clear', $slug);
+            $temp2 = explode(' ', $slug);
+            $temp = array_merge($temp, $temp2);
+
+        }
+        $slugs = array_unique($temp);
+        $schedule->command('page-cache:clear',['slug'=>$slugs])->everyFiveMinutes()->appendOutputTo(storage_path('logs/cron.log'));
     }
 
     /**
