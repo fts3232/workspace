@@ -6,6 +6,9 @@ use Think\Controller;
 
 class BannerController extends Controller
 {
+    /**
+     * 查看banner
+     */
     public function index()
     {
         $model = D('Banner');
@@ -16,12 +19,16 @@ class BannerController extends Controller
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
+        //获取分页信息
         $list = $model->getAll($page->firstRow, $pageSize);
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
         $this->display();
     }
 
+    /**
+     * 添加banner
+     */
     public function addBanner()
     {
         if (IS_AJAX) {
@@ -29,6 +36,7 @@ class BannerController extends Controller
             try {
                 $name = I('post.name');
                 $model = D('Banner');
+                //添加操作
                 $id = $model->addBanner($name);
                 if (!$id) {
                     throw new \Exception('添加失败', 100);
@@ -46,6 +54,9 @@ class BannerController extends Controller
         }
     }
 
+    /**
+     * 修改banner
+     */
     public function editBanner()
     {
         if (IS_AJAX) {
@@ -54,9 +65,14 @@ class BannerController extends Controller
                 $name = I('post.name');
                 $id = I('post.id', false, 'int');
                 $model = D('Banner');
+                //判断id是否存在
+                if (!$model->isExists($id)) {
+                    throw new \Exception('该banner id不存在', 100);
+                }
+                //修改banner
                 $result = $model->updateBanner($id, $name);
                 if (!$result) {
-                    throw new \Exception('修改失败', 100);
+                    throw new \Exception('修改失败', 101);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -69,6 +85,9 @@ class BannerController extends Controller
         }
     }
 
+    /**
+     * 删除banner
+     */
     public function deleteBanner()
     {
         if (IS_AJAX) {
@@ -76,9 +95,14 @@ class BannerController extends Controller
             try {
                 $id = I('post.id', false, 'int');
                 $model = D('Banner');
+                //判断id是否存在
+                if (!$model->isExists($id)) {
+                    throw new \Exception('该banner id不存在', 100);
+                }
+                //删除操作
                 $result = $model->deleteBanner($id);
                 if (!$result) {
-                    throw new \Exception('删除失败', 100);
+                    throw new \Exception('删除失败', 101);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -104,6 +128,9 @@ class BannerController extends Controller
         $this->display();
     }
 
+    /**
+     * 上传图片
+     */
     public function uploadImage()
     {
         if (IS_AJAX) {
@@ -118,10 +145,10 @@ class BannerController extends Controller
                 $info = $upload->upload();
                 //print_r($info);
                 if (!$info) {// 上传错误提示错误信息
-                    throw \Exception($upload->getError(), 100);
+                    throw new \Exception($upload->getError(), 100);
                 }
                 foreach ($info as $file) {
-                    $return['img'] = '/Uploads/'.$file['savepath'] . $file['savename'];
+                    $return['img'] = '/Uploads/' . $file['savepath'] . $file['savename'];
                 }
             } catch (\Exception $e) {
                 $return = array(
@@ -134,6 +161,9 @@ class BannerController extends Controller
         }
     }
 
+    /**
+     * 更新banner项
+     */
     public function updateItem()
     {
         if (IS_AJAX) {
@@ -143,6 +173,11 @@ class BannerController extends Controller
                 $bannerID = I('post.bannerID', false, 'int');
                 $addItems = I('post.addItems');
                 $model = D('BannerItem');
+                //判断id是否存在
+                if (!D('Banner')->isExists($bannerID)) {
+                    throw new \Exception('该banner id不存在', 100);
+                }
+                //更新操作
                 $result = $model->updateItem($bannerID, $items, $addItems);
                 if (!$result) {
                     throw new \Exception('更新失败', 100);

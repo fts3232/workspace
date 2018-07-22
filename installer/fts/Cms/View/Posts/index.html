@@ -19,8 +19,8 @@
             <foreach name="list" item="v" key="k">
                 <tr>
                     <td>{$v.POST_ID}</td>
-                    <td>{$v.TITLE}</td>
-                    <td>{$v.AUTHOR}</td>
+                    <td>{$v.POST_TITLE}</td>
+                    <td>{$v.POST_AUTHOR}</td>
                     <td>{$v.CREATED_TIME}</td>
                     <td>{$v.PUBLISHED_TIME}</td>
                     <td>{$v.UPDATED_TIME}</td>
@@ -35,12 +35,12 @@
 </div>
 <div class="page">{$pagination}</div>
 <!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delte-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="deleteModalLabel">删除</h4>
+                <h4 class="modal-title" id="delte-modal-label">删除</h4>
             </div>
             <div class="modal-body">
                 是否确认删除该文章？
@@ -56,7 +56,7 @@
     $(document).ready(function(){
         //删除菜单
         $(document).on('click', 'button.delete', function () {
-            $('#deleteModal').modal('show')
+            $('#delete-modal').modal('show')
             $('.delete-confirm').attr('data-index', $(this).parents('tr').index())
             $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
@@ -75,7 +75,7 @@
                 'success': function (data) {
                     if (data.status) {
                         alertMessage('success', data.msg)
-                        $('#deleteModal').modal('hide')
+                        $('#delete-modal').modal('hide')
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
                         alertMessage('danger', data.msg, data.code)

@@ -17,7 +17,7 @@
                     <td>{$v.TAG_ID}</td>
                     <td>{$v.TAG_NAME}</td>
                     <td>
-                        <a class="btn btn-primary" role="button" href="{:U('edit',array('id'=>$v['TAG_ID']))}"><b>修改</b></a>
+                        <a class="btn btn-primary" role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
                         <button class="btn btn-danger delete" data-id="{$v['TAG_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
@@ -27,12 +27,12 @@
 </div>
 <div class="page">{$pagination}</div>
 <!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="deleteModalLabel">删除</h4>
+                <h4 class="modal-title" id="delete-modal-label">删除</h4>
             </div>
             <div class="modal-body">
                 是否确认删除该Tag？
@@ -45,10 +45,10 @@
     </div>
 </div>
 <script>
-    $(document).ready(function(){
-        //删除菜单
+    $(document).ready(function () {
+        //显示删除菜单模态框
         $(document).on('click', 'button.delete', function () {
-            $('#deleteModal').modal('show')
+            $('#delete-modal').modal('show')
             $('.delete-confirm').attr('data-index', $(this).parents('tr').index())
             $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
@@ -59,15 +59,15 @@
             var $btn = $(this).button('loading')
             var _this = $(this);
             $.ajax({
-                'url'     : "{:U('delete')}",
-                'type'    : 'post',
-                'data'    : {
+                'url': "{:U('delete')}",
+                'type': 'post',
+                'data': {
                     'id': _this.attr('data-id')
                 },
-                'success' : function (data) {
+                'success': function (data) {
                     if (data.status) {
                         alertMessage('success', data.msg)
-                        $('#deleteModal').modal('hide')
+                        $('#delete-modal').modal('hide')
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
                         alertMessage('danger', data.msg, data.code)

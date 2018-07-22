@@ -29,6 +29,10 @@ function alertMessage(type, message, error) {
     }, 3000);
 }
 
+function pad_zero(i){
+    return i >= 10 ? i : '0' + i;
+}
+
 function calculate_depth(item, direction) {
     var parentLeft = parseInt(item.prev('.ui-sortable-handle').css('marginLeft'));
     if (isNaN(parentLeft)) {

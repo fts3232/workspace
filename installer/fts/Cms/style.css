@@ -124,18 +124,18 @@
     top: 5px;
 }
 
-.page{
+.page {
     text-align: center;
 }
 
 /* menu */
-.menu .panel:nth-child(1), .category .panel:nth-child(1),.posts .panel:nth-child(1) {
+.menu .panel:nth-child(1), .category .panel:nth-child(1), .posts .panel:nth-child(1) {
     width: 300px;
     float: left;
     margin-right: 10px;
 }
 
-.menu .panel:nth-child(2), .category .panel:nth-child(2),.posts .panel:nth-child(2) {
+.menu .panel:nth-child(2), .category .panel:nth-child(2), .posts .panel:nth-child(2) {
     width: 700px;
     float: left;
 }
@@ -147,10 +147,22 @@
 }
 
 /* category */
+.category .panel:nth-child(1) {
+    width: 410px;
+}
+
+.category .panel:nth-child(2) {
+    width: 590px;
+}
+
 .category .sortable .well {
     margin-top: 10px;
     margin-bottom: 0;
-    height: 125px;
+    height: 422px;
+}
+
+.category .sortable li {
+    width: 410px;
 }
 
 /* banner */
@@ -205,73 +217,99 @@
     width: 400px;
 }
 
-.banner .detail-img{
-    width: 125px;height: 125px;float:left;margin-right:10px;
+.banner .detail-img {
+    width: 125px;
+    height: 125px;
+    float: left;
+    margin-right: 10px;
 }
 
 /* posts */
 
-.posts .panel:nth-child(1){
+.posts .panel:nth-child(1) {
     width: 651px;
 }
-.posts .panel:nth-child(2){
+
+.posts .panel:nth-child(2) {
     width: 363px;
 }
-.posts .panel:nth-child(3){
+
+.posts .panel:nth-child(3) {
     width: 363px;
     float: left;
 }
-.posts .publish-time-text{
+
+.posts .publish-time-text {
     padding-top: 7px;
 }
 
 .posts select.month {
     width: 90px;
-   display: inline-block;
-    margin-right:5px;
+    display: inline-block;
+    margin-right: 5px;
     font-size: 12px;
 }
 
 .posts input.day {
-    width: 45px;display: inline-block;    font-size: 12px;
+    width: 45px;
+    display: inline-block;
+    font-size: 12px;
 }
 
 .posts input.year {
-    width: 60px;display: inline-block;    font-size: 12px;
+    width: 60px;
+    display: inline-block;
+    font-size: 12px;
 }
 
 .posts input.hour {
-    width: 45px;display: inline-block;    font-size: 12px;
+    width: 45px;
+    display: inline-block;
+    font-size: 12px;
 }
 
 .posts input.minute {
-    width: 45px;display: inline-block;    font-size: 12px;
+    width: 45px;
+    display: inline-block;
+    font-size: 12px;
 }
 
-.posts .publish-time{
+.posts .publish-time {
     margin: 35px 10px 0 10px;
     overflow: hidden;
     display: none;
 }
-.posts .publish-time .btn{
-    margin-top: 10px; margin-left: 10px;
+
+.posts .publish-time .btn {
+    margin-top: 10px;
+    margin-left: 10px;
 }
 
-.posts .tags{
-    margin-top:10px
+.posts .tags {
+    margin-top: 10px
 }
 
-.posts .tags .label{
+.posts .tags .label {
     margin-right: 10px;
     display: inline-block;
     user-select: none;
 }
-.posts .tags .label span{
+
+.posts .tags .label span {
     margin-right: 10px;
     cursor: pointer;
 
 }
 
-.posts .translate a{
+.posts .translate a {
     margin-left: 10px;
+}
+
+.posts .add-tag {
+    margin-top: 10px;
+}
+
+.posts [name='tag-name'] {
+    display: inline-block;
+    margin-right: 10px;
 }

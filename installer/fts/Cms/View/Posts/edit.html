@@ -11,25 +11,13 @@
                 <div class="form-group">
                     <label for="inputTitle" class="col-sm-2 control-label">标题</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['TITLE']|default=''}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputKeyword" class="col-sm-2 control-label">关键词</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputKeyword" name="keyword" value="{$result['KEYWORD']|default=''}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputDesc" class="col-sm-2 control-label">描述</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputDesc" name="description" value="{$result['DESCRIPTION']|default=''}"/>
+                        <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['POST_TITLE']|default=''}"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="textarea" class="col-sm-2 control-label">正文</label>
                     <div class="col-sm-10">
-                        <textarea id="textarea" name="content">{$result['CONTENT']|default=''}</textarea>
+                        <textarea id="textarea" name="content">{$result['POST_CONTENT']|default=''}</textarea>
                     </div>
                 </div>
             </form>
@@ -43,46 +31,45 @@
             </button>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">其他版本</h3>
-        </div>
-        <div class="panel-body">
-            <php>
-                $version = ['zh_CN'=>'简体中文','zh_HK'=>'繁体中文'];
-                $languageMap = [
-                    'zh_CN'=>'简体中文','zh_HK'=>'繁体中文',
-                'en'=>'英文'
-                ];
-                if(isset($version[$result['LANG']])){
-                    unset($version[$result['LANG']]);
-                }
-            </php>
-            <foreach name="translate" item="v">
+    <if condition="$action eq 'update'">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">其他版本</h3>
+            </div>
+            <div class="panel-body">
                 <php>
-                    if(isset($version[$v['LANG']])){
-                        unset($version[$v['LANG']]);
+                    $notExistsLanguage = $languageMap;
+                    if(isset($notExistsLanguage[$result['POST_LANG']])){
+                        unset($notExistsLanguage[$result['POST_LANG']]);
                     }
                 </php>
-                <div class="translate col-sm-12">
-                    <h4>{$languageMap[$v['LANG']]}</h4>
-                    <a href="{:U('edit',array('id'=>$v['POST_ID']))}">{$v.TITLE}</a>
-                </div>
-            </foreach>
-            <if condition="!empty($version)">
-                <div class="col-sm-8">
-                    <select class="form-control" name="version-language">
-                        <foreach name="version" item="v" key="k">
-                            <option value="{$k}">{$v}</option>
-                        </foreach>
-                    </select>
-                </div>
-                <div class="col-sm-4">
-                    <button class="btn btn-primary right add-version">添加版本</button>
-                </div>
-            </if>
+                <foreach name="translate" item="v">
+                    <div class="translate col-sm-12">
+                        <h4>{$languageMap[$v['POST_LANG']]}</h4>
+                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}">{$v.POST_TITLE}</a>
+                    </div>
+                    <php>
+                        if(isset($notExistsLanguage[$v['POST_LANG']])){
+                        unset($notExistsLanguage[$v['POST_LANG']]);
+                        unset($languageMap[$v['POST_LANG']]);
+                        }
+                    </php>
+                </foreach>
+                <if condition="!empty($notExistsLanguage)">
+                    <div class="col-sm-8">
+                        <select class="form-control" name="translate-language">
+                            <foreach name="notExistsLanguage" item="v" key="k">
+                                <option value="{$k}">{$v}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-primary right add-translate">添加翻译</button>
+                    </div>
+                </if>
+            </div>
         </div>
-    </div>
+    </if>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">属性</h3>
@@ -93,8 +80,13 @@
                     <label for="language" class="col-sm-4 control-label">语言</label>
                     <div class="col-sm-8">
                         <select id="language" class="form-control" name="language">
-                            <option value="zh_CN">简体中文</option>
-                            <option value="zh_HK">繁体中文</option>
+                            <if condition="$action eq 'create' && !empty($language)">
+                                <option value="{$language}">{$languageMap[$language]}</option>
+                            <else/>
+                                <foreach name="languageMap" item="v" key="k">
+                                    <option value="{$k}" <if condition="isset($result) && $result['POST_LANG'] eq $k">selected='selected'</if>>{$v}</option>
+                                </foreach>
+                            </if>
                         </select>
                     </div>
                 </div>
@@ -108,9 +100,9 @@
                     <label for="status" class="col-sm-4 control-label">状态</label>
                     <div class="col-sm-8">
                         <select id="status" class="form-control" name="status">
-                            <option value="0">草稿</option>
-                            <option value="1">等待发布</option>
-                            <option value="2">发布</option>
+                            <foreach name="statusMap" item="v" key="k">
+                                <option value="{$k}" <if condition="isset($result) && $result['POST_STATUS'] eq $k">selected='selected'</if>>{$v}</option>
+                            </foreach>
                         </select>
                     </div>
                 </div>
@@ -118,10 +110,14 @@
                     <label class="col-sm-4 control-label">发布时间</label>
                     <input type="hidden" name="published-time"/>
                     <div class="col-sm-8 publish-time-text">
-                        <a>立即发布</a>
+                        <if condition="$action eq 'create'">
+                            <a>立即发布</a>
+                        <else />
+                            <a>{$result['PUBLISHED_TIME']}</a>
+                        </if>
                     </div>
                     <div class="publish-time">
-                        <select class="form-control month" style="width: 95px;float:left">
+                        <select class="form-control month">
                             <option value="01" data-text="Jan">01-Jan</option>
                             <option value="02" data-text="Feb">02-Feb</option>
                             <option value="03" data-text="Mar">03-Mar</option>
@@ -142,7 +138,9 @@
                         <input class="form-control hour"/>
                         <span>:</span>
                         <input class="form-control minute"/>
-                        <button type="submit" class="btn btn-primary right btn-xs now">立即发布</button>
+                        <if condition="$aciton eq 'create'">
+                            <button type="submit" class="btn btn-primary right btn-xs now">当前时间</button>
+                        </if>
                         <button type="submit" class="btn btn-primary right btn-xs save">修改</button>
                         <button type="submit" class="btn btn-default right btn-xs cancel">取消</button>
                     </div>
@@ -150,8 +148,7 @@
                 <div class="form-group">
                     <label for="tag" class="col-sm-4 control-label">标签</label>
                     <div class="col-sm-8">
-                        <input type="text" id="tag" class="form-control" style="
-    display: inline-block;width: 53%;margin-right: 10px;"  name="tagName"/>
+                        <input type="text" id="tag" class="form-control" name="tag-name"/>
                         <button type="submit" class="btn btn-default right add-tag" data-loading-text="Loading...">添加</button>
                     </div>
                 </div>
@@ -166,6 +163,14 @@
 </div>
 <script src="https://cdn.bootcss.com/tinymce/4.7.13/tinymce.min.js"></script>
 <script>
+    /**
+     * 创建栏目项
+     *
+     * @param item
+     * @param select
+     * @param depth
+     * @returns {jQuery|HTMLElement}
+     */
     function create_category_item(item,select, depth) {
         var before = ''
         for (i = 0; i < depth; i++) {
@@ -178,6 +183,13 @@
         return li
     }
 
+    /**
+     * 创建栏目
+     *
+     * @param category
+     * @param select
+     * @param depth
+     */
     function create_category(category,select, depth) {
         var depth = depth == undefined ? 0 : depth;
         category.map(function (v, k) {
@@ -189,12 +201,10 @@
         })
     }
 
-    function pad_zero(i){
-        return i >= 10 ? i : '0' + i;
-    }
-
     $(function () {
-        create_category({$category},'{$result["CATEGORY_ID"]|default=""}')
+        //创建栏目
+        create_category({$categoryMap},'{$result["CATEGORY_ID"]|default=""}');
+        //tinymce初始化
         tinymce.init({
             selector: 'textarea',
             height: 500,
@@ -204,13 +214,14 @@
             toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
             image_advtab: true,
         });
-        //添加tag
+        //初始化tag项
         var tagsName = [];
         $('.tags .label').map(function(i){
             tagsName.push($('.tags .label').eq(i).attr('data-name'))
         })
+        //添加tag
         $('button.add-tag').on('click', function () {
-            var name = $.trim($('input[name="tagName"]').val());
+            var name = $.trim($('input[name="tag-name"]').val());
             if (name == '') {
                 alertMessage('warning', '请输入名称！')
                 return false;
@@ -221,14 +232,14 @@
             }
             var $btn = $(this).button('loading')
             $.ajax({
-                'url':"{:U('tags/add')}",
+                'url':"{:U('tags/create')}",
                 'type':'post',
                 'data':{
                     'name':name,
                 },
                 'success': function (data) {
-                    if (data.status) {
-                        alertMessage('success', data.msg)
+                    if (data.status || data.code == 100) {
+                        alertMessage('success', '添加成功')
                         tagsName.push(name)
                         $('<span class="label label-default" data-id="'+data.id+'" data-name="'+name+'"><span aria-hidden="true">×</span>'+name+'</span>').appendTo($('.tags'));
                     } else {
@@ -244,6 +255,10 @@
         })
         //删除tag
         $(document).on('click', '.tags .label span', function () {
+            var index = tagsName.indexOf($(this).parent('.label').attr('data-name'));
+            if (index > -1) {
+                tagsName.splice(index, 1);
+            }
             $(this).parent('.label').remove();
             return false;
         })
@@ -275,7 +290,7 @@
             var year = $('.publish-time .year').val();
             var hour = $('.publish-time .hour').val();
             var minute = $('.publish-time .minute').val();
-            $('.publish-time-text a').html(year + '-' + month + '-' + day + ' ' + hour + ':' + minute);
+            $('.publish-time-text a').html(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':'+'00');
             $('[name="published-time"]').val(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':'+'00');
             return false;
         })
@@ -287,36 +302,39 @@
             return false;
         })
 
-        $('button.add-version').on('click', function () {
+        //添加翻译
+        $('button.add-translate').on('click', function () {
             var url = "{:U('add')}"
             var translate = $('[name="translate-id"]').val();
-            var language = $('[name="version-language"]').val();
+            var language = $('[name="translate-language"]').val();
             location.href = url + '?translate=' + translate + '&language=' + language
             return false;
         })
         //保存
         $('button.save-menu').on('click', function () {
             var $btn = $(this).button('loading')
-            var action = "{$action}"
-            var tags = []
+            var tags = [];
+            var action ="{$action}"
             $('.tags .label').map(function(i){
                 tags.push($('.tags .label').eq(i).attr('data-id'))
             })
             var data = {
-                'category': $('[name="category"]').val(),
                 'title': $('[name="title"]').val(),
-                'keyword': $('[name="keyword"]').val(),
-                'description': $('[name="description"]').val(),
+                'category-id': $('[name="category"]').val(),
                 'content': tinyMCE.activeEditor.getContent(),
                 'language':$('[name="language"]').val(),
-                'publishedTime':$('[name="published-time"]').val(),
                 'status' : $('[name="status"]').val(),
-                'tags' : tags
+                'tags' : tags,
+                'seo-title': $('[name="seo-title"]').val(),
+                'seo-keyword': $('[name="seo-keyword"]').val(),
+                'seo-description': $('[name="seo-description"]').val(),
+                'published-time':$('[name="published-time"]').val(),
+
             }
-            if(action == 'edit'){
+            if(action == 'update'){
                 data.id = $('[name="id"]').val()
             } else {
-                data.translateID = $('[name="translate-id"]').val();
+                data['translate-id'] = $('[name="translate-id"]').val();
             }
             $.ajax({
                 'url': "{:U($action)}",

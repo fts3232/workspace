@@ -7,24 +7,32 @@ use Think\Controller;
 class CategoryController extends Controller
 {
     /**
-     * 查看菜单
+     * 查看栏目信息
      */
     public function index()
     {
         $model = D('Category');
-        $list = $model->get();
-        $this->assign('items', $list);
+        $items = $model->getAll();
+        $this->assign('items', $items);
         $this->display();
     }
 
+    /**
+     * 删除栏目
+     */
     public function delete()
     {
-        $model = D('Category');
-        $id = I('post.id');
-        $result = $model->deleteCategory($id);
-        $this->ajaxReturn($result);
+        if(IS_AJAX){
+            $model = D('Category');
+            $id = I('post.id');
+            $result = $model->deleteCategory($id);
+            $this->ajaxReturn($result);
+        }
     }
 
+    /**
+     * 更新栏目信息
+     */
     public function update(){
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '更新成功');

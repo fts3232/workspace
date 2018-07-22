@@ -25,6 +25,7 @@ class MenuController extends Controller
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
+        //获取菜单分页信息
         $list = $model->getAll($page->firstRow, $pageSize);
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
@@ -69,9 +70,13 @@ class MenuController extends Controller
                 $name = I('post.name');
                 $id = I('post.id', false, 'int');
                 $model = D('Menu');
+                //判断id是否存在
+                if (!$model->isExists($id)) {
+                    throw new \Exception('该menu id不存在', 100);
+                }
                 $result = $model->updateMenu($id, $name);
                 if (!$result) {
-                    throw new \Exception('修改失败', 100);
+                    throw new \Exception('修改失败', 101);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -94,9 +99,14 @@ class MenuController extends Controller
             try {
                 $id = I('post.id', false, 'int');
                 $model = D('Menu');
+                //判断id是否存在
+                if (!$model->isExists($id)) {
+                    throw new \Exception('该menu id不存在', 100);
+                }
+                //删除操作
                 $result = $model->deleteMenu($id);
                 if (!$result) {
-                    throw new \Exception('删除失败', 100);
+                    throw new \Exception('删除失败', 101);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -134,6 +144,10 @@ class MenuController extends Controller
                 $menuID = I('post.menuID', false, 'int');
                 $addItems = I('post.addItems');
                 $model = D('MenuItem');
+                //判断id是否存在
+                if (!D('Menu')->isExists($menuID)) {
+                    throw new \Exception('该menu id不存在', 100);
+                }
                 $result = $model->updateItem($menuID, $items, $addItems);
                 if (!$result) {
                     throw new \Exception('更新失败', 100);

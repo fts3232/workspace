@@ -8,6 +8,39 @@ class MenuItemModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
 
+    /**
+     * 可以插入数据的字段
+     *
+     * @var array
+     */
+    protected $insertFields = array(
+        'MENU_ID',
+        'ITEM_NAME',
+        'ITEM_URL',
+        'ITEM_ORDER',
+        'ITEM_PARENT'
+    );
+
+    /**
+     * 可以更新数据的字段
+     *
+     * @var array
+     */
+    protected $updateFields = array(
+        'ITEM_NAME',
+        'ITEM_URL',
+        'ITEM_ORDER',
+        'ITEM_PARENT',
+        'MODIFIED_TIME'
+    );
+
+    /**
+     * 递归生成树状数组
+     *
+     * @param  array $data
+     * @param int    $parent
+     * @return array
+     */
     protected function getTree($data, $parent = 0)
     {
         $tree = array();
@@ -20,6 +53,12 @@ class MenuItemModel extends Model
         return $tree;
     }
 
+    /**
+     * 获取菜单项
+     *
+     * @param $menuID
+     * @return mixed|string|void
+     */
     public function getItem($menuID)
     {
         $where = array(
@@ -36,6 +75,14 @@ class MenuItemModel extends Model
         return json_encode($list);
     }
 
+    /**
+     * 更新菜单项
+     *
+     * @param $menuID
+     * @param $items
+     * @param $addItems
+     * @return bool
+     */
     public function updateItem($menuID, $items, $addItems)
     {
         try {
@@ -59,6 +106,7 @@ class MenuItemModel extends Model
                     throw new \Exception('添加失败');
                 }
             }
+            //判断哪些是更新项
             foreach ($list as $k => $v) {
                 if (!isset($temp[$v['ITEM_ID']])) {
                     $result = $this->delete($v['ITEM_ID']);

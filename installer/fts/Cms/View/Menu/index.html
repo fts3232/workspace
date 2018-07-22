@@ -171,7 +171,7 @@
                     if (data.status) {
                         alertMessage('success', data.msg);
                         $('#delete-modal').modal('hide');
-                        $('.data tbody tr').eq(_this.attr('menu-index')).remove();
+                        $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
                         alertMessage('danger', data.msg, data.code);
                     }

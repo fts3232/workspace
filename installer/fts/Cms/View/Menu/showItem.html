@@ -41,6 +41,14 @@
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+    /**
+     * 创建菜单项
+     *
+     * @param index
+     * @param data
+     * @param depth
+     * @returns {jQuery|HTMLElement}
+     */
     function create_item(index, data, depth) {
         var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-parent="' + data.ITEM_PARENT + '" data-depth="' + depth + '" data-order="' + data.ITEM_ORDER + '" class="ui-sortable-handle"></li>')
         li.css('marginLeft', depth * 30 + 'px');
@@ -96,8 +104,12 @@
         return li
     }
 
+    /**
+     * 创建菜单
+     *
+     * @type {number}
+     */
     var i = 0;
-
     function create_menu(menu, depth) {
         var depth = depth == undefined ? 0 : depth;
         menu.map(function (v, k) {

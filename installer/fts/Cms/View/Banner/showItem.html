@@ -55,6 +55,13 @@
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+    /**
+     * 创建banner项
+     *
+     * @param index
+     * @param data
+     * @returns {jQuery|HTMLElement}
+     */
     function create_item(index, data) {
         var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="'+data.ITEM_URL+'" class="ui-sortable-handle"></li>');
         var img = $('<img src="'+data.ITEM_IMG+'" class="img-thumbnail"/>');
@@ -62,6 +69,11 @@
         return li
     }
 
+    /**
+     * 创建banner
+     *
+     * @param banner
+     */
     function create_banner(banner) {
         banner.map(function (v, i) {
             var item = create_item(i, v);
