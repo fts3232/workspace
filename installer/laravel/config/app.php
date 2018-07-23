@@ -179,6 +179,7 @@ return [
 
         fts\Captcha\CaptchaServiceProvider::class,
         fts\CacheResponse\CacheResponseServiceProvider::class,
+        fts\HttpClient\HttpClientServiceProvider::class,
         fts\UploadImage\UploadImageServiceProvider::class,
         fts\OAuth2\OAuthServiceProvider::class,
         App\Providers\LogServiceProvider::class,

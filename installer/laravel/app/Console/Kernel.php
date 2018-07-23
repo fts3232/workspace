@@ -3,9 +3,9 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,16 +27,57 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //php artisan schedule:run
-        $slugs = Redis::ZRANGEBYSCORE('www_page_cache_clear', '-inf', time());
-        $temp = array();
-        foreach($slugs as $slug){
-            Redis::ZREM('www_page_cache_clear', $slug);
-            $temp2 = explode(' ', $slug);
-            $temp = array_merge($temp, $temp2);
-
+        $staticDir = public_path('static');
+        $slugs = array();
+        //获取到发布时间的状态为等待发布的文章所属栏目别名
+        $sql = 'SELECT
+                    b.CATEGORY_SLUG
+                FROM
+                    posts AS a
+                LEFT JOIN category b ON a.POST_CATEGORY_ID = b.CATEGORY_ID
+                WHERE
+                    PUBLISHED_TIME <= NOW()
+                AND POST_STATUS = 1';
+        $result = DB::select($sql);
+        foreach ($result as $item) {
+            $slugs[] = $item->CATEGORY_SLUG;
         }
-        $slugs = array_unique($temp);
-        $schedule->command('page-cache:clear',['slug'=>$slugs])->everyFiveMinutes()->appendOutputTo(storage_path('logs/cron.log'));
+        //更新发布时间的状态为等待发布的文章状态为发布
+        $sql = "UPDATE posts
+                SET POST_STATUS = 2
+                WHERE
+                    PUBLISHED_TIME <= NOW()
+                AND POST_STATUS = 1";
+        DB::update($sql);
+        //获取redis有序集合里到到期的要清楚的栏目别名
+        $redisSlugs = Redis::ZRANGEBYSCORE('www_page_cache_clear', '-inf', time());
+        foreach ($redisSlugs as $item) {
+            $temp2 = explode(' ', $item);
+            $slugs = array_merge($slugs, $temp2);
+            Redis::ZREM('www_page_cache_clear', $item);
+        }
+        //去除重复项
+        $slugs = array_unique($slugs);
+        //获取创建时间超过配置参数的文件
+        $filesSystem = app('files');
+        $files = $filesSystem->allFiles($staticDir);
+        foreach ($files as $file) {
+            $pathName = $file->getPathName();
+            $createTime = $file->getCTime();
+            if ($createTime < time() - 600) {//创建时间超过10分钟 删除
+                $slugs[] = $pathName;
+            }
+        }
+        foreach ($slugs as $slug) {
+            if (strpos($slug, $staticDir) === false) {
+                $slug = $staticDir.DIRECTORY_SEPARATOR.$slug;
+            }
+            if ($filesSystem->type($slug) == 'file') {
+                $filesSystem->delete($slug);
+            } else {
+                $filesSystem->cleanDirectory($slug);
+            }
+        }
     }
 
     /**
