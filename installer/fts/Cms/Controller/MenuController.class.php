@@ -141,8 +141,8 @@ class MenuController extends Controller
             $return = array('status' => true, 'msg' => '更新成功');
             try {
                 $items = I('post.items');
-                $menuID = I('post.menuID', false, 'int');
-                $addItems = I('post.addItems');
+                $menuID = I('post.menu_id', false, 'int');
+                $addItems = I('post.add_items');
                 $model = D('MenuItem');
                 //判断id是否存在
                 if (!D('Menu')->isExists($menuID)) {

@@ -65,9 +65,9 @@ class TagsController extends Controller
                 $data = array(
                     'name' => I('post.name'),
                     'description' => I('post.description'),
-                    'seo-title' => I('post.seo-title'),
-                    'seo-description' => I('post.seo-description'),
-                    'seo-keyword' => I('post.seo-keyword'),
+                    'seo_title' => I('post.seo_title'),
+                    'seo_description' => I('post.seo_description'),
+                    'seo_keyword' => I('post.seo_keyword'),
                     'id' => $id
                 );
                 //更新操作
@@ -128,9 +128,9 @@ class TagsController extends Controller
                 $data = array(
                     'name' => I('post.name'),
                     'description' => I('post.description'),
-                    'seo-title' => I('post.seo-title'),
-                    'seo-description' => I('post.seo-description'),
-                    'seo-keyword' => I('post.seo-keyword')
+                    'seo_title' => I('post.seo_title'),
+                    'seo_description' => I('post.seo_description'),
+                    'seo_keyword' => I('post.seo_keyword')
                 );
                 //判断tag 名称是否存在
                 if ($tag = $model->isExists($data['name'])) {

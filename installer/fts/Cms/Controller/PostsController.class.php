@@ -63,17 +63,17 @@ class PostsController extends Controller
                 $tags = implode(',', $tags);
                 $data = array(
                     'POST_TITLE' => I('post.title'),
-                    'POST_CATEGORY_ID' => I('post.category-id', false, 'int'),
-                    'POST_TRANSLATE_ID' => I('post.translate-id'),
+                    'POST_CATEGORY_ID' => I('post.category_id', false, 'int'),
+                    'POST_TRANSLATE_ID' => I('post.translate_id'),
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status'),
                     'POST_TAGS_ID' => $tags,
                     'POST_AUTHOR_ID' => I('session.uid'),
-                    'SEO_TITLE' => I('post.seo-keyword'),
-                    'SEO_KEYWORD' => I('post.seo-keyword'),
-                    'SEO_DESCRIPTION' => I('post.seo-description'),
-                    'PUBLISHED_TIME' => I('post.published-time')
+                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_KEYWORD' => I('post.seo_keyword'),
+                    'SEO_DESCRIPTION' => I('post.seo_description'),
+                    'PUBLISHED_TIME' => I('post.published_time')
                 );
                 //添加操作
                 $result = $model->addPost($data);
@@ -156,16 +156,16 @@ class PostsController extends Controller
                 $tags = I('post.tags');
                 $tags = implode(',', $tags);
                 $data = array(
-                    'POST_CATEGORY_ID' => I('post.category-id', false, 'int'),
+                    'POST_CATEGORY_ID' => I('post.category_id', false, 'int'),
                     'POST_TITLE' => I('post.title'),
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status'),
                     'POST_TAGS_ID' => $tags,
-                    'SEO_TITLE' => I('post.seo-title'),
-                    'SEO_KEYWORD' => I('post.seo-keyword'),
-                    'SEO_DESCRIPTION' => I('post.seo-description'),
-                    'PUBLISHED_TIME' => I('post.published-time')
+                    'SEO_TITLE' => I('post.seo_title'),
+                    'SEO_KEYWORD' => I('post.seo_keyword'),
+                    'SEO_DESCRIPTION' => I('post.seo_description'),
+                    'PUBLISHED_TIME' => I('post.published_time')
                 );
                 //修改操作
                 $result = $model->editPost($id, $data);

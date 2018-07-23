@@ -72,9 +72,9 @@ class TagsModel extends Model
         $data = array(
             'TAG_NAME' => $data['name'],
             'TAG_DESCRIPTION' => $data['description'],
-            'SEO_TITLE' => $data['seo-title'],
-            'SEO_DESCRIPTION' => $data['seo-description'],
-            'SEO_KEYWORD' => $data['seo-keyword']
+            'SEO_TITLE' => $data['seo_title'],
+            'SEO_DESCRIPTION' => $data['seo_description'],
+            'SEO_KEYWORD' => $data['seo_keyword']
         );
         return $this->add($data);
     }
@@ -93,9 +93,9 @@ class TagsModel extends Model
         $data = array(
             'TAG_NAME' => $data['name'],
             'TAG_DESCRIPTION' => $data['description'],
-            'SEO_TITLE' => $data['seo-title'],
-            'SEO_DESCRIPTION' => $data['seo-description'],
-            'SEO_KEYWORD' => $data['seo-keyword']
+            'SEO_TITLE' => $data['seo_title'],
+            'SEO_DESCRIPTION' => $data['seo_description'],
+            'SEO_KEYWORD' => $data['seo_keyword']
         );
         $result = $this->where($where)->save($data);
         return $result;

@@ -170,8 +170,8 @@ class BannerController extends Controller
             $return = array('status' => true, 'msg' => '更新成功');
             try {
                 $items = I('post.items');
-                $bannerID = I('post.bannerID', false, 'int');
-                $addItems = I('post.addItems');
+                $bannerID = I('post.banner_id', false, 'int');
+                $addItems = I('post.add_items');
                 $model = D('BannerItem');
                 //判断id是否存在
                 if (!D('Banner')->isExists($bannerID)) {

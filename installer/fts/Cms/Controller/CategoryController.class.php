@@ -38,7 +38,7 @@ class CategoryController extends Controller
             $return = array('status' => true, 'msg' => '更新成功');
             try {
                 $model = D('Category');
-                $addItems = I('post.addItems');
+                $addItems = I('post.add_items');
                 $items = I('post.items');
                 $result = $model->updateCategory($items,$addItems);
                 if (!$result) {

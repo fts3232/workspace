@@ -22,19 +22,19 @@
                 <div class="form-group">
                     <label for="input-seo-title" class="col-sm-2 control-label">SEO标题</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="input-seo-title" name="seo-title" value="{$result['SEO_TITLE']|default=''}"/>
+                        <input type="text" class="form-control" id="input-seo-title" name="seo_title" value="{$result['SEO_TITLE']|default=''}"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="input-seo-keyword" class="col-sm-2 control-label">SEO关键词</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="input-seo-keyword" name="seo-keyword" value="{$result['SEO_KEYWORD']|default=''}"/>
+                        <input type="text" class="form-control" id="input-seo-keyword" name="seo_keyword" value="{$result['SEO_KEYWORD']|default=''}"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="input-seo-desc" class="col-sm-2 control-label">SEO描述</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="input-seo-desc" name="seo-description">{$result['SEO_DESCRIPTION']|default=''}</textarea>
+                        <textarea class="form-control" id="input-seo-desc" name="seo_description">{$result['SEO_DESCRIPTION']|default=''}</textarea>
                     </div>
                 </div>
             </form>
@@ -56,9 +56,9 @@
             var data = {
                 'name': $('[name="name"]').val(),
                 'description': $('[name="description"]').val(),
-                'seo-title': $('[name="seo-title"]').val(),
-                'seo-keyword': $('[name="seo-keyword"]').val(),
-                'seo-description': $('[name="seo-description"]').val()
+                'seo_title': $('[name="seo_title"]').val(),
+                'seo_keyword': $('[name="seo_keyword"]').val(),
+                'seo_description': $('[name="seo_description"]').val()
             }
             if (action == 'update') {
                 data.id = $('[name="id"]').val()
