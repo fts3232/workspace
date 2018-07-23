@@ -14,15 +14,9 @@ use Illuminate\Http\Request;
 */
 
 Route::post('cache/create', function (Request $request) {
-    $uri = $request->input('uri', '');
-    Artisan::call('page-cache:create', [
-        'uri' => $uri
-    ]);
-})->middleware(['api', 'oauth:resource:cache']);
+    Artisan::call('page-cache:create');
+})->middleware(['api', 'verify:createCache']);
 
 Route::post('cache/clear', function (Request $request) {
-    $uri = $request->input('uri', '');
-    Artisan::call('page-cache:clear', [
-        'uri' => $uri
-    ]);
-})->middleware(['api', 'oauth:resource:cache']);
+    Artisan::call('page-cache:clear');
+})->middleware(['api', 'verify:clearCache']);

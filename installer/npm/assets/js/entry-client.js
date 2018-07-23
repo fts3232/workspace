@@ -40,9 +40,21 @@ if (IS_SERVER_RENDER) {
         )
     });
 } else {
+    const store = createStore((state = { name: '',count:0 }, action) => {
+        const name = state.name
+        const count = state.count
+        switch (action.type) {
+            case 'increase':
+                return { count: count + 1 }
+            default:
+                return state
+        }
+    })
     ReactDOM.render(
         <BrowserRouter>
-            {renderRoutes(routes)}
+            <Provider store={store}>
+                {renderRoutes(routes)}
+            </Provider>
         </BrowserRouter>,
         document.getElementById('app')
     )

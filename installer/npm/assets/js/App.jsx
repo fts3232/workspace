@@ -27,7 +27,6 @@ class App extends React.Component {
             });
     }
     componentDidMount(){
-        console.log(this.state.name)
         if(!this.state.name){
             this.fetch();
         }
