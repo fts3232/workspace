@@ -80,7 +80,7 @@ class PostsController extends Controller
                 if (!$result) {
                     throw new \Exception('添加失败', 100);
                 }
-                if($data['POST_STATUS'] == 2){
+                if ($data['POST_STATUS'] == 2) {
                     //添加定时任务
                     $slug = $model->getCategorySlug($result);
                     $this->addRedisList($slug);
@@ -222,10 +222,51 @@ class PostsController extends Controller
      *
      * @param $slug
      */
-    private function addRedisList($slug){
+    private function addRedisList($slug)
+    {
         //添加定时任务
         $redis = new \Redis();
-        $redis->connect('127.0.0.1', 6379);
+        if (!$redis->connect('127.0.0.1', 6379)) {
+            throw new \Exception('操作成功，但写入redis失败', 103);
+        }
         $redis->ZADD('www_page_cache_clear', time(), $slug . '/index.html');
+    }
+
+    /**
+     * 上传图片
+     */
+    public function uploadImage()
+    {
+        if (IS_POST) {
+            try {
+                $return = array('status' => true, 'msg' => '上传成功');
+                $upload = new \Think\Upload();// 实例化上传类
+                $upload->maxSize = 102400;// 设置附件上传大小
+                $upload->exts = array('jpg', 'gif', 'png', 'jpeg', 'pdf');// 设置附件上传类型
+                $upload->rootPath = './Uploads'; // 设置附件上传根目录
+                $upload->savePath = 'cms_banner/'; // 设置附件上传（子）目录
+                // 上传文件
+                $info = $upload->upload();
+                //print_r($info);
+                if (!$info) {// 上传错误提示错误信息
+                    throw new \Exception($upload->getError(), 100);
+                }
+                foreach ($info as $file) {
+                    $return['location'] = '/Uploads/' . $file['savepath'] . $file['savename'];
+                    $image = new \Think\Image();
+                    // 在图片左上角添加水印（水印文件位于./logo.png） 并保存为water.jpg
+                    $image->open('.' . $return['location'])
+                        ->water('./Public/images/watermark.png', \Think\Image::IMAGE_WATER_SOUTHEAST)
+                        ->save('.' . $return['location']);
+                }
+            } catch (\Exception $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
+        }
     }
 }
