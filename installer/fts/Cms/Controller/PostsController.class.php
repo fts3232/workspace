@@ -144,10 +144,7 @@ class PostsController extends Controller
             //获取栏目
             $category = $categoryModel->getAll();
             //获取tags信息
-            $tags = explode(',', $result['POST_TAGS_ID']);
-            if (!empty($tags)) {
-                $tags = $tagModel->where(array('TAG_ID' => array('in', $tags)))->select();
-            }
+            $tags = D('PostsTagsRelation')->getTags($id);
             //获取对照文章信息
             $translate = $model->getTranslate($result['POST_TRANSLATE_ID'], $id);
             $this->assign('translateID', $result['TRANSLATE_ID'] == 0 ? $id : $result['TRANSLATE_ID']);
@@ -177,9 +174,6 @@ class PostsController extends Controller
         if (IS_AJAX) {
             try {
                 $return = array('status' => true, 'msg' => '修改成功');
-                //tags处理
-                $tags = I('post.tags');
-                $tags = implode(',', $tags);
                 //整合输入
                 $data = array(
                     'POST_CATEGORY_ID' => I('post.category_id', false, 'int'),
@@ -187,7 +181,7 @@ class PostsController extends Controller
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status', false, 'int'),
-                    'POST_TAGS_ID' => $tags,
+                    'POST_TAGS_ID' => I('post.tags'),
                     'POST_ORDER' => I('post.order', false, 'int'),
                     'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
@@ -275,7 +269,7 @@ class PostsController extends Controller
                     throw new \Exception('该post id不存在', 100);
                 }
                 //删除操作
-                $result = $model->delete($id);
+                $result = $model->deletePost($id);
                 if (!$result) {
                     throw new \Exception('删除失败', 101);
                 }

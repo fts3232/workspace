@@ -77,18 +77,21 @@ class PostsModel extends Model
     {
         try {
             $return = true;
+            //开启事务
             $this->startTrans();
             if (empty($data['PUBLISHED_TIME'])) {
                 $data['PUBLISHED_TIME'] = array('exp', 'NOW()');
             }
+            //添加
             $id = $this->add($data);
             if (!$id) {
                 throw new \Exception('添加失败');
             }
+            //添加post和tag的关系
             foreach ($data['POST_TAGS_ID'] as $tag) {
-                $result = D('PostsTags')->addRelation($id, $tag);
+                $result = D('PostsTagsRelation')->addRelation($id, $tag);
                 if (!$result) {
-                    throw new \Exception('添加失败');
+                    throw new \Exception('添加关系失败');
                 }
             }
             $this->commit();
@@ -100,6 +103,30 @@ class PostsModel extends Model
     }
 
     /**
+     * 判断原标签和先标签的差异
+     *
+     * @param $source
+     * @param $target
+     * @return array
+     */
+    private function tagsDiff($source, $target)
+    {
+        $delete = [];
+        $add = [];
+        foreach ($source as $item) {
+            if (!in_array($item, $target)) {
+                $delete[] = $item;
+            }
+        }
+        foreach ($target as $item) {
+            if (!in_array($item, $source)) {
+                $add[] = $item;
+            }
+        }
+        return ['delete' => $delete, 'add' => $add];
+    }
+
+    /**
      * 修改文章
      *
      * @param $id
@@ -108,11 +135,43 @@ class PostsModel extends Model
      */
     public function editPost($id, $data)
     {
-        if (empty($data['PUBLISHED_TIME'])) {
-            unset($data['PUBLISHED_TIME']);
+        try {
+            $return = true;
+            //开启事务
+            $this->startTrans();
+            if (empty($data['PUBLISHED_TIME'])) {
+                unset($data['PUBLISHED_TIME']);
+            }
+            $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+            //保存
+            $result = $this->where(array('POST_ID' => $id))->save($data);
+            if (!$result) {
+                throw new \Exception('修改失败');
+            }
+            //判断原标签和先标签的差异
+            $relationModel = D('PostsTagsRelation');
+            $tags = $relationModel->getRelation($id);
+            $diff = $this->tagsDiff($tags, $data['POST_TAGS_ID']);
+            //修改关系
+            foreach($diff['delete'] as $tag){
+                $result = $relationModel->deleteRelation($id, $tag);
+                if (!$result) {
+                    throw new \Exception('删除对应关系失败');
+                }
+            }
+            //添加关系
+            foreach ($diff['add'] as $tag) {
+                $result = $relationModel->addRelation($id, $tag);
+                if (!$result) {
+                    throw new \Exception('添加对应关系失败');
+                }
+            }
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            $return = false;
         }
-        $data['MODIFIED_TIME'] = array('exp', 'NOW()');
-        return $this->where(array('POST_ID' => $id))->save($data);
+        return $return;
     }
 
     /**
@@ -167,5 +226,35 @@ class PostsModel extends Model
             );
         }
         return $this->where($where)->select();
+    }
+
+    /**
+     * 删除文章
+     *
+     * @param $id
+     * @return bool
+     */
+    public function deletePost($id){
+        try {
+            $return = true;
+            //开启事务
+            $this->startTrans();
+            //删除
+            $result = $this->where(array('POST_ID' => $id))->delete($id);
+            if (!$result) {
+                throw new \Exception('删除失败');
+            }
+            //删除post和tag的关系
+            $relationModel = D('PostsTagsRelation');
+            $result = $relationModel->deleteRelation($id);
+            if (!$result) {
+                throw new \Exception('删除失败');
+            }
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            $return = false;
+        }
+        return $return;
     }
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-24 18:07:56
+Date: 2018-07-25 00:01:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -178,7 +178,6 @@ CREATE TABLE `posts` (
   `POST_CONTENT` text COMMENT '文章正文',
   `POST_LANG` varchar(10) DEFAULT NULL COMMENT '文章语言',
   `POST_AUTHOR_ID` int(11) DEFAULT NULL COMMENT '作者用户ID',
-  `POST_TAGS_ID` varchar(255) DEFAULT NULL COMMENT '文章标签',
   `POST_STATUS` tinyint(3) DEFAULT NULL COMMENT '文章状态 0:草稿 1:等待发布 2:发布',
   `POST_ORDER` tinyint(3) DEFAULT '0' COMMENT '文章排序',
   `SEO_TITLE` varchar(50) DEFAULT NULL COMMENT 'seo标题',
@@ -189,56 +188,46 @@ CREATE TABLE `posts` (
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`POST_ID`),
   KEY `POST_TRANSLATE_ID` (`POST_TRANSLATE_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COMMENT='存放文章信息';
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8 COMMENT='存放文章信息';
 
 -- ----------------------------
 -- Records of posts
 -- ----------------------------
-INSERT INTO `posts` VALUES ('31', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', null, '0', '0', '', '', '', '2018-07-22 18:42:36', '2018-07-22 18:42:36', null);
-INSERT INTO `posts` VALUES ('32', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', null, '0', '0', '', '', '', '2018-07-22 18:42:37', '2018-07-22 18:42:37', null);
-INSERT INTO `posts` VALUES ('33', '0', '3', '123', '&lt;p&gt;213123123&lt;/p&gt;', 'zh_HK', '0', null, '2', '0', '', '', '', '2018-07-22 18:43:34', '2018-07-22 18:43:34', null);
-INSERT INTO `posts` VALUES ('35', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', null, '0', '0', '', '', '', '2018-07-22 23:06:06', '2018-07-22 23:06:06', null);
-INSERT INTO `posts` VALUES ('36', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', null, '2', '0', '', '', '', '2018-07-22 23:06:43', '2018-07-22 23:06:43', null);
-INSERT INTO `posts` VALUES ('37', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', null, '2', '0', '', '', '', '2018-07-22 23:06:47', '2018-07-22 23:06:47', null);
-INSERT INTO `posts` VALUES ('38', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', null, '2', '0', '', '', '', '2018-07-22 23:06:51', '2018-07-22 23:06:51', null);
-INSERT INTO `posts` VALUES ('39', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:48', '2018-07-23 10:27:48', null);
-INSERT INTO `posts` VALUES ('40', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:49', '2018-07-23 10:27:49', null);
-INSERT INTO `posts` VALUES ('41', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:49', '2018-07-23 10:27:49', null);
-INSERT INTO `posts` VALUES ('42', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
-INSERT INTO `posts` VALUES ('43', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
-INSERT INTO `posts` VALUES ('44', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
-INSERT INTO `posts` VALUES ('45', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
-INSERT INTO `posts` VALUES ('46', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
-INSERT INTO `posts` VALUES ('47', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
-INSERT INTO `posts` VALUES ('48', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
-INSERT INTO `posts` VALUES ('49', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
-INSERT INTO `posts` VALUES ('50', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
-INSERT INTO `posts` VALUES ('51', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
-INSERT INTO `posts` VALUES ('52', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
-INSERT INTO `posts` VALUES ('53', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
-INSERT INTO `posts` VALUES ('54', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
-INSERT INTO `posts` VALUES ('55', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
-INSERT INTO `posts` VALUES ('56', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
-INSERT INTO `posts` VALUES ('57', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
-INSERT INTO `posts` VALUES ('58', '0', '3', '现货黄金多头崛起，美元承压走弱', '&lt;p&gt;&lt;img src=&quot;/Uploads/cms_banner/2018-07-23/5b5543337ed74.png&quot; alt=&quot;&quot; width=&quot;357&quot; height=&quot;357&quot; /&gt;&lt;img src=&quot;/Uploads/cms_banner/2018-07-23/5b55416439a09.png&quot; alt=&quot;&quot; width=&quot;48&quot; height=&quot;44&quot; /&gt;1231&lt;img src=&quot;../../../../../Uploads/cms_banner/2018-07-23/5b553e86284bf.png&quot; alt=&quot;&quot; width=&quot;286&quot; height=&quot;286&quot; /&gt;&lt;/p&gt;', 'zh_CN', '1', '83,84', '0', '100', '现货黄金多头崛起，美元承压走弱 ', '现货黄金，操作建议', '货黄金市场2018年7月23日14点收盘于1230.9美元/盎司，金价在早间冲击重压1235美元/盎司一线后回撤，目前维持与1230-1233区间窄幅震荡。现货黄金在短期内可能面临小幅调整，在调整过后依然有机会继续上涨。后市关注1225-1230区间能否成为上涨后的回踩支点，为后市', '2018-07-23 10:27:54', '2018-07-23 10:27:54', '2018-07-24 17:56:40');
-INSERT INTO `posts` VALUES ('59', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:54', '2018-07-23 10:27:54', null);
-INSERT INTO `posts` VALUES ('60', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:54', '2018-07-23 10:27:54', null);
-INSERT INTO `posts` VALUES ('61', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-23 10:27:54', '2018-07-23 10:27:54', null);
-INSERT INTO `posts` VALUES ('62', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', '87,88', '0', '0', '', '', '', '2018-07-24 17:58:31', '2018-07-24 17:58:31', null);
-INSERT INTO `posts` VALUES ('63', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', '87,88', '0', '0', '', '', '', '2018-07-24 17:58:52', '2018-07-24 17:58:52', null);
-INSERT INTO `posts` VALUES ('64', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', '87,88', '0', '0', '', '', '', '2018-07-24 17:59:06', '2018-07-24 17:59:06', null);
-INSERT INTO `posts` VALUES ('65', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 17:59:28', '2018-07-24 17:59:28', null);
-INSERT INTO `posts` VALUES ('66', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 17:59:36', '2018-07-24 17:59:36', null);
-INSERT INTO `posts` VALUES ('67', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 17:59:52', '2018-07-24 17:59:52', null);
-INSERT INTO `posts` VALUES ('68', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 18:00:21', '2018-07-24 18:00:21', null);
-INSERT INTO `posts` VALUES ('69', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 18:00:42', '2018-07-24 18:00:42', null);
-INSERT INTO `posts` VALUES ('70', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', null, '0', '0', '', '', '', '2018-07-24 18:05:02', '2018-07-24 18:05:02', null);
+INSERT INTO `posts` VALUES ('31', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', '0', '0', '', '', '', '2018-07-22 18:42:36', '2018-07-22 18:42:36', null);
+INSERT INTO `posts` VALUES ('32', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', '0', '0', '', '', '', '2018-07-22 18:42:37', '2018-07-22 18:42:37', null);
+INSERT INTO `posts` VALUES ('33', '0', '3', '123', '&lt;p&gt;213123123&lt;/p&gt;', 'zh_HK', '0', '2', '0', '', '', '', '2018-07-22 18:43:34', '2018-07-22 18:43:34', null);
+INSERT INTO `posts` VALUES ('35', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '0', '0', '', '', '', '2018-07-22 23:06:06', '2018-07-22 23:06:06', null);
+INSERT INTO `posts` VALUES ('36', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '2', '0', '', '', '', '2018-07-22 23:06:43', '2018-07-22 23:06:43', null);
+INSERT INTO `posts` VALUES ('37', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '2', '0', '', '', '', '2018-07-22 23:06:47', '2018-07-22 23:06:47', null);
+INSERT INTO `posts` VALUES ('38', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '2', '0', '', '', '', '2018-07-22 23:06:51', '2018-07-22 23:06:51', null);
+INSERT INTO `posts` VALUES ('39', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:48', '2018-07-23 10:27:48', null);
+INSERT INTO `posts` VALUES ('40', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:49', '2018-07-23 10:27:49', null);
+INSERT INTO `posts` VALUES ('41', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:49', '2018-07-23 10:27:49', null);
+INSERT INTO `posts` VALUES ('42', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
+INSERT INTO `posts` VALUES ('43', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
+INSERT INTO `posts` VALUES ('44', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
+INSERT INTO `posts` VALUES ('45', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:50', '2018-07-23 10:27:50', null);
+INSERT INTO `posts` VALUES ('46', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
+INSERT INTO `posts` VALUES ('47', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
+INSERT INTO `posts` VALUES ('48', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:51', '2018-07-23 10:27:51', null);
+INSERT INTO `posts` VALUES ('49', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
+INSERT INTO `posts` VALUES ('50', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
+INSERT INTO `posts` VALUES ('51', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
+INSERT INTO `posts` VALUES ('52', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
+INSERT INTO `posts` VALUES ('53', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:52', '2018-07-23 10:27:52', null);
+INSERT INTO `posts` VALUES ('54', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
+INSERT INTO `posts` VALUES ('55', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
+INSERT INTO `posts` VALUES ('56', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
+INSERT INTO `posts` VALUES ('57', '0', '3', '13', '&lt;p&gt;1231&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-23 10:27:53', '2018-07-23 10:27:53', null);
+INSERT INTO `posts` VALUES ('68', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-24 18:00:21', '2018-07-24 18:00:21', null);
+INSERT INTO `posts` VALUES ('69', '0', '3', 'asdasd', '&lt;p&gt;asdsad&lt;/p&gt;', 'zh_CN', '1', '0', '0', '', '', '', '2018-07-24 18:00:42', '2018-07-24 18:00:42', null);
+INSERT INTO `posts` VALUES ('72', '0', '3', '32', '&lt;p&gt;32432&lt;/p&gt;', 'zh_CN', '0', '0', '0', '', '', '', '2018-07-24 23:54:03', '2018-07-24 23:54:03', '2018-07-24 23:54:31');
 
 -- ----------------------------
--- Table structure for posts_tags
+-- Table structure for posts_tags_relation
 -- ----------------------------
-DROP TABLE IF EXISTS `posts_tags`;
-CREATE TABLE `posts_tags` (
+DROP TABLE IF EXISTS `posts_tags_relation`;
+CREATE TABLE `posts_tags_relation` (
   `ROW_ID` int(11) NOT NULL AUTO_INCREMENT,
   `POST_ID` int(11) DEFAULT NULL COMMENT '文章id',
   `TAG_ID` int(11) DEFAULT NULL COMMENT '标签id',
@@ -246,23 +235,21 @@ CREATE TABLE `posts_tags` (
   PRIMARY KEY (`ROW_ID`),
   KEY `POST_ID` (`POST_ID`) USING BTREE,
   KEY `TAG_ID` (`TAG_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='保存文章和标签的对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='保存文章和标签的对应关系';
 
 -- ----------------------------
--- Records of posts_tags
+-- Records of posts_tags_relation
 -- ----------------------------
-INSERT INTO `posts_tags` VALUES ('1', '65', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('2', '65', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('3', '66', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('4', '66', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('5', '67', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('6', '67', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('7', '68', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('8', '68', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('9', '69', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('10', '69', null, '2018-07-24 18:03:08');
-INSERT INTO `posts_tags` VALUES ('11', '70', '87', '2018-07-24 18:05:02');
-INSERT INTO `posts_tags` VALUES ('12', '70', '88', '2018-07-24 18:05:02');
+INSERT INTO `posts_tags_relation` VALUES ('1', '65', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('2', '65', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('3', '66', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('4', '66', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('5', '67', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('6', '67', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('7', '68', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('8', '68', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('9', '69', null, '2018-07-24 18:03:08');
+INSERT INTO `posts_tags_relation` VALUES ('10', '69', null, '2018-07-24 18:03:08');
 
 -- ----------------------------
 -- Table structure for tags
@@ -280,7 +267,7 @@ CREATE TABLE `tags` (
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`TAG_ID`),
   KEY `TAG_NAME` (`TAG_NAME`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8 COMMENT='存放文章标签信息';
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8 COMMENT='存放文章标签信息';
 
 -- ----------------------------
 -- Records of tags
@@ -299,3 +286,12 @@ INSERT INTO `tags` VALUES ('85', 'asdsad', 'asdsad', '', '', '', '', '2018-07-24
 INSERT INTO `tags` VALUES ('86', 'asdsadasd', 'asdsadasd', '', '', '', '', '2018-07-24 17:57:03', null);
 INSERT INTO `tags` VALUES ('87', 'asds', 'asds', '', '', '', '', '2018-07-24 17:58:10', null);
 INSERT INTO `tags` VALUES ('88', 'asdsd', 'asdsd', '', '', '', '', '2018-07-24 17:58:11', null);
+INSERT INTO `tags` VALUES ('89', '1234', '1234', '', '', '', '', '2018-07-24 23:27:51', null);
+INSERT INTO `tags` VALUES ('90', '12346', '12346', '', '', '', '', '2018-07-24 23:36:46', null);
+INSERT INTO `tags` VALUES ('91', '12347', '12347', '', '', '', '', '2018-07-24 23:36:57', null);
+INSERT INTO `tags` VALUES ('92', '123476', '123476', '', '', '', '', '2018-07-24 23:37:21', null);
+INSERT INTO `tags` VALUES ('93', '12345679', '12345679', '', '', '', '', '2018-07-24 23:38:02', null);
+INSERT INTO `tags` VALUES ('94', '66666', '66666', '', '', '', '', '2018-07-24 23:50:47', null);
+INSERT INTO `tags` VALUES ('95', '123444', '123444', '', '', '', '', '2018-07-24 23:53:45', null);
+INSERT INTO `tags` VALUES ('96', '12313123', '12313123', '', '', '', '', '2018-07-24 23:54:15', null);
+INSERT INTO `tags` VALUES ('97', '456546456', '456546456', '', '', '', '', '2018-07-24 23:54:24', null);
