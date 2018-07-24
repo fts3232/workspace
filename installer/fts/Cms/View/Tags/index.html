@@ -1,4 +1,8 @@
 <include file="Common:header" />
+<ol class="breadcrumb auto">
+    <li><a href="#">标签管理</a></li>
+    <li class="active">列表页</li>
+</ol>
 <div class="text-right auto tool-area">
     <a class="btn btn-primary" role="button" href="{:U('add')}">添加</a>
 </div>
@@ -8,6 +12,7 @@
             <tr>
                 <th>ID</th>
                 <th>名称</th>
+                <th>别名</th>
                 <th nowrap width="250">操作</th>
             </tr>
         </thead>
@@ -16,6 +21,7 @@
                 <tr>
                     <td>{$v.TAG_ID}</td>
                     <td>{$v.TAG_NAME}</td>
+                    <td>{$v.TAG_SLUG}</td>
                     <td>
                         <a class="btn btn-primary" role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
                         <button class="btn btn-danger delete" data-id="{$v['TAG_ID']}"><b>删除</b></button>

@@ -15,6 +15,7 @@ class TagsModel extends Model
      */
     protected $insertFields = array(
         'TAG_NAME',
+        'TAG_SLUG',
         'TAG_DESCRIPTION',
         'SEO_TITLE',
         'SEO_KEYWORD',
@@ -28,6 +29,7 @@ class TagsModel extends Model
      */
     protected $updateFields = array(
         'TAG_NAME',
+        'TAG_SLUG',
         'TAG_DESCRIPTION',
         'SEO_TITLE',
         'SEO_KEYWORD',
@@ -44,7 +46,7 @@ class TagsModel extends Model
      */
     public function getAll($offset, $size)
     {
-        $result = $this->field('TAG_ID,TAG_NAME')->order('TAG_ID ASC')->limit($offset, $size)->select();
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->order('TAG_ID ASC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 
@@ -56,7 +58,7 @@ class TagsModel extends Model
      */
     public function get($id)
     {
-        return $this->field('TAG_ID, TAG_NAME, TAG_DESCRIPTION, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+        return $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
             ->where(array('TAG_ID' => $id))
             ->find();
     }
@@ -71,6 +73,7 @@ class TagsModel extends Model
     {
         $data = array(
             'TAG_NAME' => $data['name'],
+            'TAG_SLUG' => $data['slug'],
             'TAG_DESCRIPTION' => $data['description'],
             'SEO_TITLE' => $data['seo_title'],
             'SEO_DESCRIPTION' => $data['seo_description'],
@@ -92,6 +95,7 @@ class TagsModel extends Model
         );
         $data = array(
             'TAG_NAME' => $data['name'],
+            'TAG_SLUG' => $data['slug'],
             'TAG_DESCRIPTION' => $data['description'],
             'SEO_TITLE' => $data['seo_title'],
             'SEO_DESCRIPTION' => $data['seo_description'],

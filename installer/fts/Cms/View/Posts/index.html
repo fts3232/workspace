@@ -1,4 +1,8 @@
 <include file="Common:header" />
+<ol class="breadcrumb auto">
+    <li><a href="{:U('index')}">文章管理</a></li>
+    <li class="active">列表页</li>
+</ol>
 <div class="text-right auto tool-area">
     <a href="{:U('add')}" class="btn btn-primary" role="button">添加</a>
 </div>
@@ -8,7 +12,9 @@
             <tr>
                 <th>ID</th>
                 <th>标题</th>
+                <th>栏目</th>
                 <th>作者</th>
+                <th>文章排序</th>
                 <th>创建时间</th>
                 <th>发布时间</th>
                 <th>更新时间</th>
@@ -19,8 +25,10 @@
             <foreach name="list" item="v" key="k">
                 <tr>
                     <td>{$v.POST_ID}</td>
-                    <td>{$v.POST_TITLE}</td>
+                    <td><a href="javascript:void(0)">{$v.POST_TITLE}</a></td>
+                    <td>{$v.CATEGORY_NAME}</td>
                     <td>{$v.POST_AUTHOR}</td>
+                    <td>{$v.POST_ORDER}</td>
                     <td>{$v.CREATED_TIME}</td>
                     <td>{$v.PUBLISHED_TIME}</td>
                     <td>{$v.UPDATED_TIME}</td>

@@ -1,5 +1,5 @@
 import { Provider, connect } from 'react-redux'
-import CounterUI from './CounterUI';
+import Counter from './Counter';
 import store from './store';
 import React from 'react';
 
@@ -20,12 +20,6 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-// Connected Component
-const App = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CounterUI)
-
 /*class Counter extends React.Component {
     render() {
         return (
@@ -36,4 +30,7 @@ const App = connect(
     }
 }*/
 
-export default App
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Counter)

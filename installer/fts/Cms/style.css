@@ -18,8 +18,16 @@
     margin: 0 auto;
 }
 
-.tool-area {
+.breadcrumb {
     margin-top: 70px;
+    margin-bottom: 20px;
+}
+
+.item-body .breadcrumb {
+    margin-top: 5px;
+}
+
+.tool-area {
     margin-bottom: 20px;
 }
 
@@ -129,13 +137,13 @@
 }
 
 /* menu */
-.menu .panel:nth-child(1), .category .panel:nth-child(1), .posts .panel:nth-child(1) {
+.menu .panel:nth-child(2) {
     width: 300px;
     float: left;
     margin-right: 10px;
 }
 
-.menu .panel:nth-child(2), .category .panel:nth-child(2), .posts .panel:nth-child(2) {
+.menu .panel:nth-child(3) {
     width: 700px;
     float: left;
 }
@@ -147,12 +155,15 @@
 }
 
 /* category */
-.category .panel:nth-child(1) {
+.category .panel:nth-child(2) {
     width: 410px;
+    float: left;
+    margin-right: 10px;
 }
 
-.category .panel:nth-child(2) {
+.category .panel:nth-child(3) {
     width: 590px;
+    float: left;
 }
 
 .category .sortable .well {
@@ -226,12 +237,10 @@
 
 /* posts */
 
-.posts .panel:nth-child(1) {
-    width: 651px;
-}
-
 .posts .panel:nth-child(2) {
-    width: 363px;
+    width: 651px;
+    margin-right: 10px;
+    float: left;
 }
 
 .posts .panel:nth-child(3) {
@@ -240,6 +249,11 @@
 }
 
 .posts .panel:nth-child(4) {
+    width: 363px;
+    float: left;
+}
+
+.posts .panel:nth-child(5) {
     width: 363px;
     float: left;
 }

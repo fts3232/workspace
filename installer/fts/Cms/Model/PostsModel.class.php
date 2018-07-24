@@ -20,8 +20,8 @@ class PostsModel extends Model
         'POST_CATEGORY_ID',
         'POST_LANG',
         'POST_AUTHOR_ID',
-        'POST_TAGS_ID',
         'POST_STATUS',
+        'POST_ORDER',
         'SEO_TITLE',
         'SEO_KEYWORD',
         'SEO_DESCRIPTION',
@@ -40,8 +40,8 @@ class PostsModel extends Model
         'POST_CATEGORY_ID',
         'POST_LANG',
         'POST_AUTHOR_ID',
-        'POST_TAGS_ID',
         'POST_STATUS',
+        'POST_ORDER',
         'SEO_TITLE',
         'SEO_KEYWORD',
         'SEO_DESCRIPTION',
@@ -58,8 +58,10 @@ class PostsModel extends Model
     public function getAll($offset, $size)
     {
         $result = $this
-            ->field('POST_ID, POST_TITLE, POST_AUTHOR_ID, PUBLISHED_TIME, CREATED_TIME, MODIFIED_TIME')
-            ->order('PUBLISHED_TIME DESC')
+            ->alias('a')
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_AUTHOR_ID, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
+            ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
+            ->order('a.POST_ORDER DESC, a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
             ->select();
         return $result ? $result : array();
@@ -73,10 +75,28 @@ class PostsModel extends Model
      */
     public function addPost($data)
     {
-        if (empty($data['PUBLISHED_TIME'])) {
-            $data['PUBLISHED_TIME'] = array('exp', 'NOW()');
+        try {
+            $return = true;
+            $this->startTrans();
+            if (empty($data['PUBLISHED_TIME'])) {
+                $data['PUBLISHED_TIME'] = array('exp', 'NOW()');
+            }
+            $id = $this->add($data);
+            if (!$id) {
+                throw new \Exception('添加失败');
+            }
+            foreach ($data['POST_TAGS_ID'] as $tag) {
+                $result = D('PostsTags')->addRelation($id, $tag);
+                if (!$result) {
+                    throw new \Exception('添加失败');
+                }
+            }
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            $return = false;
         }
-        return $this->add($data);
+        return $return;
     }
 
     /**
@@ -103,7 +123,7 @@ class PostsModel extends Model
      */
     public function get($id)
     {
-        return $this->field('POST_ID, POST_TITLE, POST_CONTENT, POST_AUTHOR_ID, POST_CATEGORY_ID, POST_TAGS_ID, POST_TRANSLATE_ID, POST_LANG, POST_STATUS, PUBLISHED_TIME, SEO_KEYWORD, SEO_DESCRIPTION, SEO_TITLE')
+        return $this->field('POST_ID, POST_TITLE, POST_CONTENT, POST_AUTHOR_ID, POST_CATEGORY_ID, POST_TRANSLATE_ID, POST_LANG, POST_STATUS, PUBLISHED_TIME, SEO_KEYWORD, SEO_DESCRIPTION, SEO_TITLE, POST_ORDER')
             ->where(array('POST_ID' => $id))
             ->find();
     }

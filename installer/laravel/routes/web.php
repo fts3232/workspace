@@ -87,8 +87,8 @@ Route::group(['middleware' => 'page-cache'], function () {
             return view('news/headline');
         });
         //汇市新闻
-        Route::get('/realtime', function () {
-            return view('news/realtime');
+        Route::get('/market', function () {
+            return view('news/market');
         });
         //行业资讯
         Route::get('/information', function () {

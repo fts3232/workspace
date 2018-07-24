@@ -41,6 +41,17 @@ class MenuModel extends Model
     }
 
     /**
+     * 获取指定id的menu名称
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return $this->field('MENU_NAME')->where(array('MENU_ID' => $id))->getField('MENU_NAME');
+    }
+
+    /**
      * 添加菜单
      *
      * @param $name

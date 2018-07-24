@@ -165,9 +165,11 @@ class BannerController extends Controller
     {
         $model = D('BannerItem');
         $id = I('get.id', false, 'int');
+        $bannerName = D('Banner')->getName($id);
         $items = $model->getItem($id);
         $this->assign('items', $items);
         $this->assign('bannerID', $id);
+        $this->assign('bannerName', $bannerName);
         $this->display();
     }
 

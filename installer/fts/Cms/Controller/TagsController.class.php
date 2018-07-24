@@ -61,6 +61,7 @@ class TagsController extends Controller
                 $id = I('post.id', false, 'int');
                 $data = array(
                     'name' => I('post.name'),
+                    'slug' => I('post.slug'),
                     'description' => I('post.description'),
                     'seo_title' => I('post.seo_title'),
                     'seo_description' => I('post.seo_description'),
@@ -73,6 +74,7 @@ class TagsController extends Controller
                     array(
                         'id' => 'required|int',
                         'name' => 'required|bannerName',
+                        'slug' => 'required|bannerName',
                         'seo_title' => 'seoTitle',
                         'seo_keyword' => 'seoKeyword',
                         'seo_description' => 'seoDescription',
@@ -80,6 +82,7 @@ class TagsController extends Controller
                     array(
                         'id' => 'id参数不正确',
                         'name' => '名称格式不正确',
+                        'slug' => '别名格式不正确',
                         'seo_title' => 'SEO标题格式不正确',
                         'seo_keyword' => 'SEO关键词格式不正确',
                         'seo_description' => 'SEO描述格式不正确',
@@ -121,7 +124,7 @@ class TagsController extends Controller
                 $id = I('post.id', false, 'int');
                 $validator = Validator::make(
                     array(
-                        'id'=>$id
+                        'id' => $id
                     ),
                     array(
                         'id' => 'required|int'
@@ -163,8 +166,11 @@ class TagsController extends Controller
             $return = array('status' => true, 'msg' => '添加成功');
             try {
                 //验证输入格式
+                $slug = I('post.slug');
+                $name = I('post.name');
                 $data = array(
-                    'name' => I('post.name'),
+                    'name' => $name,
+                    'slug' => empty($slug) ? $name : $slug,
                     'description' => I('post.description'),
                     'seo_title' => I('post.seo_title'),
                     'seo_description' => I('post.seo_description'),
@@ -174,12 +180,14 @@ class TagsController extends Controller
                     $data,
                     array(
                         'name' => 'required|bannerName',
+                        'slug' => 'required|bannerName',
                         'seo_title' => 'seoTitle',
                         'seo_keyword' => 'seoKeyword',
                         'seo_description' => 'seoDescription',
                     ),
                     array(
                         'name' => '名称格式不正确',
+                        'slug' => '别名格式不正确',
                         'seo_title' => 'SEO标题格式不正确',
                         'seo_keyword' => 'SEO关键词格式不正确',
                         'seo_description' => 'SEO描述格式不正确',

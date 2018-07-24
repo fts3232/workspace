@@ -1,5 +1,15 @@
 <include file="Common:header"/>
+
 <div class="table-responsive inject item-body tags">
+    <ol class="breadcrumb">
+        <li><a href="{:U('index')}">标签管理</a></li>
+        <li><a href="{:U('index')}">列表页</a></li>
+        <if condition="$action eq 'create'">
+            <li class="active">添加标签</li>
+        <else />
+            <li class="active">{$result['TAG_NAME']}</li>
+        </if>
+    </ol>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Tag</h3>
@@ -11,6 +21,12 @@
                     <label for="input-name" class="col-sm-2 control-label">名称</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="input-name" name="name" value="{$result['TAG_NAME']|default=''}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-slug" class="col-sm-2 control-label">别名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="input-slug" name="slug" value="{$result['TAG_SLUG']|default=''}"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -55,6 +71,7 @@
             var action = "{$action}";
             var data = {
                 'name': $('[name="name"]').val(),
+                'slug': $('[name="slug"]').val(),
                 'description': $('[name="description"]').val(),
                 'seo_title': $('[name="seo_title"]').val(),
                 'seo_keyword': $('[name="seo_keyword"]').val(),

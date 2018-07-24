@@ -59,9 +59,6 @@ class PostsController extends Controller
             try {
                 $return = array('status' => true, 'msg' => '添加成功');
                 $model = D('Posts');
-                //处理tags
-                $tags = I('post.tags');
-                $tags = implode(',', $tags);
                 //整合输入
                 $data = array(
                     'POST_TITLE' => I('post.title'),
@@ -70,8 +67,9 @@ class PostsController extends Controller
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status', false, 'int'),
-                    'POST_TAGS_ID' => $tags,
+                    'POST_TAGS_ID' => I('post.tags'),
                     'POST_AUTHOR_ID' => I('session.uid'),
+                    'POST_ORDER' => I('post.order', false, 'int'),
                     'SEO_TITLE' => I('post.seo_keyword'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description'),
@@ -86,7 +84,8 @@ class PostsController extends Controller
                         'POST_TRANSLATE_ID' => 'int',
                         'POST_LANG' => 'required|lang',
                         'POST_STATUS' => 'int',
-                        'POST_AUTHOR_ID' => 'required|int',
+                        //'POST_AUTHOR_ID' => 'required|int',
+                        'POST_ORDER' => 'int',
                         'SEO_TITLE' => 'seoTitle',
                         'SEO_KEYWORD' => 'seoKeyword',
                         'SEO_DESCRIPTION' => 'seoDescription',
@@ -97,6 +96,7 @@ class PostsController extends Controller
                         'POST_TRANSLATE_ID' => '文章对照id不正确',
                         'POST_LANG' => '文章语言不正确',
                         'POST_STATUS' => '文章状态不正确',
+                        'POST_ORDER' => '文章排序参数不正确',
                         'POST_AUTHOR_ID' => '作者id不正确',
                         'SEO_TITLE' => 'SEO标题格式不正确',
                         'SEO_KEYWORD' => 'SEO关键词格式不正确',
@@ -188,6 +188,7 @@ class PostsController extends Controller
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status', false, 'int'),
                     'POST_TAGS_ID' => $tags,
+                    'POST_ORDER' => I('post.order', false, 'int'),
                     'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description'),
@@ -201,6 +202,7 @@ class PostsController extends Controller
                         'POST_CATEGORY_ID' => 'required|int',
                         'POST_LANG' => 'required|lang',
                         'POST_STATUS' => 'int',
+                        'POST_ORDER' => 'int',
                         'SEO_TITLE' => 'seoTitle',
                         'SEO_KEYWORD' => 'seoKeyword',
                         'SEO_DESCRIPTION' => 'seoDescription',
@@ -210,6 +212,7 @@ class PostsController extends Controller
                         'POST_CATEGORY_ID' => '文章栏目不正确',
                         'POST_LANG' => '文章语言不正确',
                         'POST_STATUS' => '文章状态不正确',
+                        'POST_ORDER' => '文章排序参数不正确',
                         'SEO_TITLE' => 'SEO标题格式不正确',
                         'SEO_KEYWORD' => 'SEO关键词格式不正确',
                         'SEO_DESCRIPTION' => 'SEO描述格式不正确',

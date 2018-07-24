@@ -6,7 +6,6 @@ import img from '../images/a.jpg';
 import { renderRoutes } from 'react-router-config'
 import axios from 'axios'
 import {connect} from "react-redux";
-import CounterUI from "./components/Counter/CounterUI";
 
 class App extends React.Component {
     constructor(props){
@@ -27,9 +26,9 @@ class App extends React.Component {
             });
     }
     componentDidMount(){
-        if(!this.state.name){
+        /*if(!this.state.name){
             this.fetch();
-        }
+        }*/
     }
     render() {
         let name = this.state.name;
@@ -41,7 +40,7 @@ class App extends React.Component {
                         <Link to="/Counter">Counter</Link>
                     </li>
                     <li>
-                        <a href="/Todo">Todo</a>
+                        <Link to="/Todo">Todo</Link>
                     </li>
                 </ul>
                 <div>{name}</div>

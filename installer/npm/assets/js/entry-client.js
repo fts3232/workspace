@@ -9,6 +9,7 @@ import { renderRoutes } from 'react-router-config'
 import Loadable from 'react-loadable';
 import { Provider, connect } from 'react-redux'
 import { createStore } from 'redux'
+import Todo from './components/Todo/index.js';
 
 
 
@@ -40,7 +41,7 @@ if (IS_SERVER_RENDER) {
         )
     });
 } else {
-    const store = createStore((state = { name: '',count:0 }, action) => {
+    /*const store = createStore((state = { name: '',count:0 }, action) => {
         const name = state.name
         const count = state.count
         switch (action.type) {
@@ -50,6 +51,7 @@ if (IS_SERVER_RENDER) {
                 return state
         }
     })
+
     ReactDOM.render(
         <BrowserRouter>
             <Provider store={store}>
@@ -57,5 +59,5 @@ if (IS_SERVER_RENDER) {
             </Provider>
         </BrowserRouter>,
         document.getElementById('app')
-    )
+    )*/
 }

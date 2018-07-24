@@ -41,6 +41,17 @@ class BannerModel extends Model
     }
 
     /**
+     * 获取指定id的banner名称
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return $this->field('BANNER_NAME')->where(array('BANNER_ID' => $id))->getField('BANNER_NAME');
+    }
+
+    /**
      * 添加banner
      *
      * @param $name

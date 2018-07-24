@@ -170,9 +170,11 @@ class MenuController extends Controller
     {
         $model = D('MenuItem');
         $id = I('get.id', false, 'int');
+        $menuName = D('Menu')->getName($id);
         $items = $model->getItem($id);
         $this->assign('items', $items);
         $this->assign('menuID', $id);
+        $this->assign('menuName', $menuName);
         $this->display();
     }
 
