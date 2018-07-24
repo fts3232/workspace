@@ -2,6 +2,7 @@
 
 namespace Cms\Controller;
 
+use Cms\Common\Validator;
 use Think\Controller;
 
 class BannerController extends Controller
@@ -34,12 +35,21 @@ class BannerController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '添加成功');
             try {
+                //输出获取并验证数据格式
                 $name = I('post.name');
+                $validator = Validator::make(
+                    array('name' => $name),
+                    array('name' => 'required|bannerName'),
+                    array('name' => '名称格式不正确')
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
                 $model = D('Banner');
                 //添加操作
                 $id = $model->addBanner($name);
                 if (!$id) {
-                    throw new \Exception('添加失败', 100);
+                    throw new \Exception('添加失败', 101);
                 }
                 $return['id'] = $id;
                 $return['url'] = U('edit', array('id' => $id));
@@ -62,17 +72,35 @@ class BannerController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '修改成功');
             try {
+                //输出获取并验证数据格式
                 $name = I('post.name');
                 $id = I('post.id', false, 'int');
+                $validator = Validator::make(
+                    array(
+                        'name' => $name,
+                        'id' => $id
+                    ),
+                    array(
+                        'name' => 'required|bannerName',
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'name' => '名称格式不正确',
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
                 $model = D('Banner');
                 //判断id是否存在
                 if (!$model->isExists($id)) {
-                    throw new \Exception('该banner id不存在', 100);
+                    throw new \Exception('该banner id不存在', 101);
                 }
                 //修改banner
                 $result = $model->updateBanner($id, $name);
                 if (!$result) {
-                    throw new \Exception('修改失败', 101);
+                    throw new \Exception('修改失败', 102);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -93,16 +121,31 @@ class BannerController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '删除成功');
             try {
+                //输出获取并验证数据格式
                 $id = I('post.id', false, 'int');
+                $validator = Validator::make(
+                    array(
+                        'id' => $id
+                    ),
+                    array(
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
                 $model = D('Banner');
                 //判断id是否存在
                 if (!$model->isExists($id)) {
-                    throw new \Exception('该banner id不存在', 100);
+                    throw new \Exception('该banner id不存在', 101);
                 }
                 //删除操作
                 $result = $model->deleteBanner($id);
                 if (!$result) {
-                    throw new \Exception('删除失败', 101);
+                    throw new \Exception('删除失败', 102);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -169,18 +212,33 @@ class BannerController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '更新成功');
             try {
+                //输出获取并验证数据格式
                 $items = I('post.items');
                 $bannerID = I('post.banner_id', false, 'int');
                 $addItems = I('post.add_items');
+                $validator = Validator::make(
+                    array(
+                        'bannerID' => $bannerID
+                    ),
+                    array(
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
                 $model = D('BannerItem');
                 //判断id是否存在
                 if (!D('Banner')->isExists($bannerID)) {
-                    throw new \Exception('该banner id不存在', 100);
+                    throw new \Exception('该banner id不存在', 101);
                 }
                 //更新操作
                 $result = $model->updateItem($bannerID, $items, $addItems);
                 if (!$result) {
-                    throw new \Exception('更新失败', 100);
+                    throw new \Exception('更新失败', 102);
                 }
             } catch (\Exception  $e) {
                 $return = array(

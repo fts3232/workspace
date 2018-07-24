@@ -80,33 +80,15 @@ class CategoryModel extends Model
     }
 
     /**
-     * 删除指定栏目信息
+     * 判断是否存在子栏目
      *
      * @param $id
-     * @return array
+     * @return bool
      */
-    public function deleteCategory($id)
+    public function hasChild($id)
     {
-        try {
-            $return = array('status' => true, 'msg' => '删除成功');
-            //判断是否有子栏目
-            $count = $this->where(array('CATEGORY_PARENT' => $id))->count();
-            if ($count > 0) {
-                throw new \Exception('该栏目底下还有子栏目，请先删除子栏目内容！', 100);
-            }
-            //删除操作
-            $result = $this->delete($id);
-            if (!$result) {
-                throw new \Exception('删除失败！', 101);
-            }
-        } catch (\Exception $e) {
-            $return = array(
-                'status' => false,
-                'msg' => $e->getMessage(),
-                'code' => $e->getCode()
-            );
-        }
-        return $return;
+        $count = $this->where(array('CATEGORY_PARENT' => $id))->count();
+        return $count > 0;
     }
 
     /**

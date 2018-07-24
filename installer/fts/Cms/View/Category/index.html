@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <label for="input-description" class="col-sm-3 control-label">描述</label>
                     <div class="col-sm-9">
-                        <textarea class="form-control" id="input-description" name="description"></textarea>
+                        <textarea class="form-control" rows="5" id="input-description" name="description"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -39,7 +39,7 @@
                 <div class="form-group">
                     <label for="input-seo-description" class="col-sm-3 control-label">SEO描述</label>
                     <div class="col-sm-9">
-                        <textarea class="form-control" id="input-seo-description" name="seo-description"></textarea>
+                        <textarea class="form-control" rows="5" id="input-seo-description" name="seo_description"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -128,7 +128,7 @@
         var descriptionGroup = $('<div class="form-group"></div>');
         var descriptionLabel = $('<label for="input-description-edit-' + index + '" class="col-sm-3 control-label">描述</label>');
         var descriptionInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<textarea  class="form-control" id="input-description-edit-' + index + '" name="description">' + data.CATEGORY_DESCRIPTION + '</textarea>').appendTo(descriptionInputWrapper);
+        $('<textarea  class="form-control" rows="5" id="input-description-edit-' + index + '" name="description">' + data.CATEGORY_DESCRIPTION + '</textarea>').appendTo(descriptionInputWrapper);
         descriptionLabel.appendTo(descriptionGroup);
         descriptionInputWrapper.appendTo(descriptionGroup);
 
@@ -149,7 +149,7 @@
         var seoDescriptionGroup = $('<div class="form-group"></div>');
         var seoDescriptionLabel = $('<label for="input-seo-description-edit-' + index + '" class="col-sm-3 control-label">SEO描述</label>');
         var seoDescriptionInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<textarea  class="form-control" id="input-seo-description-edit-' + index + '" name="seo-description">' + data.SEO_DESCRIPTION + '</textarea>').appendTo(seoDescriptionInputWrapper);
+        $('<textarea  class="form-control" rows="5" id="input-seo-description-edit-' + index + '" name="seo_description">' + data.SEO_DESCRIPTION + '</textarea>').appendTo(seoDescriptionInputWrapper);
         seoDescriptionLabel.appendTo(seoDescriptionGroup);
         seoDescriptionInputWrapper.appendTo(seoDescriptionGroup);
 
@@ -291,7 +291,7 @@
                 'CATEGORY_DESCRIPTION': $.trim($('form.add textarea[name="description"]').val()),
                 'SEO_TITLE': $.trim($('form.add input[name="title"]').val()),
                 'SEO_KEYWORD': $.trim($('form.add input[name="keyword"]').val()),
-                'SEO_DESCRIPTION': $.trim($('form.add textarea[name="seo-description"]').val())
+                'SEO_DESCRIPTION': $.trim($('form.add textarea[name="seo_description"]').val())
             };
             var item = create_item(index, data, 0)
             item.appendTo('.sortable')
@@ -354,7 +354,7 @@
                     'CATEGORY_DESCRIPTION': $('.sortable li').eq(v).find('[name="description"]').val(),
                     'SEO_TITLE': $('.sortable li').eq(v).find('[name="title"]').val(),
                     'SEO_KEYWORD': $('.sortable li').eq(v).find('[name="keyword"]').val(),
-                    'SEO_DESCRIPTION': $('.sortable li').eq(v).find('[name="description"]').val(),
+                    'SEO_DESCRIPTION': $('.sortable li').eq(v).find('[name="seo_description"]').val(),
                 }
                 if (arr['CATEGORY_ID'] == 0) {
                     addItems.push(arr)

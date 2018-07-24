@@ -224,6 +224,12 @@
             reset_order();
             return false;
         });
+
+        //展开后修改名称同步显示
+        $(document).on('keyup', '.sortable li [name="name"]', function () {
+            $(this).parents('li').find('.ui-state-default>span').html($(this).val())
+        })
+
         //保存
         $('button.save-menu').on('click',function(){
             var $btn = $(this).button('loading');

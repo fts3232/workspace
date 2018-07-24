@@ -2,6 +2,7 @@
 
 namespace Cms\Controller;
 
+use Cms\Common\Validator;
 use Think\Controller;
 
 class PostsController extends Controller
@@ -61,13 +62,14 @@ class PostsController extends Controller
                 //处理tags
                 $tags = I('post.tags');
                 $tags = implode(',', $tags);
+                //整合输入
                 $data = array(
                     'POST_TITLE' => I('post.title'),
                     'POST_CATEGORY_ID' => I('post.category_id', false, 'int'),
-                    'POST_TRANSLATE_ID' => I('post.translate_id'),
+                    'POST_TRANSLATE_ID' => I('post.translate_id', false, 'int'),
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
-                    'POST_STATUS' => I('post.status'),
+                    'POST_STATUS' => I('post.status', false, 'int'),
                     'POST_TAGS_ID' => $tags,
                     'POST_AUTHOR_ID' => I('session.uid'),
                     'SEO_TITLE' => I('post.seo_keyword'),
@@ -75,10 +77,39 @@ class PostsController extends Controller
                     'SEO_DESCRIPTION' => I('post.seo_description'),
                     'PUBLISHED_TIME' => I('post.published_time')
                 );
+                //验证输入格式
+                $validator = Validator::make(
+                    $data,
+                    array(
+                        'POST_TITLE' => 'required|postTitle',
+                        'POST_CATEGORY_ID' => 'required|int',
+                        'POST_TRANSLATE_ID' => 'int',
+                        'POST_LANG' => 'required|lang',
+                        'POST_STATUS' => 'int',
+                        'POST_AUTHOR_ID' => 'required|int',
+                        'SEO_TITLE' => 'seoTitle',
+                        'SEO_KEYWORD' => 'seoKeyword',
+                        'SEO_DESCRIPTION' => 'seoDescription',
+                    ),
+                    array(
+                        'POST_TITLE' => '文章标题不正确',
+                        'POST_CATEGORY_ID' => '文章栏目不正确',
+                        'POST_TRANSLATE_ID' => '文章对照id不正确',
+                        'POST_LANG' => '文章语言不正确',
+                        'POST_STATUS' => '文章状态不正确',
+                        'POST_AUTHOR_ID' => '作者id不正确',
+                        'SEO_TITLE' => 'SEO标题格式不正确',
+                        'SEO_KEYWORD' => 'SEO关键词格式不正确',
+                        'SEO_DESCRIPTION' => 'SEO描述格式不正确',
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
                 //添加操作
                 $result = $model->addPost($data);
                 if (!$result) {
-                    throw new \Exception('添加失败', 100);
+                    throw new \Exception('添加失败', 101);
                 }
                 if ($data['POST_STATUS'] == 2) {
                     //添加定时任务
@@ -146,31 +177,57 @@ class PostsController extends Controller
         if (IS_AJAX) {
             try {
                 $return = array('status' => true, 'msg' => '修改成功');
-                $model = D('Posts');
-                //判断id是否存在
-                $id = I('post.id', false, 'int');
-                if (!$slug = $model->getCategorySlug($id)) {
-                    throw new \Exception('该post id不存在', 100);
-                }
                 //tags处理
                 $tags = I('post.tags');
                 $tags = implode(',', $tags);
+                //整合输入
                 $data = array(
                     'POST_CATEGORY_ID' => I('post.category_id', false, 'int'),
                     'POST_TITLE' => I('post.title'),
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
-                    'POST_STATUS' => I('post.status'),
+                    'POST_STATUS' => I('post.status', false, 'int'),
                     'POST_TAGS_ID' => $tags,
                     'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description'),
                     'PUBLISHED_TIME' => I('post.published_time')
                 );
+                //验证输入格式
+                $validator = Validator::make(
+                    $data,
+                    array(
+                        'POST_TITLE' => 'required|postTitle',
+                        'POST_CATEGORY_ID' => 'required|int',
+                        'POST_LANG' => 'required|lang',
+                        'POST_STATUS' => 'int',
+                        'SEO_TITLE' => 'seoTitle',
+                        'SEO_KEYWORD' => 'seoKeyword',
+                        'SEO_DESCRIPTION' => 'seoDescription',
+                    ),
+                    array(
+                        'POST_TITLE' => '文章标题格式不正确',
+                        'POST_CATEGORY_ID' => '文章栏目不正确',
+                        'POST_LANG' => '文章语言不正确',
+                        'POST_STATUS' => '文章状态不正确',
+                        'SEO_TITLE' => 'SEO标题格式不正确',
+                        'SEO_KEYWORD' => 'SEO关键词格式不正确',
+                        'SEO_DESCRIPTION' => 'SEO描述格式不正确',
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
+                $model = D('Posts');
+                //判断id是否存在
+                $id = I('post.id', false, 'int');
+                if (!$slug = $model->getCategorySlug($id)) {
+                    throw new \Exception('该post id不存在', 101);
+                }
                 //修改操作
                 $result = $model->editPost($id, $data);
                 if (!$result) {
-                    throw new \Exception('修改失败', 101);
+                    throw new \Exception('修改失败', 102);
                 }
                 //添加定时任务
                 $this->addRedisList($slug);
@@ -193,8 +250,23 @@ class PostsController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '删除成功');
             try {
-                $model = D('Posts');
+                //验证输入
                 $id = I('post.id', false, 'int');
+                $validator = Validator::make(
+                    array(
+                        'id' => $id
+                    ),
+                    array(
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
+                $model = D('Posts');
                 //判断id是否存在
                 if (!$slug = $model->getCategorySlug($id)) {
                     throw new \Exception('该post id不存在', 100);
