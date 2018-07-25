@@ -213,14 +213,14 @@
      * @param depth
      * @returns {jQuery|HTMLElement}
      */
-    function create_category_item(item,select, depth) {
-        var before = ''
+    function create_category_item(item, select, depth) {
+        var before = '';
         for (i = 0; i < depth; i++) {
             before += '|－';
         }
-        var li = $('<option value="' + item.CATEGORY_ID + '">' + before + item.CATEGORY_NAME + '</option>')
-        if(select == item.CATEGORY_ID){
-            li.attr('selected',true);
+        var li = $('<option value="' + item.CATEGORY_ID + '">' + before + item.CATEGORY_NAME + '</option>');
+        if (select == item.CATEGORY_ID) {
+            li.attr('selected', true);
         }
         return li
     }
@@ -232,72 +232,72 @@
      * @param select
      * @param depth
      */
-    function create_category(category,select, depth) {
+    function create_category(category, select, depth) {
         var depth = depth == undefined ? 0 : depth;
         category.map(function (v, k) {
-            var item = create_category_item(v,select, depth)
-            item.appendTo($('select.category'))
+            var item = create_category_item(v, select, depth);
+            item.appendTo($('select.category'));
             if (v.CHILD != '') {
-                create_category(v.CHILD,select, depth + 1)
+                create_category(v.CHILD, select, depth + 1);
             }
         })
     }
 
     $(function () {
         //创建栏目
-        create_category({$categoryMap},'{$result["CATEGORY_ID"]|default=""}');
+        create_category({$categoryMap}, '{$result["CATEGORY_ID"]|default=""}');
         //tinymce初始化
         tinymce.init({
-            selector: '#textarea',
-            height: 500,
-            theme: 'modern',
-            images_upload_url: '{:U("uploadImage")}',
-            relative_urls: false,
-            convert_urls: false,
-            images_upload_base_path:'/',
-            plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help',
-            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
-            image_advtab: true,
+            selector               : '#textarea',
+            height                 : 500,
+            theme                  : 'modern',
+            images_upload_url      : '{:U("uploadImage")}',
+            relative_urls          : false,
+            convert_urls           : false,
+            images_upload_base_path: '/',
+            plugins                : 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help',
+            toolbar1               : 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+            image_advtab           : true,
         });
         //初始化tag项
         var tagsName = [];
-        $('.tags .label').map(function(i){
-            tagsName.push($('.tags .label').eq(i).attr('data-name'))
-        })
+        $('.tags .label').map(function (i) {
+            tagsName.push($('.tags .label').eq(i).attr('data-name'));
+        });
         //添加tag
         $('button.add-tag').on('click', function () {
             var name = $.trim($('input[name="tag-name"]').val());
             if (name == '') {
-                alertMessage('warning', '请输入名称！')
+                alertMessage('warning', '请输入名称！');
                 return false;
             }
-            if(tagsName.indexOf(name) != -1){
-                alertMessage('warning', '该标签已存在！')
+            if (tagsName.indexOf(name) != -1) {
+                alertMessage('warning', '该标签已存在！');
                 return false;
             }
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             $.ajax({
-                'url':"{:U('tags/create')}",
-                'type':'post',
-                'data':{
-                    'name':name,
+                'url'     : "{:U('tags/createFromPost')}",
+                'type'    : 'post',
+                'data'    : {
+                    'name': name,
                 },
-                'success': function (data) {
+                'success' : function (data) {
                     if (data.status || data.code == 100) {
-                        alertMessage('success', '添加成功')
-                        tagsName.push(name)
-                        $('<span class="label label-default" data-id="'+data.id+'" data-name="'+name+'"><span aria-hidden="true">×</span>'+name+'</span>').appendTo($('.tags'));
+                        alertMessage('success', '添加成功');
+                        tagsName.push(name);
+                        $('<span class="label label-default" data-id="' + data.id + '" data-name="' + name + '"><span aria-hidden="true">×</span>' + name + '</span>').appendTo($('.tags'));
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
 
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
-            })
+            });
             return false;
-        })
+        });
         //删除tag
         $(document).on('click', '.tags .label span', function () {
             var index = tagsName.indexOf($(this).parent('.label').attr('data-name'));
@@ -306,9 +306,9 @@
             }
             $(this).parent('.label').remove();
             return false;
-        })
+        });
         //修改发布时间
-        $('.publish-time-text').on('click',function(){
+        $('.publish-time-text').on('click', function () {
             var date = new Date();
             var month = pad_zero(date.getMonth() + 1);
             var day = pad_zero(date.getDate());
@@ -321,12 +321,12 @@
             $('.publish-time .hour').val(hour);
             $('.publish-time .minute').val(minute);
             $('.publish-time').show();
-        })
+        });
         //发布时间-取消按钮
-        $('.publish-time button.cancel').on('click',function(){
+        $('.publish-time button.cancel').on('click', function () {
             $('.publish-time').hide();
             return false;
-        })
+        });
         //发布时间-保存按钮
         $('.publish-time button.save').on('click', function () {
             $('.publish-time').hide();
@@ -335,66 +335,66 @@
             var year = $('.publish-time .year').val();
             var hour = $('.publish-time .hour').val();
             var minute = $('.publish-time .minute').val();
-            $('.publish-time-text a').html(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':'+'00');
-            $('[name="published-time"]').val(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':'+'00');
+            $('.publish-time-text a').html(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + '00');
+            $('[name="published-time"]').val(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + '00');
             return false;
-        })
+        });
         //发布时间-立即发布按钮
-        $('.publish-time button.now').on('click',function(){
+        $('.publish-time button.now').on('click', function () {
             $('[name="published-time"]').val('');
             $('.publish-time-text a').html('立即发布');
             $('.publish-time').hide();
             return false;
-        })
+        });
 
         //添加翻译
         $('button.add-translate').on('click', function () {
-            var url = "{:U('add')}"
+            var url = "{:U('add')}";
             var translate = $('[name="translate_id"]').val();
             var language = $('[name="translate_language"]').val();
-            location.href = url + '?translate=' + translate + '&language=' + language
+            location.href = url + '?translate=' + translate + '&language=' + language;
             return false;
-        })
+        });
         //保存
         $('button.save-menu').on('click', function () {
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             var tags = [];
-            var action ="{$action}"
-            $('.tags .label').map(function(i){
-                tags.push($('.tags .label').eq(i).attr('data-id'))
-            })
+            var action = "{$action}";
+            $('.tags .label').map(function (i) {
+                tags.push($('.tags .label').eq(i).attr('data-id'));
+            });
             var data = {
-                'title': $('[name="title"]').val(),
-                'category_id': $('[name="category"]').val(),
-                'order' : $('[name="order"]').val(),
-                'content': tinyMCE.activeEditor.getContent(),
-                'language':$('[name="language"]').val(),
-                'status' : $('[name="status"]').val(),
-                'tags' : tags,
-                'seo_title': $('[name="seo_title"]').val(),
-                'seo_keyword': $('[name="seo_keyword"]').val(),
+                'title'          : $('[name="title"]').val(),
+                'category_id'    : $('[name="category"]').val(),
+                'order'          : $('[name="order"]').val(),
+                'content'        : tinyMCE.activeEditor.getContent(),
+                'language'       : $('[name="language"]').val(),
+                'status'         : $('[name="status"]').val(),
+                'tags'           : tags,
+                'seo_title'      : $('[name="seo_title"]').val(),
+                'seo_keyword'    : $('[name="seo_keyword"]').val(),
                 'seo_description': $('[name="seo_description"]').val(),
-                'published_time':$('[name="published_time"]').val(),
+                'published_time' : $('[name="published_time"]').val(),
 
-            }
-            if(action == 'update'){
+            };
+            if (action == 'update') {
                 data.id = $('[name="id"]').val()
             } else {
                 data['translate_id'] = $('[name="translate_id"]').val();
             }
             $.ajax({
-                'url': "{:U($action)}",
-                'type': 'post',
-                'data': data,
-                'success': function (data) {
+                'url'     : "{:U($action)}",
+                'type'    : 'post',
+                'data'    : data,
+                'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
+                        alertMessage('success', data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             })
         })

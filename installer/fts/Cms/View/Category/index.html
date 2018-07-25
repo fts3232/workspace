@@ -178,7 +178,7 @@
         var clone = $('<ul></ul>');
         clone.appendTo(li);
 
-        return li
+        return li;
     }
 
     /**
@@ -191,11 +191,11 @@
     function create_category(category, depth) {
         var depth = depth == undefined ? 0 : depth;
         category.map(function (v, k) {
-            var item = create_item(i, v, depth)
+            var item = create_item(i, v, depth);
             i++;
-            item.appendTo($('.sortable'))
+            item.appendTo($('.sortable'));
             if (v.CHILD != '') {
-                create_category(v.CHILD, depth + 1)
+                create_category(v.CHILD, depth + 1);
             }
         })
     }
@@ -203,17 +203,17 @@
     $(function () {
         var category = {$items};
         if (category != null) {
-            create_category(category)
+            create_category(category);
         }
 
         //排序初始化
         var sort = $(".sortable").sortable({
-            revert: true,
+            revert     : true,
             containment: "document",
             placeholder: "ui-state-highlight",
-            start: function (event, ui) {
+            start      : function (event, ui) {
                 var ownLeft = parseInt($(ui.item).css('marginLeft'));
-                var id = $(ui.item).attr('data-id')
+                var id = $(ui.item).attr('data-id');
                 $('.ui-state-highlight').css('marginLeft', ownLeft);
 
                 if (id != 0) {
@@ -222,165 +222,165 @@
                 }
                 $(".sortable").sortable("refreshPositions");
             },
-            sort: function (event, ui) {
+            sort       : function (event, ui) {
                 if ($(ui.item).prev('.ui-sortable-handle').length > 0 || $(ui.item).parents('.child').length > 0) {
                     var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
                     var ownLeft = parseInt($(ui.item).css('marginLeft'));
                     var maxLeft = parentLeft + 30;
+                    var offset = 0;
                     if (ui.position.left - ui.originalPosition.left > 30) {
-                        var offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
+                        offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
                         $('.ui-state-highlight').css('margin-left', offset + 'px')
                     } else if (ui.originalPosition.left - ui.position.left > 30) {
-                        var offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
+                        offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
                         $('.ui-state-highlight').css('margin-left', offset + 'px')
                     }
                 }
             },
-            stop: function (event, ui) {
-                var root = $(ui.item).parent('ul')
+            stop       : function (event, ui) {
+                var root = $(ui.item).parent('ul');
                 var list = root.find('li');
                 //parent
                 list.map(function (i, v) {
-                    var depth = list.eq(i).attr('data-depth')
+                    var depth = list.eq(i).attr('data-depth');
                     if (depth == 0) {
                         list.eq(i).attr('data-parent', 0)
                     } else {
-                        depth = depth - 1
-                        var parent = list.eq(i).prevAll('[data-depth="' + depth + '"]').attr('data-id')
+                        depth = depth - 1;
+                        var parent = list.eq(i).prevAll('[data-depth="' + depth + '"]').attr('data-id');
                         list.eq(i).attr('data-parent', parent)
                     }
-                })
+                });
                 //排序
-                reset_order()
+                reset_order();
 
                 //释放child
-                list = $(ui.item).find('ul li')
-                var after = $(ui.item)
+                list = $(ui.item).find('ul li');
+                var after = $(ui.item);
                 list.map(function (i) {
                     after.after(list.eq(i));
                     after = list.eq(i)
                 })
             },
-            beforeStop: function (event, ui) {
+            beforeStop : function (event, ui) {
                 if ($(ui.item).prev('.ui-sortable-handle').length > 0 || $(ui.item).parents('.child').length > 0) {
                     var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
                     var ownLeft = parseInt($(ui.item).css('marginLeft'));
                     var maxLeft = parentLeft + 30;
-                    var child = $(ui.item).find('ul').eq(0).find('li')
+                    var child = $(ui.item).find('ul').eq(0).find('li');
                     if (ui.position.left - ui.originalPosition.left > 30) {
-                        calculate_depth($(ui.item), 'right')
+                        calculate_depth($(ui.item), 'right');
                     } else if (ui.originalPosition.left - ui.position.left > 30) {
-                        calculate_depth($(ui.item), 'left')
+                        calculate_depth($(ui.item), 'left');
                     }
                 }
             }
         });
-
 
         //添加栏目
         $('button.add').on('click', function () {
             var index = $('.sortable li').length + 1;
             var name = $.trim($('form.add input[name="name"]').val());
             if (name == '') {
-                alertMessage('warning', '请输入名称！')
+                alertMessage('warning', '请输入名称！');
                 return false;
             }
             var data = {
-                'CATEGORY_ID': 0,
-                'CATEGORY_NAME': name,
-                'CATEGORY_SLUG': $.trim($('form.add input[name="slug"]').val()),
-                'CATEGORY_PARENT': 0,
-                'CATEGORY_ORDER': 0,
+                'CATEGORY_ID'         : 0,
+                'CATEGORY_NAME'       : name,
+                'CATEGORY_SLUG'       : $.trim($('form.add input[name="slug"]').val()),
+                'CATEGORY_PARENT'     : 0,
+                'CATEGORY_ORDER'      : 0,
                 'CATEGORY_DESCRIPTION': $.trim($('form.add textarea[name="description"]').val()),
-                'SEO_TITLE': $.trim($('form.add input[name="title"]').val()),
-                'SEO_KEYWORD': $.trim($('form.add input[name="keyword"]').val()),
-                'SEO_DESCRIPTION': $.trim($('form.add textarea[name="seo_description"]').val())
+                'SEO_TITLE'           : $.trim($('form.add input[name="title"]').val()),
+                'SEO_KEYWORD'         : $.trim($('form.add input[name="keyword"]').val()),
+                'SEO_DESCRIPTION'     : $.trim($('form.add textarea[name="seo_description"]').val())
             };
-            var item = create_item(index, data, 0)
-            item.appendTo('.sortable')
+            var item = create_item(index, data, 0);
+            item.appendTo('.sortable');
             //排序
             reset_order();
             return false;
-        })
+        });
         //删除栏目
         $(document).on('click', 'button.delete', function () {
             var id = $(this).parents('li').attr('data-id');
             var index = $(this).parents('li').index();
             $('#delete-modal .delete-confirm').attr('data-index', index);
             $('#delete-modal .delete-confirm').attr('data-id', id);
-            $('#delete-modal').modal('show')
+            $('#delete-modal').modal('show');
             return false;
-        })
+        });
         //删除确认
         $('button.delete-confirm').on('click', function () {
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             var index = $(this).attr('data-index');
             var id = $(this).attr('data-id');
             $.ajax({
-                'url': '{:U("delete")}',
-                'type': 'post',
-                'data': {
+                'url'     : '{:U("delete")}',
+                'type'    : 'post',
+                'data'    : {
                     'id': id
                 },
-                'success': function (data) {
+                'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
-                        $('#delete-modal').modal('hide')
+                        alertMessage('success', data.msg);
+                        $('#delete-modal').modal('hide');
                         $('.sortable li').eq(index).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             })
-        })
+        });
 
         //展开后修改名称同步显示
         $(document).on('keyup', '.sortable li [name="name"]', function () {
-            $(this).parents('li').find('.ui-state-default>span').html($(this).val())
-        })
+            $(this).parents('li').find('.ui-state-default>span').html($(this).val());
+        });
 
         //保存
         $('button.save-menu').on('click', function () {
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             var items = [];
             var addItems = [];
             $('.sortable li').map(function (v) {
                 var arr = {
-                    'CATEGORY_ID': $('.sortable li').eq(v).attr('data-id'),
-                    'CATEGORY_NAME': $('.sortable li').eq(v).find('[name="name"]').val(),
-                    'CATEGORY_SLUG': $('.sortable li').eq(v).find('[name="slug"]').val(),
-                    'CATEGORY_PARENT': $('.sortable li').eq(v).attr('data-parent'),
-                    'CATEGORY_ORDER': $('.sortable li').eq(v).attr('data-order'),
+                    'CATEGORY_ID'         : $('.sortable li').eq(v).attr('data-id'),
+                    'CATEGORY_NAME'       : $('.sortable li').eq(v).find('[name="name"]').val(),
+                    'CATEGORY_SLUG'       : $('.sortable li').eq(v).find('[name="slug"]').val(),
+                    'CATEGORY_PARENT'     : $('.sortable li').eq(v).attr('data-parent'),
+                    'CATEGORY_ORDER'      : $('.sortable li').eq(v).attr('data-order'),
                     'CATEGORY_DESCRIPTION': $('.sortable li').eq(v).find('[name="description"]').val(),
-                    'SEO_TITLE': $('.sortable li').eq(v).find('[name="title"]').val(),
-                    'SEO_KEYWORD': $('.sortable li').eq(v).find('[name="keyword"]').val(),
-                    'SEO_DESCRIPTION': $('.sortable li').eq(v).find('[name="seo_description"]').val(),
+                    'SEO_TITLE'           : $('.sortable li').eq(v).find('[name="title"]').val(),
+                    'SEO_KEYWORD'         : $('.sortable li').eq(v).find('[name="keyword"]').val(),
+                    'SEO_DESCRIPTION'     : $('.sortable li').eq(v).find('[name="seo_description"]').val(),
                 }
                 if (arr['CATEGORY_ID'] == 0) {
-                    addItems.push(arr)
+                    addItems.push(arr);
                 } else {
-                    items.push(arr)
+                    items.push(arr);
                 }
-            })
+            });
             $.ajax({
-                'url': "{:U('update')}",
-                'type': 'post',
-                'data': {
-                    'items': items,
+                'url'     : "{:U('update')}",
+                'type'    : 'post',
+                'data'    : {
+                    'items'    : items,
                     'add_items': addItems
                 },
-                'success': function (data) {
+                'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
+                        alertMessage('success', data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             })
         })

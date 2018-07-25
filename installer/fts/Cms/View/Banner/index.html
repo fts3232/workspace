@@ -34,7 +34,7 @@
                 </tr>
             </foreach>
         </tbody>
-    <table>
+    </table>
 </div>
 <div class="page">{$pagination}</div>
 <!-- Modal -->
@@ -78,7 +78,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         //添加菜单
         $('button.add').on('click', function () {
             var name = $.trim($('[name="add-name"]').val());
@@ -135,7 +135,7 @@
                 'url'     : "{:U('editBanner')}",
                 'type'    : 'post',
                 'data'    : {
-                    'id': _this.attr('data-id'),
+                    'id'  : _this.attr('data-id'),
                     'name': name
                 },
                 'success' : function (data) {

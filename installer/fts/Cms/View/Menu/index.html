@@ -34,7 +34,7 @@
                 </tr>
             </foreach>
         </tbody>
-    <table>
+    </table>
 </div>
 <div class="page">{$pagination}</div>
 <!-- Modal -->
@@ -100,13 +100,13 @@
                         var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"  class="btn btn-default" role="button"><b>查看</b></a>  <button class="btn btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
                         td.appendTo(tr);
                         tr.appendTo($('tbody'));
-                        alertMessage('success', data.msg)
+                        alertMessage('success', data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             });
             return false;

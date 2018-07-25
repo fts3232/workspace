@@ -68,10 +68,10 @@
      * @returns {jQuery|HTMLElement}
      */
     function create_item(index, data) {
-        var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="'+data.ITEM_URL+'" class="ui-sortable-handle"></li>');
-        var img = $('<img src="'+data.ITEM_IMG+'" class="img-thumbnail"/>');
+        var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="' + data.ITEM_URL + '" class="ui-sortable-handle"></li>');
+        var img = $('<img src="' + data.ITEM_IMG + '" class="img-thumbnail"/>');
         img.appendTo(li);
-        return li
+        return li;
     }
 
     /**
@@ -88,7 +88,7 @@
 
     $(function () {
         var banner = {$items};
-        if(banner != null){
+        if (banner != null) {
             create_banner(banner);
         }
         var sort = $(".sortable").sortable({
@@ -96,10 +96,10 @@
             containment: "document",
             placeholder: "ui-state-highlight",
         });
-        $( "#sortable" ).disableSelection();
+        $("#sortable").disableSelection();
 
         //添加菜单项
-        $('[name="input-image"]').on('change',function(){
+        $('[name="input-image"]').on('change', function () {
             var formData = new FormData();
             formData.append('file', $(this)[0].files[0]);
             var _this = $(this);
@@ -112,57 +112,57 @@
                 contentType: false, //不设置内容类型
                 processData: false, //不处理数据
                 success    : function (data) {
-                    if(data.status){
+                    if (data.status) {
                         alertMessage('success', data.msg);
                         var index = $('.sortable li').length + 1;
-                        var data = {
-                            'ITEM_ID'   : 0,
-                            'ITEM_IMG'  : data.img,
-                            'ITEM_URL'  : '',
+                        data = {
+                            'ITEM_ID' : 0,
+                            'ITEM_IMG': data.img,
+                            'ITEM_URL': '',
                         };
-                        var item = create_item(index,data);
+                        var item = create_item(index, data);
                         item.appendTo('.sortable');
-                    }else{
-                        alertMessage('danger', data.msg,data.code);
+                    } else {
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
-                'complete':function(){
+                'complete' : function () {
                     _this.val('');
                 }
             })
         });
 
         //查看详情
-        $(document).on('click','.sortable li',function(){
+        $(document).on('click', '.sortable li', function () {
             $('#img-modal').modal('show');
             $('#img-modal .edit').attr('data-index', $(this).index());
             $('#img-modal .delete').attr('data-index', $(this).index());
-            $('#img-modal img').attr('src',$(this).find('img').attr('src'));
+            $('#img-modal img').attr('src', $(this).find('img').attr('src'));
             $('#img-modal [name="edit-url"]').val($(this).attr('data-url'));
         });
 
         //删除菜单项
-        $(document).on('click','button.delete', function () {
-            var index= $(this).attr('data-index');
+        $(document).on('click', 'button.delete', function () {
+            var index = $(this).attr('data-index');
             $('.sortable li').eq(index).remove();
             $('#img-modal').modal('hide');
             return false;
         });
         //修改
-        $(document).on('click','button.edit', function () {
-            var url =  $('#img-modal [name="edit-url"]').val();
-            var index= $(this).attr('data-index');
-            $('.sortable li').eq(index).attr('data-url',url);
+        $(document).on('click', 'button.edit', function () {
+            var url = $('#img-modal [name="edit-url"]').val();
+            var index = $(this).attr('data-index');
+            $('.sortable li').eq(index).attr('data-url', url);
             $('#img-modal').modal('hide');
             return false;
         });
 
         //保存
-        $('button.save-menu').on('click',function(){
+        $('button.save-menu').on('click', function () {
             var $btn = $(this).button('loading');
             var items = [];
             var addItems = [];
-            $('.sortable li').map(function(v){
+            $('.sortable li').map(function (v) {
                 var arr = {
                     'ITEM_ID'   : $('.sortable li').eq(v).attr('data-id'),
                     'ITEM_IMG'  : $('.sortable li').eq(v).find('img').attr('src'),
@@ -176,21 +176,21 @@
                 }
             });
             $.ajax({
-                'url':"{:U('updateItem')}",
-                'type':'post',
-                'data':{
-                    'items':items,
-                    'add_items':addItems,
-                    'banner_id':{$bannerID}
+                'url'     : "{:U('updateItem')}",
+                'type'    : 'post',
+                'data'    : {
+                    'items'    : items,
+                    'add_items': addItems,
+                    'banner_id': {$bannerID}
                 },
-                'success':function(data){
+                'success' : function (data) {
                     if (data.status) {
                         alertMessage('success', data.msg);
                     } else {
                         alertMessage('danger', data.msg, data.code);
                     }
                 },
-                'complete':function(){
+                'complete': function () {
                     $btn.button('reset');
                 }
             });

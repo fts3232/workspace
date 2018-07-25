@@ -56,8 +56,6 @@ class Kernel extends ConsoleKernel
             $slugs = array_merge($slugs, $temp2);
             Redis::ZREM('www_page_cache_clear', $item);
         }
-        //去除重复项
-        $slugs = array_unique($slugs);
         //获取创建时间超过配置参数的文件
         $filesSystem = app('files');
         $files = $filesSystem->allFiles($staticDir);
@@ -68,6 +66,8 @@ class Kernel extends ConsoleKernel
                 $slugs[] = $pathName;
             }
         }
+        //去除重复项
+        $slugs = array_unique($slugs);
         foreach ($slugs as $slug) {
             if (strpos($slug, $staticDir) === false) {
                 $slug = $staticDir.DIRECTORY_SEPARATOR.$slug;

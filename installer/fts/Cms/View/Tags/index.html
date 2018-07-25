@@ -29,7 +29,7 @@
                 </tr>
             </foreach>
         </tbody>
-    <table>
+    </table>
 </div>
 <div class="page">{$pagination}</div>
 <!-- Modal -->
@@ -54,33 +54,33 @@
     $(document).ready(function () {
         //显示删除菜单模态框
         $(document).on('click', 'button.delete', function () {
-            $('#delete-modal').modal('show')
-            $('.delete-confirm').attr('data-index', $(this).parents('tr').index())
+            $('#delete-modal').modal('show');
+            $('.delete-confirm').attr('data-index', $(this).parents('tr').index());
             $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
-        })
+        });
 
         //删除菜单确认
         $('.delete-confirm').on('click', function () {
-            var $btn = $(this).button('loading')
+            var $btn = $(this).button('loading');
             var _this = $(this);
             $.ajax({
-                'url': "{:U('delete')}",
-                'type': 'post',
-                'data': {
+                'url'     : "{:U('delete')}",
+                'type'    : 'post',
+                'data'    : {
                     'id': _this.attr('data-id')
                 },
-                'success': function (data) {
+                'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
-                        $('#delete-modal').modal('hide')
+                        alertMessage('success', data.msg);
+                        $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             })
         })

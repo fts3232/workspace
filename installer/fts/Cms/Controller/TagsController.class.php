@@ -158,6 +158,58 @@ class TagsController extends Controller
     }
 
     /**
+     * 来自文章模块的创建操作
+     */
+    public function createFromPost()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '添加成功');
+            try {
+                //验证输入格式
+                $name = I('post.name');
+                $data = array(
+                    'name' => $name,
+                    'slug' => $name
+                );
+                $validator = Validator::make(
+                    $data,
+                    array(
+                        'name' => 'required|bannerName',
+                        'slug' => 'required|bannerName'
+                    ),
+                    array(
+                        'name' => '名称格式不正确',
+                        'slug' => '别名格式不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
+                $model = D('Tags');
+                //判断tag 名称是否存在
+                if ($tag = $model->isExists($data['name'])) {
+                    $return['id'] = $tag['TAG_ID'];
+                } else {
+                    //添加tag操作
+                    $id = $model->addTag($data);
+                    if (!$id) {
+                        throw new \Exception('添加失败', 102);
+                    }
+                    $return['id'] = $id;
+                }
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                );
+                isset($tag) && $return['id'] = $tag['TAG_ID'];
+            }
+            $this->ajaxReturn($return);
+        }
+    }
+
+    /**
      * 添加tag
      */
     public function create()
@@ -166,11 +218,9 @@ class TagsController extends Controller
             $return = array('status' => true, 'msg' => '添加成功');
             try {
                 //验证输入格式
-                $slug = I('post.slug');
-                $name = I('post.name');
                 $data = array(
-                    'name' => $name,
-                    'slug' => empty($slug) ? $name : $slug,
+                    'name' => I('post.name'),
+                    'slug' => I('post.slug'),
                     'description' => I('post.description'),
                     'seo_title' => I('post.seo_title'),
                     'seo_description' => I('post.seo_description'),

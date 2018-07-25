@@ -70,29 +70,29 @@
             var $btn = $(this).button('loading');
             var action = "{$action}";
             var data = {
-                'name': $('[name="name"]').val(),
-                'slug': $('[name="slug"]').val(),
-                'description': $('[name="description"]').val(),
-                'seo_title': $('[name="seo_title"]').val(),
-                'seo_keyword': $('[name="seo_keyword"]').val(),
+                'name'           : $('[name="name"]').val(),
+                'slug'           : $('[name="slug"]').val(),
+                'description'    : $('[name="description"]').val(),
+                'seo_title'      : $('[name="seo_title"]').val(),
+                'seo_keyword'    : $('[name="seo_keyword"]').val(),
                 'seo_description': $('[name="seo_description"]').val()
-            }
+            };
             if (action == 'update') {
                 data.id = $('[name="id"]').val()
             }
             $.ajax({
-                'url': "{:U($action)}",
-                'type': 'post',
-                'data': data,
-                'success': function (data) {
+                'url'     : "{:U($action)}",
+                'type'    : 'post',
+                'data'    : data,
+                'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg)
+                        alertMessage('success', data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code)
+                        alertMessage('danger', data.msg, data.code);
                     }
                 },
                 'complete': function () {
-                    $btn.button('reset')
+                    $btn.button('reset');
                 }
             })
         })

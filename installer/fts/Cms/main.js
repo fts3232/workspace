@@ -29,7 +29,7 @@ function alertMessage(type, message, error) {
     }, 3000);
 }
 
-function pad_zero(i){
+function pad_zero(i) {
     return i >= 10 ? i : '0' + i;
 }
 
