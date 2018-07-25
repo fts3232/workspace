@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'page-cache'=>\fts\CacheResponse\Middleware\CacheResponse::class,
-        'oauth'=>\fts\OAuth2\Middleware\OAuth2::class
+        'oauth'=>\fts\OAuth2\Middleware\OAuth2::class,
+        'verifySign'=> \App\Http\Middleware\VerifySign::class,
     ];
 }

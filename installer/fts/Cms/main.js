@@ -88,6 +88,44 @@ function clone_item(item, child) {
     $('.ui-state-highlight').css('height', height + 'px');
 }
 
+/**
+ * 创建栏目项
+ *
+ * @param item
+ * @param select
+ * @param depth
+ * @returns {jQuery|HTMLElement}
+ */
+function create_category_option(item, select, depth) {
+    var before = '';
+    for (i = 0; i < depth; i++) {
+        before += '|－';
+    }
+    var li = $('<option value="' + item.CATEGORY_ID + '">' + before + item.CATEGORY_NAME + '</option>');
+    if (select == item.CATEGORY_ID) {
+        li.attr('selected', true);
+    }
+    return li
+}
+
+/**
+ * 创建栏目
+ *
+ * @param category
+ * @param select
+ * @param depth
+ */
+function create_category_select(category, select, depth) {
+    var depth = depth == undefined ? 0 : depth;
+    category.map(function (v, k) {
+        var item = create_category_option(v, select, depth);
+        item.appendTo($('select.category'));
+        if (v.CHILD != '') {
+            create_category_select(v.CHILD, select, depth + 1);
+        }
+    })
+}
+
 $(document).ready(function () {
     //警告框-关闭按钮
     $('.alert .close').on('click', function () {

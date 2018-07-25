@@ -40,6 +40,63 @@
     1.nginx判断uri是否符合格式，不符合返回404
     2.nginx判断静态文件是否存在，存在返回静态html，不存在走php
     3.php判断静态文件是否存在，存在返回html，不存在生成静态html文件
+### nginx配置
+
+    #错误页面配置
+    error_page 404 = http://text.xxxx.com/error/404.html;
+    
+    #404链接，判断静态文件是否存在，存在返回html，不存在走php
+    location = /error/404 {
+        try_files /static/error/404.html /index.php?$query_string;
+    }
+    
+    #默认首页，判断静态文件是否存在，存在返回html，不存在走php
+    location = / {
+        try_files /static/index.html /index.php?$query_string;
+    }
+    
+    location / {
+    	#设置变量
+        set $flag 0;
+    
+        #如果是关于我们页面，允许访问
+        if ( $request_uri ~* ^/about/?$) {
+            set $flag 1;
+        }
+    
+        #如果是关于我们旗下页面，允许访问
+        if ( $request_uri ~* ^/about/(advantage|authentication|guarantee|notice|contactUs)/?$) {
+            set $flag 1;
+        }
+    
+        #如果是开户交易旗下页面，允许访问
+        if ( $request_uri ~* ^/transaction/(real|simulation|rule|interest|guide)/?$) {
+            set $flag 1;
+        }
+    
+        #如果是平台下载旗下页面，允许访问
+        if ( $request_uri ~* ^/platform/(pc|mobile)/?$) {
+            set $flag 1;
+        }
+    
+         #如果是新闻咨询旗下页面，允许访问
+        if ( $request_uri ~* ^/news/(comment|headline|realtime|information|data|calendar)/?$) {
+            set $flag 1;
+        }
+    
+        #如果是学院旗下页面，允许访问
+        if ( $request_uri ~* ^/college/(novice|skill|teacher|rule|investment|wiki)/?$) {
+            set $flag 1;
+        }
+    
+        #如果uri是不允许的格式，返回404
+        if ($flag = "0") {
+            return 404;
+        }
+    
+        #判断静态文件是否存在，存在返回html，不存在走php
+        try_files $uri $uri/ /static/$uri.html /index.php?$query_string;
+    }
 
 ### 定时任务
 每5分钟执行1次

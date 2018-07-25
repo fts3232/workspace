@@ -12,18 +12,34 @@ class PostsController extends Controller
      */
     public function index()
     {
+        //整合搜索条件
+        $whereData = array(
+            'title' => I('get.title'),
+            'category' => I('get.category'),
+            'status' => I('get.status'),
+            'language' => I('get.language')
+        );
         $model = D('Posts');
         //每页显示多少条
         $pageSize = C('PAGE');
         //获取总条数
-        $count = $model->count();
+        $count = $model->getCount($whereData);
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
         //获取分页数据
-        $list = $model->getAll($page->firstRow, $pageSize);
+        $list = $model->getAll($whereData, $page->firstRow, $pageSize);
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
+        //获取栏目
+        $model = D('Category');
+        $categoryMap = $model->getAll();
+        $this->assign('categoryMap', $categoryMap);
+        //语言map
+        $this->assign('languageMap', C('post.language'));
+        //状态map
+        $this->assign('statusMap', C('post.status'));
+        $this->assign('whereData', $whereData);
         $this->display();
     }
 

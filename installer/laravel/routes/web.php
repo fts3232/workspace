@@ -131,9 +131,9 @@ Route::group(['middleware' => 'page-cache'], function () {
         });
     });
     //错误页面
-    Route::group(['prefix'=>'/error'],function(){
+    Route::group(['prefix' => '/error'], function () {
         //404
-        Route::get('/404',function(){
+        Route::get('/404', function () {
             return view('error/404');
         });
     });
@@ -150,12 +150,12 @@ Route::get('img', function () {
             'sign' => md5($key),
             'time' => $time,
             'scope' => $scope,
-            'uid'=>1,
-            'type'=>'card1'
+            'uid' => 1,
+            'type' => 'card1'
         ]
     ]);
     $contentType = explode(';', $request['header']['Content-Type'][0]);
-    $contentType =  $contentType[0];
+    $contentType = $contentType[0];
     return response($request['content'], 200, [
         'Content-Type' => $contentType,
     ]);
@@ -182,7 +182,7 @@ Route::post('upload', function () {
             [
                 'name' => 'file',
                 'contents' => file_get_contents(app('request')->file('file')->getRealPath()),
-                'filename'=>app('request')->file('file')->getClientOriginalName()
+                'filename' => app('request')->file('file')->getClientOriginalName()
             ],
             [
                 'name' => 'client_id',

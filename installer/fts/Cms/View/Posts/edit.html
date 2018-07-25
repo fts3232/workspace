@@ -205,47 +205,9 @@
 </div>
 <script src="https://cdn.bootcss.com/tinymce/4.7.13/tinymce.min.js"></script>
 <script>
-    /**
-     * 创建栏目项
-     *
-     * @param item
-     * @param select
-     * @param depth
-     * @returns {jQuery|HTMLElement}
-     */
-    function create_category_item(item, select, depth) {
-        var before = '';
-        for (i = 0; i < depth; i++) {
-            before += '|－';
-        }
-        var li = $('<option value="' + item.CATEGORY_ID + '">' + before + item.CATEGORY_NAME + '</option>');
-        if (select == item.CATEGORY_ID) {
-            li.attr('selected', true);
-        }
-        return li
-    }
-
-    /**
-     * 创建栏目
-     *
-     * @param category
-     * @param select
-     * @param depth
-     */
-    function create_category(category, select, depth) {
-        var depth = depth == undefined ? 0 : depth;
-        category.map(function (v, k) {
-            var item = create_category_item(v, select, depth);
-            item.appendTo($('select.category'));
-            if (v.CHILD != '') {
-                create_category(v.CHILD, select, depth + 1);
-            }
-        })
-    }
-
     $(function () {
         //创建栏目
-        create_category({$categoryMap}, '{$result["CATEGORY_ID"]|default=""}');
+        create_category_select({$categoryMap}, '{$result["CATEGORY_ID"]|default=""}');
         //tinymce初始化
         tinymce.init({
             selector               : '#textarea',

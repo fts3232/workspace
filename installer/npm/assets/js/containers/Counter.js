@@ -1,10 +1,7 @@
 import { Provider, connect } from 'react-redux'
-import Counter from './Counter';
-import store from './store';
+import Counter from '../components/Counter';
 import React from 'react';
-
-// Action
-const increaseAction = { type: 'increase' }
+import {increaseAction} from '../actions';
 
 // Map Redux state to component props
 function mapStateToProps(state) {

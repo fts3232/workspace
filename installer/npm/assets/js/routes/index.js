@@ -1,12 +1,12 @@
 // using an ES6 transpiler, like babel
 import { matchRoutes, renderRoutes } from 'react-router-config'
 import Loadable from 'react-loadable';
-import App from '../App';
+import App from '../components/App';
 import Loading from '../components/Loading';
 import React from 'react';
 
 const Counter = Loadable({
-    loader : () => import(/* webpackChunkName: "Counter" */'../components/Counter'),
+    loader : () => import(/* webpackChunkName: "Counter" */'../containers/Counter'),
     loading: Loading,
 })
 
@@ -15,8 +15,8 @@ const Child = Loadable({
     loading: Loading,
 })
 
-const Todo = Loadable({
-    loader : () => import(/* webpackChunkName: "Child" */'../components/Todo'),
+const TodoList = Loadable({
+    loader : () => import(/* webpackChunkName: "Child" */'../components/Todo/components/App'),
     loading: Loading,
 })
 
@@ -32,7 +32,7 @@ const routes = [
             {
                 path:'/Todo',
                 exact:true,
-                component:Todo
+                component:TodoList
             }
         ]
     }

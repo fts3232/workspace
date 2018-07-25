@@ -40,14 +40,41 @@ class TagsModel extends Model
     /**
      * 获取tag分页数据
      *
+     * @param $whereData
      * @param $offset
      * @param $size
      * @return array
      */
-    public function getAll($offset, $size)
+    public function getAll($whereData, $offset, $size)
     {
-        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->order('TAG_ID ASC')->limit($offset, $size)->select();
+        $where = $this->getWhere($whereData);
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->where($where)->order('TAG_ID ASC')->limit($offset, $size)->select();
         return $result ? $result : array();
+    }
+
+    /**
+     * 获取总条数
+     *
+     * @param $whereData
+     * @return mixed
+     */
+    public function getCount($whereData)
+    {
+        $where = $this->getWhere($whereData);
+        return $this->where($where)->count();
+    }
+
+    /**
+     * 获取搜索条件
+     *
+     * @param $whereData
+     * @return array
+     */
+    private function getWhere($whereData)
+    {
+        $where = array();
+        !empty($whereData['name']) && $where['TAG_NAME'] = $whereData['name'];
+        return $where;
     }
 
     /**

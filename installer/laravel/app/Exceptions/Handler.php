@@ -60,9 +60,23 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+        if ($e->getStatusCode() == 404) {
+            return redirect('error/404');
+        } else {
+            $e = $this->prepareException($e);
+
+            if ($e instanceof HttpResponseException) {
+                return $e->getResponse();
+            } elseif ($e instanceof AuthenticationException) {
+                return $this->unauthenticated($request, $e);
+            } elseif ($e instanceof ValidationException) {
+                return $this->convertValidationExceptionToResponse($e, $request);
+            }
+
+            return $this->prepareResponse($request, $e);
+        }
     }
 
     /**

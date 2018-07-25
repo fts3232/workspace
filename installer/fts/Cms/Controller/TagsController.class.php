@@ -12,18 +12,23 @@ class TagsController extends Controller
      */
     public function index()
     {
+        //整合搜索条件
+        $whereData = array(
+            'name' => I('get.name')
+        );
         $model = D('Tags');
         //每页显示多少条
         $pageSize = C('PAGE');
         //获取总条数
-        $count = $model->count();
+        $count = $model->getCount($whereData);
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
         //获取分页数据
-        $list = $model->getAll($page->firstRow, $pageSize);
+        $list = $model->getAll($whereData, $page->firstRow, $pageSize);
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
+        $this->assign('whereData', $whereData);
         $this->display();
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class Verify
+class VerifySign
 {
 
     protected $scopeMap = array(
@@ -30,7 +30,7 @@ class Verify
             if ($time < time() - 600) {//过期时间10分钟
                 throw new \Exception('该sign已过期', 101);
             }
-            if (!in_array($scope, $this->scopeMap)) {
+            if (!in_array($scope, $this->scopeMap) || $grant != $scope) {
                 throw new \Exception('该scope不在有效范围内', 102);
             }
             if (!in_array($clientID, $this->clientIDMap)) {

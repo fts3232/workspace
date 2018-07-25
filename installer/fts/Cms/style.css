@@ -237,8 +237,12 @@
 
 /* posts */
 
+.posts.item-body {
+    width:1280px;
+}
+
 .posts .panel:nth-child(2) {
-    width: 651px;
+    width: 907px;
     margin-right: 10px;
     float: left;
 }

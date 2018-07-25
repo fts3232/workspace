@@ -51,20 +51,51 @@ class PostsModel extends Model
     /**
      * 获取文章分页数据
      *
+     * @param $whereData
      * @param $offset
      * @param $size
      * @return array
      */
-    public function getAll($offset, $size)
+    public function getAll($whereData, $offset, $size)
     {
+        $where = $this->getWhere($whereData);
         $result = $this
             ->alias('a')
-            ->field('a.POST_ID, a.POST_TITLE, a.POST_AUTHOR_ID, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
+            ->where($where)
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
             ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
             ->order('a.POST_ORDER DESC, a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
             ->select();
         return $result ? $result : array();
+    }
+
+    /**
+     * 获取总条数
+     *
+     * @param $whereData
+     * @return mixed
+     */
+    public function getCount($whereData)
+    {
+        $where = $this->getWhere($whereData);
+        return $this->where($where)->count();
+    }
+
+    /**
+     * 获取搜索条件
+     *
+     * @param $whereData
+     * @return array
+     */
+    private function getWhere($whereData)
+    {
+        $where = array();
+        !empty($whereData['title']) && $where['a.POST_TITLE'] = $whereData['title'];
+        !empty($whereData['category']) && $where['a.POST_CATEGORY_ID'] = $whereData['category'];
+        !empty($whereData['language']) && $where['a.POST_LANG'] = $whereData['language'];
+        !empty($whereData['status']) && $where['a.POST_STATUS'] = $whereData['status'];
+        return $where;
     }
 
     /**
@@ -153,7 +184,7 @@ class PostsModel extends Model
             $tags = $relationModel->getRelation($id);
             $diff = $this->tagsDiff($tags, $data['POST_TAGS_ID']);
             //修改关系
-            foreach($diff['delete'] as $tag){
+            foreach ($diff['delete'] as $tag) {
                 $result = $relationModel->deleteRelation($id, $tag);
                 if (!$result) {
                     throw new \Exception('删除对应关系失败');
@@ -204,10 +235,11 @@ class PostsModel extends Model
     }
 
     /**
-     * 获取指定id的对照文章
+     *  获取指定id的对照文章
      *
      * @param $translateID
      * @param $postID
+     * @return mixed
      */
     public function getTranslate($translateID, $postID)
     {
@@ -234,7 +266,8 @@ class PostsModel extends Model
      * @param $id
      * @return bool
      */
-    public function deletePost($id){
+    public function deletePost($id)
+    {
         try {
             $return = true;
             //开启事务

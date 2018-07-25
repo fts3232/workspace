@@ -4,8 +4,8 @@ namespace fts\UploadImage;
 
 use Illuminate\Support\ServiceProvider;
 use Log;
-use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\MongoDBHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 class LogServiceProvider extends ServiceProvider
 {
