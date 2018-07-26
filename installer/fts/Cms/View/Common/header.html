@@ -11,31 +11,44 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body>
+    <!-- 警告框 -->
     <div class="alert alert-dismissible fade out" role="alert">
         <button type="button" class="close"><span aria-hidden="true">×</span></button>
         <p></p>
     </div>
     <div class="header">
         <div class="nav">
-            <div class="left">
-                <div class="btn-group">
-                    <div class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        导航
-                        <span class="caret"></span>
-                    </div>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{:U('Menu/index')}">菜单管理</a></li>
-                        <li><a href="{:U('Banner/index')}">Banner管理</a></li>
-                        <li><a href="{:U('Category/index')}">栏目管理</a></li>
-                        <li><a href="{:U('Posts/index')}">文章管理</a></li>
-                        <li><a href="{:U('Tags/index')}">标签管理</a></li>
-                        <li><a href="{:U('Member/setpwd')}">修改密码</a></li>
-                        <li><a href="{:U('Index/logout')}">退出登录</a></li>
-                    </ul>
-                </div>
+            <div class="left menu">
+                <a class="btn" role="button">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                </a>
+                <ul class="out">
+                    <li>
+                        <a href="{:U('Menu/index')}">菜单管理</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Banner/index')}">Banner管理</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Category/index')}">栏目管理</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Posts/index')}">文章管理</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Tags/index')}">标签管理</a>
+                    </li>
+                </ul>
             </div>
-            <div class="username left">
-                <span>{$Think.session.username}</span>
+            <div class="user right">
+                <a class="btn" role="button" data-toggle="dropdown">
+                    <span>{$Think.session.username}</span>
+                    <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <!--<li><a href="{:U('Home/Member/setpwd')}">修改密码</a></li>-->
+                    <li><a href="{:U('Home/Index/logout')}">退出登录</a></li>
+                </ul>
             </div>
         </div>
     </div>

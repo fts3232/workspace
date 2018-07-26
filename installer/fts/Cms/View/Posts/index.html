@@ -50,7 +50,7 @@
                 <th>创建时间</th>
                 <th>发布时间</th>
                 <th>更新时间</th>
-                <th nowrap width="250">操作</th>
+                <th nowrap width="120">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -66,8 +66,8 @@
                     <td>{$v.PUBLISHED_TIME}</td>
                     <td>{$v.UPDATED_TIME}</td>
                     <td>
-                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary edit" role="button"><b>修改</b></a>
-                        <button class="btn btn-danger delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
+                        <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>

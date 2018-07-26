@@ -20,7 +20,7 @@
                 <th>ID</th>
                 <th>名称</th>
                 <th>别名</th>
-                <th nowrap width="250">操作</th>
+                <th nowrap width="120">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -30,8 +30,8 @@
                     <td>{$v.TAG_NAME}</td>
                     <td>{$v.TAG_SLUG}</td>
                     <td>
-                        <a class="btn btn-primary" role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
-                        <button class="btn btn-danger delete" data-id="{$v['TAG_ID']}"><b>删除</b></button>
+                        <a class="btn btn-primary btn-sm " role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
+                        <button class="btn btn-danger delete btn-sm " data-id="{$v['TAG_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>

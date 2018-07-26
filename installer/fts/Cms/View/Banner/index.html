@@ -18,7 +18,7 @@
             <tr>
                 <th>ID</th>
                 <th>名称</th>
-                <th nowrap width="250">操作</th>
+                <th nowrap width="170">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -27,9 +27,9 @@
                     <td>{$v.BANNER_ID}</td>
                     <td>{$v.BANNER_NAME}</td>
                     <td>
-                        <a href="{:U('showItem', array('id' => $v['BANNER_ID']))}" class="btn btn-default" role="button"><b>查看</b></a>
-                        <button class="btn btn-primary edit" data-id="{$v['BANNER_ID']}"><b>修改</b></button>
-                        <button class="btn btn-danger delete" data-id="{$v['BANNER_ID']}"><b>删除</b></button>
+                        <a href="{:U('showItem', array('id' => $v['BANNER_ID']))}" class="btn btn-sm btn-default" role="button"><b>查看</b></a>
+                        <button class="btn btn-primary btn-sm edit" data-id="{$v['BANNER_ID']}"><b>修改</b></button>
+                        <button class="btn btn-danger btn-sm delete" data-id="{$v['BANNER_ID']}"><b>删除</b></button>
                     </td>
                 </tr>
             </foreach>
@@ -97,9 +97,9 @@
                     if (data.status) {
                         var url = data.url;
                         var tr = $('<tr></tr>');
-                        var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"><button class="btn btn-default"><b>查看</b></button></a>  <button class="btn btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
+                        var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"><button class="btn btn-sm btn-default"><b>查看</b></button></a>  <button class="btn btn-sm btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-sm btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
                         td.appendTo(tr);
-                        tr.appendTo($('tbody'));
+                        tr.prependTo($('tbody'));
                         alertMessage('success', data.msg);
                     } else {
                         alertMessage('danger', data.msg, data.code);

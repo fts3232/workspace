@@ -131,5 +131,14 @@ $(document).ready(function () {
     $('.alert .close').on('click', function () {
         // do something…
         $('.alert').removeClass('in').addClass('out');
+    });
+
+    $('.header .menu a.btn').on('click', function () {
+        var menu = $(this).siblings('ul');
+        if (menu.hasClass('in')) {
+            menu.addClass('out').removeClass('in');
+        } else {
+            menu.addClass('in').removeClass('out');
+        }
     })
 })

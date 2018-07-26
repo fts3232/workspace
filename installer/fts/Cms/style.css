@@ -1,4 +1,16 @@
 /* global */
+body {
+    background: #eff0f4;
+}
+
+table {
+    background: #fff;
+}
+
+.breadcrumb {
+    background: none;
+}
+
 .left {
     float: left;
     display: inline;
@@ -28,7 +40,11 @@
 }
 
 .tool-area {
-    margin-bottom: 20px;
+    background: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding:20px 10px;
+    border: 1px solid rgb(221, 221, 221);
 }
 
 .alert {
@@ -91,8 +107,21 @@
     color: #555555;
 }
 
+.panel-default>.panel-heading{
+    background-color: #424F63;
+    border-color: #424F63;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 .panel-footer {
     overflow: hidden;
+    background-color: #424f63;
+    border-color: #424f63;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .item-body {
@@ -104,32 +133,81 @@
 .header {
     width: 100%;
     height: 56px;
-    background: url(../../images/header_bj.jpg);
+    background: #fff;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 999999;
+    z-index: 100;
+    border-bottom: 1px solid #eff0f4;
 }
 
 .header .nav {
     margin: 0 auto;
+    height: 100%;
 }
 
-.header .nav > .left {
-    margin: 10px 10px 0 10px;
+.header .menu > a{
+    padding:0;
+    border-right: 1px solid #e7e7e7;
+    padding: 13px 10px;
 }
 
-.header .username {
-    height: 36px;
+.header .menu ul{
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: 100%;
+    width: 240px;
+    padding:0;
+    display:none;
+    background: #424f63;
+    list-style: none;
+}
+
+.header .menu ul.out{
+    display:none;
+}
+
+.header .menu ul.in{
+    display:block;
+}
+
+
+.header .menu ul a{
+    display: block;
     color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-    width: 70px;
+    padding: 12px 20px;
+    text-underline: none;
+}
+.header .menu ul a:hover,.header .menu ul a:focus{
+    text-decoration: none;
+    background-color: #353f4f;
 }
 
-.header .username > span {
-    position: relative;
-    top: 5px;
+.header .menu .glyphicon-menu-hamburger{
+    font-size: 25px;
+}
+
+.header .user {
+    height: 100%;
+}
+
+.header .user > a {
+    height: 100%;
+    width: 100px;
+    padding: 16px 12px;
+    font-size: 14px;
+    display: inline-block;
+    font-weight: 400;
+}
+
+.header .user > a span {
+    vertical-align: middle;
+}
+
+.header .user .dropdown-menu {
+    right: 0;
+    left: auto;
 }
 
 .page {
@@ -238,7 +316,7 @@
 /* posts */
 
 .posts.item-body {
-    width:1280px;
+    width: 1280px;
 }
 
 .posts .panel:nth-child(2) {
