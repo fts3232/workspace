@@ -6,7 +6,7 @@ import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 //优化css
 import cssnano from 'cssnano';
 
-let getClientConfig = function (options) {
+let getClientConfig = function(options) {
     let config = {
         /*
         source-map  在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包文件的构建速度；
@@ -17,8 +17,8 @@ let getClientConfig = function (options) {
         //devtool: 'eval-source-map',//配置生成Source Maps，选择合适的选项
         //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
         //入口文件
-        entry       : {
-            'app': options.srcPath + '/js/entry-client.js'
+        entry: {
+            app: options.srcPath + '/js/entry-client.js',
             /* 'vendor': [
                  APP_PATH + '/components/Component.vue',
                  APP_PATH + '/views/Common/View.vue',
@@ -26,67 +26,69 @@ let getClientConfig = function (options) {
              ],*/
         },
         //输出的文件名 合并以后的js会命名为bundle.js
-        output      : {
-            filename     : 'js/[name].js?v=[hash]',
+        output: {
+            filename: 'js/[name].js?v=[hash]',
             chunkFilename: 'js/[name].bundle.js?v=[chunkhash]',
-            publicPath   : options.publicPath
+            publicPath: options.publicPath,
         },
         optimization: {
-            minimizer  : [
+            minimizer: [
                 new UglifyJs({
                     uglifyOptions: {
-                        output  : {
-                            comments: false,  // remove all comments
+                        output: {
+                            comments: false, // remove all comments
                         },
                         compress: {
-                            warnings: false
-                        }
-                    }
+                            warnings: false,
+                        },
+                    },
                 }),
                 new OptimizeCSSAssetsPlugin({
-                    assetNameRegExp    : /\.css$/g,
-                    cssProcessor       : cssnano,
-                    cssProcessorOptions: {discardComments: {removeAll: true}},
-                    canPrint           : true
-                })
+                    assetNameRegExp: /\.css$/g,
+                    cssProcessor: cssnano,
+                    cssProcessorOptions: {
+                        discardComments: { removeAll: true },
+                    },
+                    canPrint: true,
+                }),
             ],
             splitChunks: {
-                chunks                : "async",
-                minSize               : 30000,
-                minChunks             : 1,
-                maxAsyncRequests      : 5,
-                maxInitialRequests    : 3,
+                chunks: 'async',
+                minSize: 30000,
+                minChunks: 1,
+                maxAsyncRequests: 5,
+                maxInitialRequests: 3,
                 automaticNameDelimiter: '~',
-                name                  : true,
-                cacheGroups           : {
-                    common : {
-                        name     : 'common',
-                        chunks   : 'initial',
-                        enforce  : true,
+                name: true,
+                cacheGroups: {
+                    common: {
+                        name: 'common',
+                        chunks: 'initial',
+                        enforce: true,
                         minChunks: 2,
-                        test     : /\.js$/
+                        test: /\.js$/,
                     },
                     vendors: {
-                        name    : 'vendors',
-                        test    : /[\\/]node_modules[\\/]/,
-                        chunks  : "all",
+                        name: 'vendors',
+                        test: /[\\/]node_modules[\\/]/,
+                        chunks: 'all',
                         priority: 10,
                     },
-                    styles : {
-                        name   : 'styles',
-                        test   : /\.css$/,
-                        chunks : 'all',
-                        enforce: true
+                    styles: {
+                        name: 'styles',
+                        test: /\.css$/,
+                        chunks: 'all',
+                        enforce: true,
                     },
                     default: {
-                        minChunks         : 2,
-                        priority          : -20,
-                        reuseExistingChunk: true
-                    }
-                }
-            }
-        }
+                        minChunks: 2,
+                        priority: -20,
+                        reuseExistingChunk: true,
+                    },
+                },
+            },
+        },
     };
     return config;
-}
+};
 export default getClientConfig;

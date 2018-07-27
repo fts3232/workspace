@@ -6,6 +6,8 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Monolog\Handler\RotatingFileHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -28,7 +30,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $e)
@@ -36,7 +38,6 @@ class Handler extends ExceptionHandler
         if ($this->shouldntReport($e)) {
             return;
         }
-
         try {
             $logger = $this->container->make(LoggerInterface::class);
         } catch (Exception $e) {
@@ -56,34 +57,31 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception               $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $e)
     {
-        if ($e->getStatusCode() == 404) {
+        $e = $this->prepareException($e);
+        if ($e instanceof NotFoundHttpException) {
             return redirect('error/404');
-        } else {
-            $e = $this->prepareException($e);
-
-            if ($e instanceof HttpResponseException) {
-                return $e->getResponse();
-            } elseif ($e instanceof AuthenticationException) {
-                return $this->unauthenticated($request, $e);
-            } elseif ($e instanceof ValidationException) {
-                return $this->convertValidationExceptionToResponse($e, $request);
-            }
-
-            return $this->prepareResponse($request, $e);
+        } else if ($e instanceof HttpResponseException) {
+            return $e->getResponse();
+        } elseif ($e instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $e);
+        } elseif ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
         }
+
+        return $this->prepareResponse($request, $e);
     }
 
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param  \Illuminate\Http\Request                 $request
+     * @param  \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

@@ -162,7 +162,6 @@ Route::get('img', function () {
 });
 
 Route::get('test', function () {
-    echo $asd;
     $token = csrf_field();
     echo <<<EOF
         <form method="post" action='http://localhost:8080/workspace/installer/laravel/public/upload' enctype="multipart/form-data" >

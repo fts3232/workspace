@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { StaticRouter } from "react-router-dom";
+import { StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 
 import routes from './routes/index.js';
-import { renderRoutes } from 'react-router-config'
+import { renderRoutes } from 'react-router-config';
 
 import Loadable from 'react-loadable';
 import axios from 'axios';
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
-import { getBundles } from 'react-loadable/webpack'
+import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
+import { getBundles } from 'react-loadable/webpack';
 import cheerio from 'cheerio';
 
 function createApp(url, store) {
@@ -25,8 +25,8 @@ function createApp(url, store) {
                 </StaticRouter>
             </Provider>
         </Loadable.Capture>
-    )
-    return {modules, html}
+    );
+    return { modules, html };
 }
 
 export default createApp;
