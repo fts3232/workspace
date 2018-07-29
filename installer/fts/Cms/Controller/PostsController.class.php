@@ -12,16 +12,41 @@ class PostsController extends Controller
      */
     public function index()
     {
+        $this->showList();
+        $this->display();
+    }
+
+    public function recycle()
+    {
+        $this->showList();
+        $this->display('index');
+    }
+
+    private function showList()
+    {
         //整合搜索条件
         $whereData = array(
             'title' => I('get.title'),
             'category' => I('get.category'),
             'status' => I('get.status'),
-            'language' => I('get.language')
+            'language' => I('get.language'),
+            'time' => I('get.time')
         );
+        //状态map
+        $statusMap = C('post.status');
+        if (ACTION_NAME == 'index') {
+            unset($statusMap[3]);
+            $deleteUrl = U('softDelete');
+        } else {
+            unset($statusMap[0], $statusMap[1], $statusMap[2]);
+            $whereData['status'] = 3;
+            $deleteUrl = U('delete');
+        }
+        $this->assign('deleteUrl',$deleteUrl);
+        $this->assign('statusMap', $statusMap);
         $model = D('Posts');
         //每页显示多少条
-        $pageSize = C('PAGE');
+        $pageSize = C('pageSize');
         //获取总条数
         $count = $model->getCount($whereData);
         //分页器
@@ -37,10 +62,7 @@ class PostsController extends Controller
         $this->assign('categoryMap', $categoryMap);
         //语言map
         $this->assign('languageMap', C('post.language'));
-        //状态map
-        $this->assign('statusMap', C('post.status'));
         $this->assign('whereData', $whereData);
-        $this->display();
     }
 
     /**
@@ -256,6 +278,53 @@ class PostsController extends Controller
     }
 
     /**
+     * 软删除post
+     */
+    public function softDelete()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '删除成功');
+            try {
+                //验证输入
+                $id = I('post.id', false, 'int');
+                $validator = Validator::make(
+                    array(
+                        'id' => $id
+                    ),
+                    array(
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
+                $model = D('Posts');
+                //判断id是否存在
+                if (!$slug = $model->getCategorySlug($id)) {
+                    throw new \Exception('该post id不存在', 101);
+                }
+                //删除操作
+                $result = $model->softDeletePost($id);
+                if (!$result) {
+                    throw new \Exception('删除失败', 102);
+                }
+                //添加定时任务
+                $this->addRedisList($slug);
+            } catch (\Exception  $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
+        }
+    }
+
+    /**
      * 删除post
      */
     public function delete()
@@ -281,16 +350,14 @@ class PostsController extends Controller
                 }
                 $model = D('Posts');
                 //判断id是否存在
-                if (!$slug = $model->getCategorySlug($id)) {
-                    throw new \Exception('该post id不存在', 100);
+                if (!$model->getCategorySlug($id)) {
+                    throw new \Exception('该post id不存在', 101);
                 }
                 //删除操作
                 $result = $model->deletePost($id);
                 if (!$result) {
-                    throw new \Exception('删除失败', 101);
+                    throw new \Exception('删除失败', 102);
                 }
-                //添加定时任务
-                $this->addRedisList($slug);
             } catch (\Exception  $e) {
                 $return = array(
                     'status' => false,
@@ -345,6 +412,53 @@ class PostsController extends Controller
                         ->save('.' . $return['location']);
                 }
             } catch (\Exception $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
+        }
+    }
+
+    /**
+     * 还原post
+     */
+    public function restore()
+    {
+        if (IS_AJAX) {
+            $return = array('status' => true, 'msg' => '恢复成功');
+            try {
+                //验证输入
+                $id = I('post.id', false, 'int');
+                $validator = Validator::make(
+                    array(
+                        'id' => $id
+                    ),
+                    array(
+                        'id' => 'required|int'
+                    ),
+                    array(
+                        'id' => 'id参数不正确'
+                    )
+                );
+                if ($validator->isFails()) {
+                    throw new \Exception($validator->getFirstError(), 100);
+                }
+                $model = D('Posts');
+                //判断id是否存在
+                if (!$result = $model->getCategorySlugAndLastStatus($id)) {
+                    throw new \Exception('该post id不存在', 101);
+                }
+                //删除操作
+                $result = $model->restorePost($id,$result['POST_LAST_STATUS']);
+                if (!$result) {
+                    throw new \Exception('恢复失败', 102);
+                }
+                //添加定时任务
+                $this->addRedisList($result['CATEGORY_SLUG']);
+            } catch (\Exception  $e) {
                 $return = array(
                     'status' => false,
                     'msg' => $e->getMessage(),

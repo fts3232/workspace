@@ -18,7 +18,7 @@ class TagsController extends Controller
         );
         $model = D('Tags');
         //每页显示多少条
-        $pageSize = C('PAGE');
+        $pageSize = C('pageSize');
         //获取总条数
         $count = $model->getCount($whereData);
         //分页器

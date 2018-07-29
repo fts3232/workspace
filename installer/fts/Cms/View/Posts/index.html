@@ -1,87 +1,100 @@
 <include file="Common:header" />
-<ol class="breadcrumb auto">
-    <li><a href="{:U('index')}">文章管理</a></li>
-    <li class="active">列表页</li>
-</ol>
-<div class="text-right auto tool-area">
-    <a href="{:U('index')}" class="btn btn-primary left" role="button">添加</a>
-    <form class="form-inline">
-        <div class="form-group">
-            <label for="search-title">标题</label>
-            <input type="text" name="title" class="form-control" id="search-title" placeholder="要查找的标题" value="{$whereData['title']}">
-        </div>
-        <div class="form-group">
-            <label for="search-category">栏目</label>
-            <select id="search-category" name="category" class="form-control category">
-                <option value="">-- 全部 --</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="search-language">语言</label>
-            <select id="search-language" name="language" class="form-control">
-                <option value="">-- 全部 --</option>
-                <foreach name="languageMap" item="v" key="k">
-                    <option value="{$k}" <if condition="$whereData['language'] eq $k">selected='selected'</if>>{$v}</option>
-                </foreach>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="search-status">状态</label>
-            <select id="search-status" name="status" class="form-control">
-                <option value="">-- 全部 --</option>
-                <foreach name="statusMap" item="v" key="k">
-                    <option value="{$k}" <if condition="$whereData['status'] eq $k">selected='selected'</if>>{$v}</option>
-                </foreach>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-default">搜索</button>
-    </form>
-</div>
-<div class="data auto">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>标题</th>
-                <th>栏目</th>
-                <th>语言</th>
-                <th>作者</th>
-                <th>文章排序</th>
-                <th>创建时间</th>
-                <th>发布时间</th>
-                <th>更新时间</th>
-                <th nowrap width="120">操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <foreach name="list" item="v" key="k">
+<div class="container-fluid">
+    <ol class="breadcrumb auto">
+        <li><a href="{:U('index')}">文章管理</a></li>
+        <li class="active">列表页</li>
+    </ol>
+    <div class="text-right auto tool-area">
+        <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="search-title">标题</label>
+                <input type="text" name="title" class="form-control" id="search-title" placeholder="要查找的标题" value="{$whereData['title']}">
+            </div>
+            <div class="form-group">
+                <label for="search-category">栏目</label>
+                <select id="search-category" name="category" class="form-control category">
+                    <option value="">-- 全部 --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="search-language">语言</label>
+                <select id="search-language" name="language" class="form-control">
+                    <option value="">-- 全部 --</option>
+                    <foreach name="languageMap" item="v" key="k">
+                        <option value="{$k}" <if condition="$whereData['language'] eq $k">selected='selected'</if>>{$v}</option>
+                    </foreach>
+                </select>
+            </div>
+            <div class="form-group time">
+                <label for="datetimepicker">发布时间</label>
+                <input type="text"  name="time" class="form-control" id="datetimepicker" placeholder="要查找的发布时间" value="{$whereData['time']}">
+            </div>
+            <div class="form-group">
+                <label for="search-status">状态</label>
+                <select id="search-status" name="status" class="form-control">
+                    <option value="">-- 全部 --</option>
+                    <foreach name="statusMap" item="v" key="k">
+                        <option value="{$k}" <if condition="$whereData['status'] eq $k">selected='selected'</if>>{$v}</option>
+                    </foreach>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">搜索</button>
+        </form>
+    </div>
+    <div class="data auto">
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{$v.POST_ID}</td>
-                    <td><a href="javascript:void(0)">{$v.POST_TITLE}</a></td>
-                    <td>{$v.CATEGORY_NAME}</td>
-                    <td>{$languageMap[$v['POST_LANG']]}</td>
-                    <td>{$v.POST_AUTHOR}</td>
-                    <td>{$v.POST_ORDER}</td>
-                    <td>{$v.CREATED_TIME}</td>
-                    <td>{$v.PUBLISHED_TIME}</td>
-                    <td>{$v.UPDATED_TIME}</td>
-                    <td>
-                        <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
-                        <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
-                    </td>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>栏目</th>
+                    <th>语言</th>
+                    <th>作者</th>
+                    <th>文章排序</th>
+                    <th>文章状态</th>
+                    <th>创建时间</th>
+                    <th>发布时间</th>
+                    <th>更新时间</th>
+                    <th nowrap width="120">操作</th>
                 </tr>
-            </foreach>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <foreach name="list" item="v" key="k">
+                    <tr>
+                        <td>{$v.POST_ID}</td>
+                        <td><a href="javascript:void(0)">{$v.POST_TITLE}</a></td>
+                        <td>{$v.CATEGORY_NAME}</td>
+                        <td>{$languageMap[$v['POST_LANG']]}</td>
+                        <td>{$v.POST_AUTHOR}</td>
+                        <td>{$v.POST_ORDER}</td>
+                        <td>{$statusMap[$v['POST_STATUS']]}</td>
+                        <td>{$v.CREATED_TIME}</td>
+                        <td>{$v.PUBLISHED_TIME}</td>
+                        <td>{$v.UPDATED_TIME}</td>
+                        <td>
+                            <if condition="ACTION_NAME eq 'index'">
+                                <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
+                                <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                            <else />
+                                <button class="btn btn-info btn-sm restore" data-id="{$v['POST_ID']}"><b>还原</b></button>
+                                <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                            </if>
+                        </td>
+                    </tr>
+                </foreach>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">{$pagination}</div>
 </div>
-<div class="page">{$pagination}</div>
 <!-- Modal -->
-<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delte-modal-label">
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="delte-modal-label">删除</h4>
+                <h4 class="modal-title" id="delete-modal-label">删除</h4>
             </div>
             <div class="modal-body">
                 是否确认删除该文章？
@@ -93,11 +106,35 @@
         </div>
     </div>
 </div>
+<if condition="ACTION_NAME eq 'recycle'">
+    <div class="modal fade" id="restore-modal" tabindex="-1" role="dialog" aria-labelledby="restore-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="restore-modal-label">还原</h4>
+                </div>
+                <div class="modal-body">
+                    是否确认还原该文章？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info restore-confirm" data-loading-text="Loading...">还原</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</if>
+<script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
         //创建栏目
         create_category_select({$categoryMap}, '{$whereData["category"]}');
-        //删除菜单
+        //删除post
         $(document).on('click', 'button.delete', function () {
             $('#delete-modal').modal('show');
             $('.delete-confirm').attr('data-index', $(this).parents('tr').index());
@@ -105,18 +142,18 @@
             return false;
         });
 
-        //删除菜单确认
+        //删除post确认
         $('.delete-confirm').on('click', function () {
             var $btn = $(this).button('loading');
             var _this = $(this);
             $.ajax({
-                'url'     : "{:U('delete')}",
+                'url'     : "{$deleteUrl}",
                 'type'    : 'post',
                 'data'    : {
                     'id': _this.attr('data-id')
                 },
                 'success' : function (data) {
-                    if (data.status) {
+                    if (data.status || data.code == 103) {
                         alertMessage('success', data.msg);
                         $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
@@ -128,7 +165,42 @@
                     $btn.button('reset');
                 }
             })
-        })
+        });
+
+        <if condition="ACTION_NAME eq 'recycle'">
+            //还原post
+            $(document).on('click', 'button.restore', function () {
+                $('#restore-modal').modal('show');
+                $('.restore-confirm').attr('data-index', $(this).parents('tr').index());
+                $('.restore-confirm').attr('data-id', $(this).attr('data-id'));
+                return false;
+            });
+
+            //还原post确认
+            $('.restore-confirm').on('click', function () {
+                var $btn = $(this).button('loading');
+                var _this = $(this);
+                $.ajax({
+                    'url'     : "{:U('restore')}",
+                    'type'    : 'post',
+                    'data'    : {
+                        'id': _this.attr('data-id')
+                    },
+                    'success' : function (data) {
+                        if (data.status || data.code == 103) {
+                            alertMessage('success', data.msg);
+                            $('#restore-modal').modal('hide');
+                            $('.data tbody tr').eq(_this.attr('data-index')).remove();
+                        } else {
+                            alertMessage('danger', data.msg, data.code);
+                        }
+                    },
+                    'complete': function () {
+                        $btn.button('reset');
+                    }
+                })
+            });
+        </if>
     })
 </script>
 <include file="Common:footer" />

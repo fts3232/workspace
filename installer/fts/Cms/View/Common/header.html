@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="__PUBLIC__/css/cms/style.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- 警告框 -->
@@ -17,38 +18,43 @@
         <p></p>
     </div>
     <div class="header">
-        <div class="nav">
-            <div class="left menu">
-                <a class="btn" role="button">
-                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                </a>
-                <ul class="out">
-                    <li>
-                        <a href="{:U('Menu/index')}">菜单管理</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Banner/index')}">Banner管理</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Category/index')}">栏目管理</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Posts/index')}">文章管理</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Tags/index')}">标签管理</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="user right">
-                <a class="btn" role="button" data-toggle="dropdown">
-                    <span>{$Think.session.username}</span>
-                    <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <!--<li><a href="{:U('Home/Member/setpwd')}">修改密码</a></li>-->
-                    <li><a href="{:U('Home/Index/logout')}">退出登录</a></li>
-                </ul>
-            </div>
+        <div class="left menu">
+            <a class="btn" role="button">
+                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="user right">
+            <a class="btn" role="button" data-toggle="dropdown">
+                <span>{$Think.session.username}</span>
+                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <!--<li><a href="{:U('Home/Member/setpwd')}">修改密码</a></li>-->
+                <li><a href="{:U('Home/Index/logout')}">退出登录</a></li>
+            </ul>
         </div>
     </div>
+    <ul class="nav">
+        <li>
+            <a href="{:U('Menu/index')}">菜单管理</a>
+        </li>
+        <li>
+            <a href="{:U('Banner/index')}">Banner管理</a>
+        </li>
+        <li>
+            <a href="{:U('Category/index')}">栏目管理</a>
+        </li>
+        <li>
+            <a href="javascript:void(0)">文章管理<span class="glyphicon glyphicon-plus right" aria-hidden="true"></span></a>
+            <ul class="sub-nav">
+                <li><a href="{:U('Posts/index')}">文章列表</a></li>
+                <li><a href="{:U('Posts/recycle')}">回收站</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{:U('Tags/index')}">标签管理</a>
+        </li>
+        <li>
+            <a href="{:U('Pages/index')}">页面管理</a>
+        </li>
+    </ul>

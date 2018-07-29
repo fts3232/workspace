@@ -1,42 +1,44 @@
 <include file="Common:header" />
-<ol class="breadcrumb auto">
-    <li><a href="{:U('index')}">菜单管理</a></li>
-    <li class="active">列表页</li>
-</ol>
-<div class="text-right auto tool-area">
-    <form class="form-inline">
-        <div class="form-group">
-            <label for="add-menu">名称</label>
-            <input type="text" class="form-control" id="add-menu" name="add-menu-name" placeholder="">
-        </div>
-        <button class="btn btn-primary add">添加</button>
-    </form>
-</div>
-<div class="data auto">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>名称</th>
-                <th nowrap width="170">操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <foreach name="list" item="v" key="k">
+<div class="container-fluid">
+    <ol class="breadcrumb auto">
+        <li><a href="{:U('index')}">菜单管理</a></li>
+        <li class="active">列表页</li>
+    </ol>
+    <div class="text-right auto tool-area">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="add-menu">名称</label>
+                <input type="text" class="form-control" id="add-menu" name="add-menu-name" placeholder="">
+            </div>
+            <button class="btn btn-primary add">添加</button>
+        </form>
+    </div>
+    <div class="data auto">
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{$v.MENU_ID}</td>
-                    <td>{$v.MENU_NAME}</td>
-                    <td>
-                        <a href="{:U('showItem', array('id' => $v['MENU_ID']))}" class="btn btn-sm btn-default" role="button"><b>查看</b></a>
-                        <button class="btn btn-primary btn-sm edit" data-id="{$v['MENU_ID']}"><b>修改</b></button>
-                        <button class="btn btn-danger btn-sm delete" data-id="{$v['MENU_ID']}"><b>删除</b></button>
-                    </td>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th nowrap width="170">操作</th>
                 </tr>
-            </foreach>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <foreach name="list" item="v" key="k">
+                    <tr>
+                        <td>{$v.MENU_ID}</td>
+                        <td>{$v.MENU_NAME}</td>
+                        <td>
+                            <a href="{:U('showItem', array('id' => $v['MENU_ID']))}" class="btn btn-sm btn-default" role="button"><b>查看</b></a>
+                            <button class="btn btn-primary btn-sm edit" data-id="{$v['MENU_ID']}"><b>修改</b></button>
+                            <button class="btn btn-danger btn-sm delete" data-id="{$v['MENU_ID']}"><b>删除</b></button>
+                        </td>
+                    </tr>
+                </foreach>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">{$pagination}</div>
 </div>
-<div class="page">{$pagination}</div>
 <!-- Modal -->
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

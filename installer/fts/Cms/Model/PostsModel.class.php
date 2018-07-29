@@ -62,7 +62,7 @@ class PostsModel extends Model
         $result = $this
             ->alias('a')
             ->where($where)
-            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, POST_STATUS, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
             ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
             ->order('a.POST_ORDER DESC, a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
@@ -79,7 +79,7 @@ class PostsModel extends Model
     public function getCount($whereData)
     {
         $where = $this->getWhere($whereData);
-        return $this->where($where)->count();
+        return $this->alias('a')->where($where)->count();
     }
 
     /**
@@ -90,11 +90,12 @@ class PostsModel extends Model
      */
     private function getWhere($whereData)
     {
-        $where = array();
+        $where = array('a.POST_STATUS'=>array('in','0,1,2'));
         !empty($whereData['title']) && $where['a.POST_TITLE'] = $whereData['title'];
         !empty($whereData['category']) && $where['a.POST_CATEGORY_ID'] = $whereData['category'];
         !empty($whereData['language']) && $where['a.POST_LANG'] = $whereData['language'];
         !empty($whereData['status']) && $where['a.POST_STATUS'] = $whereData['status'];
+        !empty($whereData['time']) && $where['DATE(a.PUBLISHED_TIME)'] = $whereData['time'];
         return $where;
     }
 
@@ -113,6 +114,7 @@ class PostsModel extends Model
             if (empty($data['PUBLISHED_TIME'])) {
                 $data['PUBLISHED_TIME'] = array('exp', 'NOW()');
             }
+            $data['POST_LAST_STATUS'] = $data['POST_STATUS'];
             //添加
             $id = $this->add($data);
             if (!$id) {
@@ -174,6 +176,7 @@ class PostsModel extends Model
                 unset($data['PUBLISHED_TIME']);
             }
             $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+            $data['POST_LAST_STATUS'] = $data['POST_STATUS'];
             //保存
             $result = $this->where(array('POST_ID' => $id))->save($data);
             if (!$result) {
@@ -186,7 +189,7 @@ class PostsModel extends Model
             //修改关系
             foreach ($diff['delete'] as $tag) {
                 $result = $relationModel->deleteRelation($id, $tag);
-                if (!$result) {
+                if ($result === false) {
                     throw new \Exception('删除对应关系失败');
                 }
             }
@@ -235,6 +238,22 @@ class PostsModel extends Model
     }
 
     /**
+     * 判断指定id是否存在
+     *
+     * @param $id
+     * @return bool
+     */
+    public function getCategorySlugAndLastStatus($id)
+    {
+        $result = $this->field('b.CATEGORY_SLUG, a.POST_LAST_STATUS')
+            ->alias('a')
+            ->join('category b on b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
+            ->where(array('POST_ID' => $id))
+            ->find();
+        return $result;
+    }
+
+    /**
      *  获取指定id的对照文章
      *
      * @param $translateID
@@ -280,14 +299,38 @@ class PostsModel extends Model
             //删除post和tag的关系
             $relationModel = D('PostsTagsRelation');
             $result = $relationModel->deleteRelation($id);
-            if (!$result) {
+            if ($result === false) {
                 throw new \Exception('删除失败');
             }
             $this->commit();
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             $this->rollback();
             $return = false;
         }
         return $return;
+    }
+
+    /**
+     * 软删除
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function softDeletePost($id)
+    {
+        return $this->where(array('POST_ID' => $id))->save(array('DELETED_TIME' => array('exp', 'NOW()'), 'POST_STATUS' => 3));
+    }
+
+    /**
+     * 还原post
+     *
+     * @param $id
+     * @return bool
+     */
+    public function restorePost($id, $status)
+    {
+        $where = array('POST_ID' => $id);
+        return $this->where($where)->save(array('POST_STATUS' => $status));
     }
 }

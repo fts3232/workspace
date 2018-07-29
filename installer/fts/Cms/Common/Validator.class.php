@@ -686,4 +686,25 @@ class Validator
         }
         return true;
     }
+
+    /**
+     * 判断路由项格式是否正确
+     *
+     * @param $items
+     * @return bool
+     */
+    private function routerItem($items)
+    {
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                if (!$this->bannerName($item['ROUTE_NAME'])) {
+                    return false;
+                }
+                if (!$this->slug($item['ROUTE_SLUG'])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

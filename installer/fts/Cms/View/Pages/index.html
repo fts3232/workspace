@@ -1,15 +1,15 @@
 <include file="Common:header" />
 <div class="container-fluid">
     <ol class="breadcrumb auto">
-    <li><a href="#">标签管理</a></li>
-    <li class="active">列表页</li>
-</ol>
+        <li><a href="{:U('index')}">页面管理</a></li>
+        <li class="active">列表页</li>
+    </ol>
     <div class="text-right auto tool-area">
-        <a class="btn btn-primary left" role="button" href="{:U('add')}">添加</a>
+        <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
         <form class="form-inline">
             <div class="form-group">
-                <label for="search-name">名称</label>
-                <input type="text" name="name" class="form-control" id="search-name" placeholder="要查找的名称" value="{$whereData['name']}">
+                <label for="search-title">名称</label>
+                <input type="text" name="name" class="form-control" id="search-title" placeholder="要查找的名称" value="{$whereData['name']}">
             </div>
             <button type="submit" class="btn btn-default">搜索</button>
         </form>
@@ -17,25 +17,31 @@
     <div class="data auto">
         <table class="table table-bordered">
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>名称</th>
-                <th>别名</th>
-                <th nowrap width="120">操作</th>
-            </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>页面名称</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
+                    <th nowrap width="120">操作</th>
+                </tr>
             </thead>
             <tbody>
-            <foreach name="list" item="v" key="k">
-                <tr>
-                    <td>{$v.TAG_ID}</td>
-                    <td>{$v.TAG_NAME}</td>
-                    <td>{$v.TAG_SLUG}</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm " role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
-                        <button class="btn btn-danger delete btn-sm " data-id="{$v['TAG_ID']}"><b>删除</b></button>
-                    </td>
-                </tr>
-            </foreach>
+                <foreach name="list" item="v" key="k">
+                    <tr>
+                        <td>{$v.PAGE_ID}</td>
+                        <td>
+                            <a href="javascript:void(0)">
+                                <if condition="$v['PAGE_PARENT'] neq 0">--</if>{$v.PAGE_NAME}
+                            </a>
+                        </td>
+                        <td>{$v.CREATED_TIME}</td>
+                        <td>{$v.MODIFIED_TIME}</td>
+                        <td>
+                            <a href="{:U('edit',array('id'=>$v['PAGE_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
+                            <button class="btn btn-danger btn-sm delete" data-id="{$v['PAGE_ID']}"><b>删除</b></button>
+                        </td>
+                    </tr>
+                </foreach>
             </tbody>
         </table>
     </div>
@@ -50,7 +56,7 @@
                 <h4 class="modal-title" id="delete-modal-label">删除</h4>
             </div>
             <div class="modal-body">
-                是否确认删除该Tag？
+                是否确认删除该页面？
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger delete-confirm" data-loading-text="Loading...">删除</button>
@@ -61,7 +67,7 @@
 </div>
 <script>
     $(document).ready(function () {
-        //显示删除菜单模态框
+        //删除page
         $(document).on('click', 'button.delete', function () {
             $('#delete-modal').modal('show');
             $('.delete-confirm').attr('data-index', $(this).parents('tr').index());
@@ -69,7 +75,7 @@
             return false;
         });
 
-        //删除菜单确认
+        //删除post确认
         $('.delete-confirm').on('click', function () {
             var $btn = $(this).button('loading');
             var _this = $(this);
@@ -92,7 +98,7 @@
                     $btn.button('reset');
                 }
             })
-        })
+        });
     })
 </script>
 <include file="Common:footer" />

@@ -14,7 +14,7 @@ class BannerController extends Controller
     {
         $model = D('Banner');
         //每页显示多少条
-        $pageSize = C('PAGE');
+        $pageSize = C('pageSize');
         //获取总条数
         $count = $model->count();
         //分页器
@@ -168,6 +168,7 @@ class BannerController extends Controller
         $bannerName = D('Banner')->getName($id);
         $items = $model->getItem($id);
         $this->assign('items', $items);
+        $this->assign('statusMap',C('banner.status'));
         $this->assign('bannerID', $id);
         $this->assign('bannerName', $bannerName);
         $this->display();
@@ -220,13 +221,13 @@ class BannerController extends Controller
                 $addItems = I('post.add_items');
                 $validator = Validator::make(
                     array(
-                        'bannerID' => $bannerID
+                        'banner_id' => $bannerID
                     ),
                     array(
-                        'id' => 'required|int'
+                        'banner_id' => 'required|int'
                     ),
                     array(
-                        'id' => 'id参数不正确'
+                        'banner_id' => 'id参数不正确'
                     )
                 );
                 if ($validator->isFails()) {

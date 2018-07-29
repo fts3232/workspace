@@ -127,18 +127,47 @@ function create_category_select(category, select, depth) {
 }
 
 $(document).ready(function () {
+    //判断哪些菜单处于激活状态
+    $('body>.nav').find('a').map(function (i) {
+        if ($('body>.nav').find('a').eq(i).attr('href') == location.pathname) {
+            var li = $('body>.nav').find('a').eq(i).parents('li');
+            li.addClass('active');
+            if (li.length > 1) {
+                li.eq(li.length - 1).find('span.glyphicon').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+            }
+        }
+    });
     //警告框-关闭按钮
     $('.alert .close').on('click', function () {
         // do something…
         $('.alert').removeClass('in').addClass('out');
     });
 
+    //头部展开菜单栏按钮
     $('.header .menu a.btn').on('click', function () {
-        var menu = $(this).siblings('ul');
-        if (menu.hasClass('in')) {
-            menu.addClass('out').removeClass('in');
-        } else {
+        var menu = $('body>.nav');
+        if (menu.hasClass('out')) {
+            $('body>.container-fluid').removeClass('full');
             menu.addClass('in').removeClass('out');
+        } else {
+            $('body>.container-fluid').addClass('full');
+            menu.addClass('out').removeClass('in');
         }
-    })
-})
+    });
+
+    //菜单栏
+    $('body>.nav li').on('click', function () {
+        var subNav = $(this).find('.sub-nav');
+        if (subNav.length > 0) {
+            if ($(this).hasClass('active')) {
+                subNav.hide();
+                $(this).removeClass('active');
+                $(this).find('span.glyphicon').addClass('glyphicon-plus').removeClass('glyphicon-minus');
+            } else {
+                subNav.show();
+                $(this).addClass('active');
+                $(this).find('span.glyphicon').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+            }
+        }
+    });
+});

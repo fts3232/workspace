@@ -1,46 +1,48 @@
 <include file="Common:header" />
-<div class="table-responsive inject item-body menu">
-    <ol class="breadcrumb">
-        <li><a href="{:U('index')}">菜单管理</a></li>
-        <li><a href="{:U('index')}">列表页</a></li>
-        <li class="active">{$menuName}</li>
-    </ol>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">添加菜单项</h3>
-        </div>
-        <div class="panel-body">
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label for="input-name" class="col-sm-3 control-label">名称</label>
-                    <div class="col-sm-9">
-                        <input type="text"  class="form-control" id="input-name" name="name"/>
+<div class="container-fluid">
+    <div class="table-responsive inject item-body menu">
+        <ol class="breadcrumb">
+            <li><a href="{:U('index')}">菜单管理</a></li>
+            <li><a href="{:U('index')}">列表页</a></li>
+            <li class="active">{$menuName}</li>
+        </ol>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加菜单项</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="input-name" class="col-sm-3 control-label">名称</label>
+                        <div class="col-sm-9">
+                            <input type="text"  class="form-control" id="input-name" name="name"/>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="input-url" class="col-sm-3 control-label">URL</label>
-                    <div class="col-sm-9">
-                        <input type="text"  class="form-control" id="input-url" name="url"/>
+                    <div class="form-group">
+                        <label for="input-url" class="col-sm-3 control-label">URL</label>
+                        <div class="col-sm-9">
+                            <input type="text"  class="form-control" id="input-url" name="url"/>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default right add">添加</button>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default right add">添加</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">菜单</h3>
-        </div>
-        <div class="panel-body">
-            <ul class="sortable"></ul>
-        </div>
-        <div class="panel-footer">
-            <a href="{:U('index')}"><button type="submit" class="btn btn-default right">返回</button></a>
-            <button type="submit" class="btn btn-primary right save-menu margin-right-10" data-loading-text="Loading...">保存</button>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">菜单</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="sortable"></ul>
+            </div>
+            <div class="panel-footer">
+                <a href="{:U('index')}"><button type="submit" class="btn btn-default right">返回</button></a>
+                <button type="submit" class="btn btn-primary right save-menu margin-right-10" data-loading-text="Loading...">保存</button>
+            </div>
         </div>
     </div>
 </div>

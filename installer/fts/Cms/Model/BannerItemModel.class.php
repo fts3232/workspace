@@ -43,7 +43,7 @@ class BannerItemModel extends Model
         $where = array(
             'BANNER_ID' => $bannerID
         );
-        $list = $this->field('ITEM_ID, ITEM_IMG, ITEM_URL')
+        $list = $this->field('ITEM_ID, ITEM_IMG, ITEM_URL, ITEM_STATUS')
             ->where($where)
             ->order('ITEM_ORDER ASC')
             ->select();

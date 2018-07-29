@@ -90,7 +90,7 @@ class CategoryController extends Controller
                 //更新操作
                 $result = $model->updateCategory($items, $addItems);
                 if (!$result) {
-                    throw new \Exception('更新失败', 100);
+                    throw new \Exception('更新失败', 101);
                 }
             } catch (\Exception  $e) {
                 $return = array(
