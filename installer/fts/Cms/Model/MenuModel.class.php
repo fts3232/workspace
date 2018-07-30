@@ -36,7 +36,7 @@ class MenuModel extends Model
      */
     public function getAll($offset, $size)
     {
-        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID ASC')->limit($offset, $size)->select();
+        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID DESC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 
@@ -52,33 +52,65 @@ class MenuModel extends Model
     }
 
     /**
-     * 添加菜单
+     * 更新菜单
      *
-     * @param $name
-     * @return mixed
+     * @param $data
+     * @return array
      */
-    public function addMenu($name)
+    public function updateMenu($data)
     {
-        $data = array(
-            'MENU_NAME' => $name
-        );
-        return $this->add($data);
+        try {
+            $return = array('status' => true);
+            //判断名称是否存在
+            if (!$this->isExists($data['MENU_ID'], 'MENU_ID')) {
+                throw new \Exception('该菜单ID不存在', 200);
+            }
+            //判断名称是否存在
+            if ($this->isExists($data['MENU_NAME'], 'MENU_NAME')) {
+                throw new \Exception('该菜单名称已存在', 201);
+            }
+            $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+            $result = $this->where(array('MENU_ID' => $data['MENU_ID']))->save($data);
+            if (!$result) {
+                throw new \Exception('修改失败', 202);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 
     /**
-     * 更新菜单
+     * 添加菜单
      *
-     * @param $id
-     * @param $name
-     * @return bool
+     * @param $data
+     * @return array
      */
-    public function updateMenu($id, $name)
+    public function addMenu($data)
     {
-        $data = array(
-            'MENU_NAME' => $name,
-            'MODIFIED_TIME' => array('exp', 'NOW()')
-        );
-        return $this->where(array('MENU_ID' => $id))->save($data);
+        try {
+            $return = array('status' => true);
+            //判断名称是否存在
+            if ($this->isExists($data['MENU_NAME'], 'MENU_NAME')) {
+                throw new \Exception('该菜单名称已存在', 200);
+            }
+            $id = $this->add($data);
+            if (!$id) {
+                throw new \Exception('添加失败', 201);
+            }
+            $return['id'] = $id;
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 
     /**
@@ -90,28 +122,48 @@ class MenuModel extends Model
     public function deleteMenu($id)
     {
         try {
-            $return = true;
+            $return = array('status' => true);
             $this->startTrans();
+            //判断名称是否存在
+            if (!$this->isExists($id, 'MENU_ID')) {
+                throw new \Exception('该菜单ID不存在', 200);
+            }
             $result = $this->delete($id);
             if (!$result) {
-                throw new \Exception('删除menu失败');
+                throw new \Exception('删除菜单失败', 201);
             }
             //删除菜单内容
             $result = $this->table('menu_item')->where(array('MENU_ID' => $id))->delete();
             if ($result === false) {
-                throw new \Exception('删除menu_item失败');
+                throw new \Exception('清空菜单项失败', 202);
             }
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
-            $return = false;
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
         }
         return $return;
     }
 
-    public function isExists($id)
+    /**
+     * 判断是否对应field值存在
+     *
+     * @param        $val
+     * @param string $field
+     * @return bool
+     */
+    public function isExists($val, $field = 'MENU_ID')
     {
-        $count = $this->where(array('MENU_ID' => $id))->count();
-        return $count > 0 ? true : false;
+        if ($field == 'MENU_ID') {
+            $where = array('MENU_ID' => $val);
+        } else {
+            $where = array('MENU_NAME' => $val);
+        }
+        $count = $this->where($where)->count();
+        return $count > 0;
     }
 }

@@ -498,13 +498,3 @@ body > .container-fluid.full {
 }
 
 /* page */
-.pages .panel:nth-child(2) {
-    width: 70%;
-    float: left;
-    padding: 0px 15px 0px 0px;
-}
-
-.pages .panel:nth-child(3) {
-    width: 30%;
-    float: left;
-}

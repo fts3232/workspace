@@ -17,8 +17,8 @@ class PagesModel extends Model
         'PAGE_NAME',
         'PAGE_PARENT',
         'PAGE_SLUG',
-        'PAGE_CONTROLLER',
-        'PAGE_VIEW'
+        'PAGE_DIRECTING',
+        'PAGE_LANG'
     );
 
     /**
@@ -30,8 +30,8 @@ class PagesModel extends Model
         'PAGE_NAME',
         'PAGE_PARENT',
         'PAGE_SLUG',
-        'PAGE_CONTROLLER',
-        'PAGE_VIEW'
+        'PAGE_DIRECTING',
+        'PAGE_LANG'
     );
 
     /**
@@ -41,10 +41,13 @@ class PagesModel extends Model
      * @param int    $parent
      * @return array
      */
-    protected function getTree($data, $parent = 0)
+    protected function getTree($data, $parent = null)
     {
         $tree = array();
         foreach ($data as $k => $v) {
+            if ($parent == null) {
+                $parent = $v['PAGE_PARENT'];
+            }
             if ($v['PAGE_PARENT'] == $parent) {        //父亲找到儿子
                 $tree[] = $v;
                 $tree = array_merge($tree, $this->getTree($data, $v['PAGE_ID']));
@@ -71,7 +74,8 @@ class PagesModel extends Model
             ->order('PAGE_PARENT ASC, PAGE_ID ASC')
             ->select();
         if ($list) {
-            $list = $this->getTree($list, 0);
+            $list = $this->getTree($list);
+            $list = array_slice($list, $offset, $size);
         }
         return $list;
     }
@@ -97,25 +101,114 @@ class PagesModel extends Model
     private function getWhere($whereData)
     {
         $where = array();
-        !empty($whereData['title']) && $where['a.POST_TITLE'] = $whereData['title'];
-        !empty($whereData['category']) && $where['a.POST_CATEGORY_ID'] = $whereData['category'];
-        !empty($whereData['language']) && $where['a.POST_LANG'] = $whereData['language'];
-        !empty($whereData['status']) && $where['a.POST_STATUS'] = $whereData['status'];
-        !empty($whereData['time']) && $where['DATE(a.PUBLISHED_TIME)'] = $whereData['time'];
+        !empty($whereData['name']) && $where['PAGE_NAME'] = $whereData['name'];
+        !empty($whereData['language']) && $where['PAGE_LANG'] = $whereData['language'];
         return $where;
     }
 
+    /**
+     * 获取指定tag信息
+     *
+     * @param string $id tagID
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->field('PAGE_ID, PAGE_NAME, PAGE_SLUG, PAGE_PARENT, PAGE_DIRECTING, PAGE_LANG, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+            ->where(array('PAGE_ID' => $id))
+            ->find();
+    }
+
+    /**
+     * 判断id是否存在
+     *
+     * @param $id
+     * @return mixed
+     */
     public function isExists($id)
     {
         return $this->where(array('PAGE_ID' => $id))->count();
     }
 
+    /**
+     * 判断是否有子页面
+     *
+     * @param $id
+     * @return mixed
+     */
     public function hasChild($id)
     {
         return $this->where(array('PAGE_PARENT' => $id))->count();
     }
 
-    public function getParent(){
+    /**
+     * 获取父页面
+     *
+     * @param string $id
+     * @return mixed
+     */
+    public function getParent($id = '')
+    {
+        $where = array('PAGE_PARENT' => 0);
+        if (!empty($id)) {
+            $where['PAGE_ID'] = array('neq', $id);
+        }
         return $this->where(array('PAGE_PARENT' => 0))->select();
+    }
+
+    /**
+     * 删除页面
+     *
+     * @param $id
+     * @return array
+     */
+    public function deletePage($id)
+    {
+        try {
+            $return = array('status'=>true);
+            //判断id是否存在
+            if (!$this->isExists($id)) {
+                throw new \Exception('该页面id不存在', 200);
+            }
+            //判断是否存在子页面
+            if ($this->hasChild($id)) {
+                throw new \Exception('该页面存在子页面，请先把子页面删除', 201);
+            }
+            //删除操作
+            $result = $this->delete($id);
+            if (!$result) {
+                throw new \Exception('删除失败', 202);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
+    }
+
+    public function updatePage($data)
+    {
+        try {
+            $return = array('status'=>true);
+            //判断id是否存在
+            if (!$this->isExists($data['PAGE_ID'])) {
+                throw new \Exception('该页面id不存在', 200);
+            }
+            //修改操作
+            $result = $this->where(array('PAGE_ID' => $data['PAGE_ID']))->save($data);
+            if (!$result) {
+                throw new \Exception('删除失败', 202);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 }

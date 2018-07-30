@@ -68,9 +68,10 @@ class MenuItemModel extends Model
             ->where($where)
             ->order('ITEM_PARENT ASC, ITEM_ORDER ASC')
             ->select();
-
         if ($list) {
             $list = $this->getTree($list, 0);
+        } else {
+            $list = array();
         }
         return json_encode($list);
     }
@@ -78,32 +79,34 @@ class MenuItemModel extends Model
     /**
      * 更新菜单项
      *
-     * @param $menuID
-     * @param $items
-     * @param $addItems
-     * @return bool
+     * @param $data
+     * @return array
      */
-    public function updateItem($menuID, $items, $addItems)
+    public function updateItem($data)
     {
         try {
-            $return = true;
+            $return = array('status'=>true);
             $this->startTrans();
             $where = array(
-                'MENU_ID' => $menuID
+                'MENU_ID' => $data['MENU_ID']
             );
+            //判断id是否存在
+            if (!D('Menu')->isExists($data['MENU_ID'])) {
+                throw new \Exception('该菜单ID不存在', 200);
+            }
             $list = $this->field('ITEM_ID, ITEM_NAME, ITEM_URL, ITEM_PARENT, ITEM_ORDER')
                 ->where($where)
                 ->order('ITEM_PARENT ASC, ITEM_ORDER ASC')
                 ->select();
             $temp = array();
-            foreach ($items as $k => $v) {
+            foreach ($data['ITEMS'] as $k => $v) {
                 $temp[$v['ITEM_ID']] = $v;
             }
-            foreach ($addItems as $v) {
-                $v['MENU_ID'] = $menuID;
+            foreach ($data['ADD_ITEMS'] as $v) {
+                $v['MENU_ID'] = $data['MENU_ID'];
                 $result = $this->add($v);
                 if (!$result) {
-                    throw new \Exception('添加失败');
+                    throw new \Exception('添加失败', 201);
                 }
             }
             //判断哪些是更新项
@@ -111,7 +114,7 @@ class MenuItemModel extends Model
                 if (!isset($temp[$v['ITEM_ID']])) {
                     $result = $this->delete($v['ITEM_ID']);
                     if (!$result) {
-                        throw new \Exception('删除失败');
+                        throw new \Exception('删除失败', 202);
                     }
                 } else {
                     if ($v == $temp[$v['ITEM_ID']]) {
@@ -120,14 +123,18 @@ class MenuItemModel extends Model
                     $temp[$v['ITEM_ID']]['MODIFIED_TIME'] = array('exp', 'NOW()');
                     $result = $this->where(array('ITEM_ID' => $v['ITEM_ID']))->save($temp[$v['ITEM_ID']]);
                     if (!$result) {
-                        throw new \Exception('更新失败');
+                        throw new \Exception('更新失败', 203);
                     }
                 }
             }
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
-            $return = false;
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
         }
         return $return;
     }

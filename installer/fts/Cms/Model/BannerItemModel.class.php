@@ -17,6 +17,7 @@ class BannerItemModel extends Model
         'BANNER_ID',
         'ITEM_IMG',
         'ITEM_URL',
+        'ITEM_STATUS',
         'ITEM_ORDER'
     );
 
@@ -29,6 +30,7 @@ class BannerItemModel extends Model
         'ITEM_IMG',
         'ITEM_URL',
         'ITEM_ORDER',
+        'ITEM_STATUS',
         'MODIFIED_TIME'
     );
 
@@ -54,31 +56,33 @@ class BannerItemModel extends Model
     /**
      * 更新banner项
      *
-     * @param $menuID
-     * @param $items
-     * @param $addItems
+     * @param $data
      * @return bool
      */
-    public function updateItem($menuID, $items, $addItems)
+    public function updateItem($data)
     {
         try {
-            $return = true;
+            $return = array('status'=>true);
             $this->startTrans();
             $where = array(
-                'BANNER_ID' => $menuID
+                'BANNER_ID' => $data['BANNER_ID']
             );
+            //判断id是否存在
+            if (!D('Banner')->isExists($data['BANNER_ID'])) {
+                throw new \Exception('该bannerID不存在', 200);
+            }
             $list = $this->field('ITEM_ID, ITEM_URL, ITEM_IMG, ITEM_ORDER')
                 ->where($where)
                 ->select();
             $temp = array();
-            foreach ($items as $k => $v) {
+            foreach ($data['ITEMS'] as $k => $v) {
                 $temp[$v['ITEM_ID']] = $v;
             }
-            foreach ($addItems as $v) {
-                $v['BANNER_ID'] = $menuID;
+            foreach ($data['ADD_ITEMS'] as $v) {
+                $v['BANNER_ID'] = $data['BANNER_ID'];
                 $result = $this->add($v);
                 if (!$result) {
-                    throw new \Exception('添加失败');
+                    throw new \Exception('添加失败', 201);
                 }
             }
             $i = 0;
@@ -87,7 +91,7 @@ class BannerItemModel extends Model
                 if (!isset($temp[$v['ITEM_ID']])) {
                     $result = $this->delete($v['ITEM_ID']);
                     if (!$result) {
-                        throw new \Exception('删除失败');
+                        throw new \Exception('删除失败', 202);
                     }
                 } else {
                     if ($v == $temp[$v['ITEM_ID']]) {
@@ -97,14 +101,18 @@ class BannerItemModel extends Model
                     $temp[$v['ITEM_ID']]['MODIFIED_TIME'] = array('exp', 'NOW()');
                     $result = $this->where(array('ITEM_ID' => $v['ITEM_ID']))->save($temp[$v['ITEM_ID']]);
                     if (!$result) {
-                        throw new \Exception('更新失败');
+                        throw new \Exception('更新失败', 203);
                     }
                 }
             }
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
-            $return = false;
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
         }
         return $return;
     }

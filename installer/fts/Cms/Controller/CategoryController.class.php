@@ -2,11 +2,32 @@
 
 namespace Cms\Controller;
 
-use Cms\Common\Validator;
 use Think\Controller;
 
+/**
+ * 栏目
+ *
+ * Class CategoryController
+ * @package Cms\Controller
+ */
 class CategoryController extends Controller
 {
+    use Validate;
+
+    //验证规则
+    protected $validateRule = array(
+        'CATEGORY_ID' => 'required|int',
+        'ITEMS' => 'categoryItem',
+        'ADD_ITEMS' => 'categoryItem'
+    );
+
+    //验证错误信息
+    protected $validateMsg = array(
+        'CATEGORY_ID' => '栏目ID格式不正确',
+        'ITEMS' => '更新的栏目项格式不正确',
+        'ADD_ITEMS' => '新添加的栏目项格式不正确'
+    );
+
     /**
      * 查看栏目信息
      */
@@ -26,25 +47,17 @@ class CategoryController extends Controller
         if (IS_AJAX) {
             try {
                 $return = array('status' => true, 'msg' => '删除成功');
-                //输出获取并验证数据格式
-                $id = I('post.id', false, 'int');
-                $validator = Validator::make(
-                    array('id' => $id),
-                    array('id' => 'required|int'),
-                    array('id' => 'id参数不正确')
+                //获取输入
+                $data = array(
+                    'CATEGORY_ID' => I('post.id', false, 'int')
                 );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                //验证输入格式
+                $this->validate($data);
                 $model = D('Category');
-                //判断是否有子栏目
-                if ($model->hasChild($id)) {
-                    throw new \Exception('该栏目底下还有子栏目，请先删除子栏目内容！', 101);
-                }
                 //删除操作
-                $result = $this->delete($id);
-                if (!$result) {
-                    throw new \Exception('删除失败！', 102);
+                $result = $model->deleteCategory($data['CATEGORY_ID']);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception $e) {
                 $return = array(
@@ -65,32 +78,19 @@ class CategoryController extends Controller
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '更新成功');
             try {
-                //整合输入
-                $addItems = I('post.add_items');
-                $items = I('post.items');
-                //验证输入
-                $validator = Validator::make(
-                    array(
-                        'addItems' => $addItems,
-                        'items' => $items
-                    ),
-                    array(
-                        'addItems' => 'categoryItem',
-                        'items' => 'categoryItem'
-                    ),
-                    array(
-                        'addItems' => '新添加的栏目项格式不正确',
-                        'items' => '更新的栏目项格式不正确'
-                    )
+                //获取输入
+                $data = array(
+                    'ADD_ITEMS' => I('post.add_items'),
+                    'ITEMS' => I('post.items')
                 );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                //验证输入格式
+                $this->validate($data);
+                //模型实例化
                 $model = D('Category');
                 //更新操作
-                $result = $model->updateCategory($items, $addItems);
-                if (!$result) {
-                    throw new \Exception('更新失败', 101);
+                $result = $model->updateCategory($data);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception  $e) {
                 $return = array(

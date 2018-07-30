@@ -8,8 +8,17 @@
         <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
         <form class="form-inline">
             <div class="form-group">
-                <label for="search-title">名称</label>
-                <input type="text" name="name" class="form-control" id="search-title" placeholder="要查找的名称" value="{$whereData['name']}">
+                <label for="search-name">名称</label>
+                <input type="text" name="name" class="form-control" id="search-name" placeholder="要查找的名称" value="{$whereData['name']}">
+            </div>
+            <div class="form-group">
+                <label for="search-language">语言</label>
+                <select id="search-language" name="language" class="form-control">
+                    <option value="">-- 全部 --</option>
+                    <foreach name="languageMap" item="v" key="k">
+                        <option value="{$k}" <if condition="$whereData['language'] eq $k">selected='selected'</if>>{$v}</option>
+                    </foreach>
+                </select>
             </div>
             <button type="submit" class="btn btn-default">搜索</button>
         </form>

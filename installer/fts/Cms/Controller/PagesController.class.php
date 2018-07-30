@@ -2,11 +2,37 @@
 
 namespace Cms\Controller;
 
-use Cms\Common\Validator;
 use Think\Controller;
 
 class PagesController extends Controller
 {
+    use Validate;
+
+    protected $validateRule = array(
+        'PAGE_ID' => 'required|int',
+        'PAGE_NAME' => 'required|itemName',
+        'PAGE_SLUG' => 'required|itemSlug',
+        'PAGE_PARENT' => 'required|int',
+        'PAGE_LANG' => 'required|lang',
+        'PAGE_DIRECTING' => 'required',
+        'PAGE_TYPE' => 'required|pageType',
+        'SEO_TITLE' => 'seoTitle',
+        'SEO_KEYWORD' => 'seoKeyword',
+        'SEO_DESCRIPTION' => 'seoDescription',
+    );
+    protected $validateMsg = array(
+        'PAGE_ID' => '页面id不正确',
+        'PAGE_NAME' => '页面名称格式不正确',
+        'PAGE_SLUG' => '页面别名格式不正确',
+        'PAGE_PARENT' => '页面父类不正确',
+        'PAGE_LANG' => '页面语言不正确',
+        'PAGE_DIRECTING' => '页面指向不正确',
+        'PAGE_TYPE' => '页面类型不正确',
+        'SEO_TITLE' => 'SEO标题格式不正确',
+        'SEO_KEYWORD' => 'SEO关键词格式不正确',
+        'SEO_DESCRIPTION' => 'SEO描述格式不正确',
+    );
+
     /**
      * 查看栏目信息
      */
@@ -14,23 +40,11 @@ class PagesController extends Controller
     {
         //整合搜索条件
         $whereData = array(
-            'title' => I('get.title'),
-            'category' => I('get.category'),
-            'status' => I('get.status'),
-            'language' => I('get.language'),
-            'time' => I('get.time')
+            'name' => I('get.name'),
+            'language' => I('get.language')
         );
         //状态map
         $statusMap = C('post.status');
-        if (ACTION_NAME == 'index') {
-            unset($statusMap[3]);
-            $deleteUrl = U('softDelete');
-        } else {
-            unset($statusMap[0], $statusMap[1], $statusMap[2]);
-            $whereData['status'] = 3;
-            $deleteUrl = U('delete');
-        }
-        $this->assign('deleteUrl',$deleteUrl);
         $this->assign('statusMap', $statusMap);
         $model = D('Pages');
         //每页显示多少条
@@ -45,6 +59,8 @@ class PagesController extends Controller
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
         $this->assign('whereData', $whereData);
+        //获取语言map
+        $this->assign('languageMap', C('languageMap'));
         $this->display();
     }
 
@@ -57,34 +73,16 @@ class PagesController extends Controller
             $return = array('status' => true, 'msg' => '删除成功');
             try {
                 //验证输入
-                $id = I('post.id', false, 'int');
-                $validator = Validator::make(
-                    array(
-                        'id' => $id
-                    ),
-                    array(
-                        'id' => 'required|int'
-                    ),
-                    array(
-                        'id' => 'id参数不正确'
-                    )
+                $data = array(
+                    'PAGE_ID' => I('post.id', false, 'int')
                 );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                //验证输入格式
+                $this->validate($data);
                 $model = D('Pages');
-                //判断id是否存在
-                if (!$model->isExists($id)) {
-                    throw new \Exception('该page id不存在', 101);
-                }
-                //判断id是否存在
-                if ($model->hasChild($id)) {
-                    throw new \Exception('该page 存在子页面，请先把子页面删除', 101);
-                }
                 //删除操作
-                $result = $model->delete($id);
-                if (!$result) {
-                    throw new \Exception('删除失败', 102);
+                $result = $model->deletePage($data['PAGE_ID']);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -97,19 +95,134 @@ class PagesController extends Controller
         }
     }
 
-    public function add(){
+    /**
+     * 添加页面
+     */
+    public function add()
+    {
         //获取栏目
         $model = D('Pages');
+        //获取父页面
         $parentMap = $model->getParent();
         $this->assign('parentMap', $parentMap);
+        //获取语言map
+        $this->assign('languageMap', C('languageMap'));
+        //获取页面类型Map
+        $this->assign('typeMap', C('page.typeMap'));
         //action
         $this->assign('action', 'create');
         $this->display('edit');
     }
 
-    public function create(){}
+    /**
+     * 添加流程
+     */
+    public function create()
+    {
+        if (IS_AJAX) {
+            try {
+                $return = array('status' => true, 'msg' => '添加成功');
+                $model = D('Pages');
+                //整合输入
+                $data = array(
+                    'PAGE_NAME' => I('post.name'),
+                    'PAGE_SLUG' => I('post.slug'),
+                    'PAGE_PARENT' => I('post.parent_id', false, 'int'),
+                    'PAGE_TYPE' => I('post.type', false, 'int'),
+                    'PAGE_DIRECTING' => I('post.directing'),
+                    'PAGE_LANG' => I('post.language'),
+                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_KEYWORD' => I('post.seo_keyword'),
+                    'SEO_DESCRIPTION' => I('post.seo_description')
+                );
+                //验证输入格式
+                $this->validate($data);
+                //添加操作
+                $result = $model->add($data);
+                if (!$result) {
+                    throw new \Exception('添加失败', 101);
+                }
+            } catch (\Exception $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
+        }
+    }
 
-    public function edit(){}
+    /**
+     * 编辑页面
+     */
+    public function edit()
+    {
+        //获取栏目
+        $model = D('Pages');
+        try {
+            $data = array(
+                'PAGE_ID' => I('get.id', false, 'int')
+            );
+            //验证输入格式
+            $this->validate($data);
+            //判断id是否存在
+            if (!$result = $model->get($data['PAGE_ID'])) {
+                throw new \Exception('该页面id不存在', 101);
+            }
+            $this->assign('id', $data['PAGE_ID']);
+            $this->assign('result', $result);
+            $this->assign('action', 'update');
+            //获取父页面
+            $parentMap = $model->getParent($data['PAGE_ID']);
+            $this->assign('parentMap', $parentMap);
+            //获取语言map
+            $this->assign('languageMap', C('languageMap'));
+            //获取页面类型Map
+            $this->assign('typeMap', C('page.typeMap'));
+            $this->display();
+        } catch (\Exception  $e) {
+            $this->error($e->getMessage());
+        }
+    }
 
-    public function update(){}
+    /**
+     * 更新流程
+     */
+    public function update()
+    {
+        if (IS_AJAX) {
+            try {
+                $return = array('status' => true, 'msg' => '修改成功');
+                $model = D('Pages');
+                //整合输入
+                $data = array(
+                    'PAGE_ID' => I('post.id', false, 'int'),
+                    'PAGE_NAME' => I('post.name'),
+                    'PAGE_SLUG' => I('post.slug'),
+                    'PAGE_PARENT' => I('post.parent_id', false, 'int'),
+                    'PAGE_TYPE' => I('post.type', false, 'int'),
+                    'PAGE_DIRECTING' => I('post.directing'),
+                    'PAGE_LANG' => I('post.language'),
+                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_KEYWORD' => I('post.seo_keyword'),
+                    'SEO_DESCRIPTION' => I('post.seo_description')
+                );
+                //验证输入格式
+                $this->validate($data);
+
+                $result = $model->updatePage($data);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
+                }
+            } catch (\Exception $e) {
+                $return = array(
+                    'status' => false,
+                    'msg' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
+            }
+            $this->ajaxReturn($return);
+        }
+    }
 }

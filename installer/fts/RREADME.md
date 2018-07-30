@@ -34,6 +34,10 @@
             黄金法则    /college/rule
             外汇投资    /college/investment
             投资百科    /college/wiki
+        
+        文章
+            新闻栏目 /{date}/{id}
+            学院栏目 /{id}
 
 ### 静态化
 
@@ -142,6 +146,12 @@
 
 # cms
 
+### 错误号
+
+    contorller层 - 1xx开始
+        输入验证失败错误号为100
+    model层 - 2xx开始
+
 ### 菜单管理
 * 菜单-菜单项是一个一对多的关系
 * 菜单名称：1-10个中文字符
@@ -155,7 +165,7 @@
       `MODIFIED_TIME` datetime DEFAULT NULL,
       PRIMARY KEY (`MENU_ID`),
       KEY `NAME` (`MENU_NAME`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='保存菜单信息';
+    ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='保存菜单信息';
         
     CREATE TABLE `menu_item` (
       `ITEM_ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -168,14 +178,13 @@
       `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
       PRIMARY KEY (`ITEM_ID`),
       KEY `MENU_ID` (`MENU_ID`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
+    ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
 
 ### banner管理
 * banner-banner图片是一个一对多的关系
-
 * banner名称：1-10个中文字符
-
 * 排序方式为降序，数字越大优先级越高
+* banner项状态 0：下架 1：上架
 
 
     CREATE TABLE `banner` (
@@ -185,19 +194,21 @@
       `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '修改时间',
       PRIMARY KEY (`BANNER_ID`),
       KEY `BANNER_NAME` (`BANNER_NAME`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='存放banner信息';
+    ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='存放banner信息';
     
     CREATE TABLE `banner_item` (
       `ITEM_ID` int(11) NOT NULL AUTO_INCREMENT,
       `BANNER_ID` int(11) DEFAULT NULL COMMENT '所属banner id',
       `ITEM_IMG` varchar(255) DEFAULT NULL COMMENT 'banner 项图片',
       `ITEM_URL` varchar(255) DEFAULT NULL COMMENT 'banner 项url',
+      `ITEM_STATUS` tinyint(1) DEFAULT NULL COMMENT '项状态',
       `ITEM_ORDER` tinyint(3) DEFAULT NULL COMMENT '图片排序',
       `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
       `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
       PRIMARY KEY (`ITEM_ID`),
-      KEY `BANNER_ID` (`BANNER_ID`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息';
+      KEY `BANNER_ID` (`BANNER_ID`) USING BTREE,
+      KEY `ITEM_STATUS` (`ITEM_STATUS`) USING BTREE
+    ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
 
 ### 栏目管理
 * 存放文章栏目信息
@@ -224,7 +235,7 @@
       PRIMARY KEY (`CATEGORY_ID`),
       KEY `CATEGORY_NAME` (`CATEGORY_NAME`),
       KEY `CATEGORY_SLUG` (`CATEGORY_SLUG`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
+    ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
 
 ### 文章管理
 * 文章标题：1-50个中文字符和特殊符号
@@ -246,7 +257,7 @@
       `POST_CONTENT` text COMMENT '文章正文',
       `POST_LANG` varchar(10) DEFAULT NULL COMMENT '文章语言',
       `POST_AUTHOR_ID` int(11) DEFAULT NULL COMMENT '作者用户ID',
-      `POST_STATUS` tinyint(3) DEFAULT NULL COMMENT '文章状态 0:草稿 1:等待发布 2:发布',
+      `POST_STATUS` tinyint(1) DEFAULT NULL COMMENT '文章状态 0:草稿 1:等待发布 2:发布',
       `POST_ORDER` tinyint(3) DEFAULT '0' COMMENT '文章排序',
       `SEO_TITLE` varchar(50) DEFAULT NULL COMMENT 'seo标题',
       `SEO_KEYWORD` varchar(255) DEFAULT NULL COMMENT 'seo关键词',
@@ -294,6 +305,31 @@
       KEY `POST_ID` (`POST_ID`) USING BTREE,
       KEY `TAG_ID` (`TAG_ID`) USING BTREE
     ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='保存文章和标签的对应关系';
+
+### 页面管理
+* 页面名称：1-10个中文字符
+* 页面别名：1-10个中文字符
+* Seo标题：1-50个中文字符和特殊符号
+* Seo关键词：1-85个中文字符和特殊符号
+* Seo描述：1-300个中文字符和特殊符号
+
+
+    CREATE TABLE `pages` (
+      `PAGE_ID` int(11) NOT NULL AUTO_INCREMENT,
+      `PAGE_NAME` varchar(30) DEFAULT NULL COMMENT '页面名称',
+      `PAGE_SLUG` varchar(10) DEFAULT NULL COMMENT '页面别名',
+      `PAGE_DIRECTING` varchar(50) DEFAULT NULL COMMENT '页面指向',
+      `PAGE_PARENT` tinyint(3) DEFAULT NULL COMMENT '页面父类',
+      `PAGE_LANG` varchar(10) DEFAULT NULL COMMENT '页面语言',
+      `SEO_TITLE` varchar(50) DEFAULT NULL COMMENT 'seo标题',
+      `SEO_KEYWORD` varchar(255) DEFAULT NULL COMMENT 'seo关键词',
+      `SEO_DESCRIPTION` varchar(1024) DEFAULT NULL COMMENT 'seo描述',
+      `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+      `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
+      PRIMARY KEY (`PAGE_ID`),
+      KEY `POST_TRANSLATE_ID` (`PAGE_NAME`) USING BTREE,
+      KEY `POST_TITLE` (`PAGE_DIRECTING`) USING BTREE
+    ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='存放页面信息';
 
 ### 接口api
 

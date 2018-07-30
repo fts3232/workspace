@@ -48,7 +48,34 @@ class Validator
         $rules = $this->rules;
         $messages = $this->messages;
         $data = $this->data;
-        foreach ($rules as $key => $rule) {
+        foreach ($data as $key => $v) {
+            $this->stopValidate = false;
+            $rules = isset($this->rules[$key]) ? $this->rules[$key] : null;
+            if ($rules) {
+                $rule = explode('|', $rules);
+                foreach ($rule as $subRule) {
+                    if ($this->stopValidate) {
+                        break;
+                    }
+                    $msg = null;
+                    if (isset($messages[$key]) && is_string($messages[$key])) {
+                        $msg = $messages[$key];
+                    } elseif (isset($messages[$key][$subRule])) {
+                        $msg = $messages[$key][$subRule];
+                    }
+                    $result = false;
+                    if (isset($data[$key])) {
+                        $result = $this->validateRule($subRule, $data[$key]);
+                    }
+                    if ($result === false) {
+                        $this->error[$key] = $msg;
+                        $this->result = false;
+                        break;
+                    }
+                }
+            }
+        }
+        /*foreach ($rules as $key => $rule) {
             $this->stopValidate = false;
             $rule = explode('|', $rule);
             foreach ($rule as $subRule) {
@@ -71,7 +98,7 @@ class Validator
                     break;
                 }
             }
-        }
+        }*/
         return $this;
     }
 
@@ -242,7 +269,7 @@ class Validator
      */
     private function required($val)
     {
-        return !empty($val);
+        return $val === 0 || !empty($val);
     }
 
     /**
@@ -267,45 +294,6 @@ class Validator
     private function max($val, $max)
     {
         return intval($val) <= intval($max);
-    }
-
-    /**
-     * banner名字格式验证
-     *
-     * @param  string $val 要验证的值
-     * @return bool
-     */
-    private function bannerName($val)
-    {
-        $regex = '/^[0-9A-Za-z\x{4e00}-\x{9fa5}\s]{1,10}$/u';
-        return self::regex($val, $regex);
-    }
-
-    /**
-     * 文章标题格式验证
-     *
-     * @param  string $val 要验证的值
-     * @return bool
-     */
-    private function postTitle($val)
-    {
-        $regex = '/^[0-9A-Za-z\x{4e00}-\x{9fa5}\s，]{1,50}$/u';
-        return self::regex($val, $regex);
-    }
-
-    /**
-     * 文章标题格式验证
-     *
-     * @param  string $val 要验证的值
-     * @return bool
-     */
-    private function lang($val)
-    {
-        $lang = array(
-            'zh_CN',
-            'zh_HK'
-        );
-        return in_array($val, $lang);
     }
 
     /**
@@ -607,24 +595,15 @@ class Validator
     {
         if (!empty($items)) {
             foreach ($items as $item) {
-                if (!$this->bannerName($item['ITEM_NAME'])) {
+                if (!$this->itemName($item['ITEM_NAME'])) {
+                    return false;
+                }
+                if (!$this->required($item['ITEM_URL'])) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    /**
-     * 判断栏目别名是否正确
-     *
-     * @param $val
-     * @return bool
-     */
-    private function slug($val)
-    {
-        $regex = '/^[A-Za-z]{1,10}$/u';
-        return self::regex($val, $regex);
     }
 
     /**
@@ -637,10 +616,10 @@ class Validator
     {
         if (!empty($items)) {
             foreach ($items as $item) {
-                if (!$this->bannerName($item['CATEGORY_NAME'])) {
+                if (!$this->itemName($item['CATEGORY_NAME'])) {
                     return false;
                 }
-                if (!$this->slug($item['CATEGORY_SLUG'])) {
+                if (!$this->itemSlug($item['CATEGORY_SLUG'])) {
                     return false;
                 }
                 if (!$this->seoDescription($item['CATEGORY_DESCRIPTION'])) {
@@ -660,6 +639,12 @@ class Validator
         return true;
     }
 
+    /**
+     * 判断seo标题格式是否正确
+     *
+     * @param $val
+     * @return bool
+     */
     private function seoTitle($val)
     {
         if (!empty($val)) {
@@ -669,6 +654,12 @@ class Validator
         return true;
     }
 
+    /**
+     * 判断seo描述格式是否正确
+     *
+     * @param $val
+     * @return bool
+     */
     private function seoDescription($val)
     {
         if (!empty($val)) {
@@ -678,6 +669,12 @@ class Validator
         return true;
     }
 
+    /**
+     * 判断seo关键词格式是否正确
+     *
+     * @param $val
+     * @return bool
+     */
     private function seoKeyword($val)
     {
         if (!empty($val)) {
@@ -688,23 +685,62 @@ class Validator
     }
 
     /**
-     * 判断路由项格式是否正确
+     * item名字格式验证
      *
-     * @param $items
+     * @param  string $val 要验证的值
      * @return bool
      */
-    private function routerItem($items)
+    private function itemName($val)
     {
-        if (!empty($items)) {
-            foreach ($items as $item) {
-                if (!$this->bannerName($item['ROUTE_NAME'])) {
-                    return false;
-                }
-                if (!$this->slug($item['ROUTE_SLUG'])) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        $regex = '/^[0-9A-Za-z\x{4e00}-\x{9fa5}\s]{1,10}$/u';
+        return self::regex($val, $regex);
+    }
+
+    /**
+     * item名字格式验证
+     *
+     * @param  string $val 要验证的值
+     * @return bool
+     */
+    private function itemSlug($val)
+    {
+        $regex = '/^[0-9A-Za-z]{1,10}$/u';
+        return self::regex($val, $regex);
+    }
+
+    /**
+     * 文章标题格式验证
+     *
+     * @param  string $val 要验证的值
+     * @return bool
+     */
+    private function postTitle($val)
+    {
+        $regex = '/^[0-9A-Za-z\x{4e00}-\x{9fa5}\s，]{1,50}$/u';
+        return self::regex($val, $regex);
+    }
+
+    /**
+     * 语言验证
+     *
+     * @param  string $val 要验证的值
+     * @return bool
+     */
+    private function lang($val)
+    {
+        $languageMap = array_keys(C('languageMap'));
+        return in_array($val, $languageMap);
+    }
+
+    /**
+     * 页面类型验证
+     *
+     * @param $val
+     * @return bool
+     */
+    private function pageType($val)
+    {
+        $typeMap = array_keys(C('page.typeMap'));
+        return in_array($val, $typeMap);
     }
 }

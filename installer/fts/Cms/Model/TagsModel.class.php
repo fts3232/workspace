@@ -48,7 +48,7 @@ class TagsModel extends Model
     public function getAll($whereData, $offset, $size)
     {
         $where = $this->getWhere($whereData);
-        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->where($where)->order('TAG_ID ASC')->limit($offset, $size)->select();
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->where($where)->order('TAG_ID DESC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 
@@ -98,38 +98,81 @@ class TagsModel extends Model
      */
     public function addTag($data)
     {
-        $data = array(
-            'TAG_NAME' => $data['name'],
-            'TAG_SLUG' => $data['slug'],
-            'TAG_DESCRIPTION' => $data['description'],
-            'SEO_TITLE' => $data['seo_title'],
-            'SEO_DESCRIPTION' => $data['seo_description'],
-            'SEO_KEYWORD' => $data['seo_keyword']
-        );
-        return $this->add($data);
+        try {
+            $return = array('status'=>true);
+            if ($this->isExists($data['TAG_NAME'], 'TAG_NAME')) {
+                throw new \Exception('该标签名称已存在', 200);
+            }
+            $id = $this->add($data);
+            if (!$id) {
+                throw new \Exception('修改失败', 201);
+            }
+            $return['id'] = $id;
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 
     /**
      * 更新tag
      *
      * @param $data
-     * @return bool
+     * @return array
      */
     public function updateTag($data)
     {
-        $where = array(
-            'TAG_ID' => $data['id']
-        );
-        $data = array(
-            'TAG_NAME' => $data['name'],
-            'TAG_SLUG' => $data['slug'],
-            'TAG_DESCRIPTION' => $data['description'],
-            'SEO_TITLE' => $data['seo_title'],
-            'SEO_DESCRIPTION' => $data['seo_description'],
-            'SEO_KEYWORD' => $data['seo_keyword']
-        );
-        $result = $this->where($where)->save($data);
-        return $result;
+        try {
+            $return = array('status'=>true);
+            if (!$this->isExists($data['TAG_ID'])) {
+                throw new \Exception('该标签id不存在', 200);
+            }
+            $where = array(
+                'TAG_ID' => $data['TAG_ID']
+            );
+            $result = $this->where($where)->save($data);
+            if (!$result) {
+                throw new \Exception('修改失败', 201);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
+    }
+
+    /**
+     * 删除tag
+     *
+     * @param $data
+     * @return array
+     */
+    public function deleteTag($id)
+    {
+        try {
+            $return = array('status'=>true);
+            if (!$this->isExists($id)) {
+                throw new \Exception('该标签id不存在', 200);
+            }
+            $result = $this->delete($id);
+            if (!$result) {
+                throw new \Exception('删除失败', 201);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 
     /**
@@ -138,8 +181,13 @@ class TagsModel extends Model
      * @param $name
      * @return bool
      */
-    public function isExists($name)
+    public function isExists($val, $type = 'TAG_ID')
     {
-        return $this->field('TAG_ID')->where(array('TAG_NAME' => $name))->find();
+        if ($type == 'TAG_ID') {
+            $where = array('TAG_ID' => $val);
+        } else {
+            $where = array('TAG_NAME' => $val);
+        }
+        return $this->field('TAG_ID')->where($where)->getField('TAG_ID');
     }
 }

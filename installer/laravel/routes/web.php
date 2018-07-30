@@ -11,6 +11,13 @@
 |
 */
 Route::group(['middleware' => 'page-cache'], function () {
+    $pages = DB::table('pages')->get();
+    foreach ($pages as $page) {
+        $directing = $page->PAGE_DIRECTING;
+        Route::get($page->PAGE_SLUG, function () use ($directing) {
+            return view($directing);
+        });
+    }
     //首页
     Route::get('/', function () {
         return view('index');

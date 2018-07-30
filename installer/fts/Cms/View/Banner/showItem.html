@@ -46,11 +46,11 @@
                 <form class="left">
                     <div class="form-group">
                         <label for="edit-url">URL</label>
-                        <input type="text" class="form-control" id="edit-url" name="edit-url" placeholder="" value="">
+                        <input type="text" class="form-control" id="edit-url" name="url" placeholder="" value="">
                     </div>
                     <div class="form-group">
                         <label for="edit-status">状态</label>
-                        <select class="form-control" name="edit-status" id="edit-status">
+                        <select class="form-control" name="status" id="edit-status">
                             <foreach name="statusMap" item="v" key="k">
                                 <option value="{$k}">{$v}</option>
                             </foreach>
@@ -147,8 +147,8 @@
             $('#img-modal .edit').attr('data-index', $(this).index());
             $('#img-modal .delete').attr('data-index', $(this).index());
             $('#img-modal img').attr('src', $(this).find('img').attr('src'));
-            $('#img-modal [name="edit-url"]').val($(this).attr('data-url'));
-            $('#img-modal [name="edit-status"]').val($(this).attr('data-status'));
+            $('#img-modal [name="url"]').val($(this).attr('data-url'));
+            $('#img-modal [name="status"]').val($(this).attr('data-status'));
         });
 
         //删除菜单项
@@ -160,8 +160,8 @@
         });
         //修改
         $(document).on('click', 'button.edit', function () {
-            var url = $('#img-modal [name="edit-url"]').val();
-            var status = $('#img-modal [name="edit-status"]').val();
+            var url = $('#img-modal [name="url"]').val();
+            var status = $('#img-modal [name="status"]').val();
             var index = $(this).attr('data-index');
             $('.sortable li').eq(index).attr('data-url', url);
             $('.sortable li').eq(index).attr('data-status', status);

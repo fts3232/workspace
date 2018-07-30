@@ -287,10 +287,15 @@
                 alertMessage('warning', '请输入名称！');
                 return false;
             }
+            var slug = $.trim($('form.add input[name="slug"]').val());
+            if (slug == '') {
+                alertMessage('warning', '请输入别名！');
+                return false;
+            }
             var data = {
                 'CATEGORY_ID'         : 0,
                 'CATEGORY_NAME'       : name,
-                'CATEGORY_SLUG'       : $.trim($('form.add input[name="slug"]').val()),
+                'CATEGORY_SLUG'       : slug,
                 'CATEGORY_PARENT'     : 0,
                 'CATEGORY_ORDER'      : 0,
                 'CATEGORY_DESCRIPTION': $.trim($('form.add textarea[name="description"]').val()),

@@ -2,11 +2,32 @@
 
 namespace Cms\Controller;
 
-use Cms\Common\Validator;
 use Think\Controller;
 
 class TagsController extends Controller
 {
+    use Validate;
+
+    //验证规则
+    protected $validateRule = array(
+        'TAG_ID' => 'required|int',
+        'TAG_NAME'=>'required|itemName',
+        'TAG_SLUG'=>'required|itemSlug',
+        'SEO_TITLE' => 'seoTitle',
+        'SEO_KEYWORD' => 'seoKeyword',
+        'SEO_DESCRIPTION' => 'seoDescription',
+    );
+
+    //验证错误信息
+    protected $validateMsg = array(
+        'TAG_ID' => '标签id不正确',
+        'TAG_NAME' => '标签名称不正确',
+        'TAG_SLUG' => '标签别名不正确',
+        'SEO_TITLE' => 'SEO标题格式不正确',
+        'SEO_KEYWORD' => 'SEO关键词格式不正确',
+        'SEO_DESCRIPTION' => 'SEO描述格式不正确',
+    );
+
     /**
      * 查看tag分页数据
      */
@@ -39,13 +60,14 @@ class TagsController extends Controller
     {
         $model = D('Tags');
         try {
-            $id = I('get.id', false, 'int');
+            $data = array(
+                'TAG_ID' => I('get.id', false, 'int')
+            );
             //判断id是否存在
-            if (!$result = $model->get($id)) {
-                throw new \Exception('该tag id不存在', 100);
+            if (!$result = $model->get($data['TAG_ID'])) {
+                throw new \Exception('该标签id不存在', 100);
             }
-            $result = $model->get($id);
-            $this->assign('id', $id);
+            $this->assign('id', $data['TAG_ID']);
             $this->assign('result', $result);
             $this->assign('action', 'update');
             $this->display();
@@ -63,48 +85,21 @@ class TagsController extends Controller
             $return = array('status' => true, 'msg' => '修改成功');
             try {
                 //整合输入
-                $id = I('post.id', false, 'int');
                 $data = array(
-                    'name' => I('post.name'),
-                    'slug' => I('post.slug'),
-                    'description' => I('post.description'),
-                    'seo_title' => I('post.seo_title'),
-                    'seo_description' => I('post.seo_description'),
-                    'seo_keyword' => I('post.seo_keyword'),
-                    'id' => $id
+                    'TAG_ID' =>  I('post.id', false, 'int'),
+                    'TAG_NAME'=> I('post.name'),
+                    'TAG_SLUG'=> I('post.slug'),
+                    'TAG_DESCRIPTION' => I('post.description'),
+                    'SEO_TITLE' => I('post.seo_title'),
+                    'SEO_DESCRIPTION' => I('post.seo_description'),
+                    'SEO_KEYWORD' => I('post.seo_keyword'),
                 );
-                //验证输入
-                $validator = Validator::make(
-                    $data,
-                    array(
-                        'id' => 'required|int',
-                        'name' => 'required|bannerName',
-                        'slug' => 'required|bannerName',
-                        'seo_title' => 'seoTitle',
-                        'seo_keyword' => 'seoKeyword',
-                        'seo_description' => 'seoDescription',
-                    ),
-                    array(
-                        'id' => 'id参数不正确',
-                        'name' => '名称格式不正确',
-                        'slug' => '别名格式不正确',
-                        'seo_title' => 'SEO标题格式不正确',
-                        'seo_keyword' => 'SEO关键词格式不正确',
-                        'seo_description' => 'SEO描述格式不正确',
-                    )
-                );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                $this->validate($data);
                 $model = D('Tags');
-                //判断id是否存在
-                if (!$model->get($id)) {
-                    throw new \Exception('该tag id不存在', 101);
-                }
                 //更新操作
                 $result = $model->updateTag($data);
-                if (!$result) {
-                    throw new \Exception('修改失败', 102);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -126,30 +121,15 @@ class TagsController extends Controller
             $return = array('status' => true, 'msg' => '删除成功');
             try {
                 //验证输入格式
-                $id = I('post.id', false, 'int');
-                $validator = Validator::make(
-                    array(
-                        'id' => $id
-                    ),
-                    array(
-                        'id' => 'required|int'
-                    ),
-                    array(
-                        'id' => 'id参数不正确'
-                    )
+                $data =array(
+                    'TAG_ID' => I('post.id', false, 'int')
                 );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                $this->validate($data);
                 $model = D('Tags');
-                //判断id是否存在
-                if (!$model->get($id)) {
-                    throw new \Exception('该tag id不存在', 101);
-                }
                 //删除操作
-                $result = $model->delete($id);
-                if (!$result) {
-                    throw new \Exception('删除失败', 102);
+                $result = $model->deleteTag($data['TAG_ID']);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception  $e) {
                 $return = array(
@@ -173,42 +153,27 @@ class TagsController extends Controller
                 //验证输入格式
                 $name = I('post.name');
                 $data = array(
-                    'name' => $name,
-                    'slug' => $name
+                    'TAG_NAME' => $name,
+                    'TAG_SLUG' => $name
                 );
-                $validator = Validator::make(
-                    $data,
-                    array(
-                        'name' => 'required|bannerName',
-                        'slug' => 'required|bannerName'
-                    ),
-                    array(
-                        'name' => '名称格式不正确',
-                        'slug' => '别名格式不正确'
-                    )
-                );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                $this->validate($data);
                 $model = D('Tags');
                 //判断tag 名称是否存在
-                if ($tag = $model->isExists($data['name'])) {
-                    $return['id'] = $tag['TAG_ID'];
-                } else {
+                $tagID = $model->isExists($data['TAG_NAME'], 'TAG_NAME');
+                if (!$tagID) {
                     //添加tag操作
-                    $id = $model->addTag($data);
-                    if (!$id) {
-                        throw new \Exception('添加失败', 102);
+                    $tagID = $model->add($data);
+                    if (!$tagID) {
+                        throw new \Exception('添加失败', 101);
                     }
-                    $return['id'] = $id;
                 }
-            } catch (\Exception  $e) {
+                $return['id'] = $tagID;
+            } catch (\Exception $e) {
                 $return = array(
                     'status' => false,
                     'msg' => $e->getMessage(),
                     'code' => $e->getCode(),
                 );
-                isset($tag) && $return['id'] = $tag['TAG_ID'];
             }
             $this->ajaxReturn($return);
         }
@@ -224,51 +189,27 @@ class TagsController extends Controller
             try {
                 //验证输入格式
                 $data = array(
-                    'name' => I('post.name'),
-                    'slug' => I('post.slug'),
-                    'description' => I('post.description'),
-                    'seo_title' => I('post.seo_title'),
-                    'seo_description' => I('post.seo_description'),
-                    'seo_keyword' => I('post.seo_keyword')
+                    'TAG_NAME' => I('post.name'),
+                    'TAG_SLUG' => I('post.slug'),
+                    'TAG_DESCRIPTION' => I('post.description'),
+                    'SEO_TITLE' => I('post.seo_title'),
+                    'SEO_DESCRIPTION' => I('post.seo_description'),
+                    'SEO_KEYWORD' => I('post.seo_keyword')
                 );
-                $validator = Validator::make(
-                    $data,
-                    array(
-                        'name' => 'required|bannerName',
-                        'slug' => 'required|bannerName',
-                        'seo_title' => 'seoTitle',
-                        'seo_keyword' => 'seoKeyword',
-                        'seo_description' => 'seoDescription',
-                    ),
-                    array(
-                        'name' => '名称格式不正确',
-                        'slug' => '别名格式不正确',
-                        'seo_title' => 'SEO标题格式不正确',
-                        'seo_keyword' => 'SEO关键词格式不正确',
-                        'seo_description' => 'SEO描述格式不正确',
-                    )
-                );
-                if ($validator->isFails()) {
-                    throw new \Exception($validator->getFirstError(), 100);
-                }
+                $this->validate($data);
                 $model = D('Tags');
-                //判断tag 名称是否存在
-                if ($tag = $model->isExists($data['name'])) {
-                    throw new \Exception('该tag id已存在', 101);
-                }
                 //添加tag操作
-                $id = $model->addTag($data);
-                if (!$id) {
-                    throw new \Exception('添加失败', 102);
+                $result = $model->addTag($data);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
-                $return['id'] = $id;
+                $return['id'] = $result['id'];
             } catch (\Exception  $e) {
                 $return = array(
                     'status' => false,
                     'msg' => $e->getMessage(),
                     'code' => $e->getCode(),
                 );
-                isset($tag) && $return['id'] = $tag['TAG_ID'];
             }
             $this->ajaxReturn($return);
         }

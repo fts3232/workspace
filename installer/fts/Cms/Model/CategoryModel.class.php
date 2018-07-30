@@ -75,6 +75,8 @@ class CategoryModel extends Model
 
         if ($list) {
             $list = $this->getTree($list, 0);
+        } else {
+            $list = array();
         }
         return json_encode($list);
     }
@@ -92,28 +94,71 @@ class CategoryModel extends Model
     }
 
     /**
-     * 更新栏目信息
+     * 判断id是否存在
      *
-     * @param $items
-     * @param $addItems
+     * @param $id
      * @return bool
      */
-    public function updateCategory($items, $addItems)
+    public function isExists($id)
+    {
+        $count = $this->where(array('CATEGORY_ID' => $id))->count();
+        return $count > 0;
+    }
+
+    /**
+     * 删除栏目
+     *
+     * @param $id
+     * @return array
+     */
+    public function deleteCategory($id)
     {
         try {
-            $return = true;
+            $return = array('status' => true);
+            //判断id是否存在
+            if (!$this->isExists($id)) {
+                throw new \Exception('该栏目不存在！', 200);
+            }
+            //判断是否有子栏目
+            if ($this->hasChild($id)) {
+                throw new \Exception('该栏目底下还有子栏目，请先删除子栏目内容！', 201);
+            }
+            $result = $this->delete($id);
+            if (!$result) {
+                throw new \Exception('删除失败！', 202);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
+    }
+
+    /**
+     * 更新栏目信息
+     *
+     * @param $data
+     * @return bool
+     */
+    public function updateCategory($data)
+    {
+        try {
+            $return = array('status' => true);
             $this->startTrans();
             $list = $this->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_SLUG, CATEGORY_PARENT, CATEGORY_ORDER')
                 ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
                 ->select();
             $temp = array();
-            foreach ($items as $k => $v) {
+            foreach ($data['ITEMS'] as $k => $v) {
                 $temp[$v['CATEGORY_ID']] = $v;
             }
-            foreach ($addItems as $v) {
+            foreach ($data['ADD_ITEMS'] as $v) {
                 $result = $this->add($v);
                 if (!$result) {
-                    throw new \Exception('添加失败');
+                    throw new \Exception('添加失败', 200);
                 }
             }
             //判断哪些是有更新的栏目
@@ -124,14 +169,29 @@ class CategoryModel extends Model
                 $temp[$v['CATEGORY_ID']]['MODIFIED_TIME'] = array('exp', 'NOW()');
                 $result = $this->where(array('CATEGORY_ID' => $v['CATEGORY_ID']))->save($temp[$v['CATEGORY_ID']]);
                 if (!$result) {
-                    throw new \Exception('更新失败');
+                    throw new \Exception('更新失败', 201);
                 }
             }
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
-            $return = false;
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
         }
         return $return;
+    }
+
+    /**
+     * 获取指定id别名
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getSlug($id)
+    {
+        return $this->where(array('CATEGORY_ID'))->getField('CATEGORY_SLUG');
     }
 }

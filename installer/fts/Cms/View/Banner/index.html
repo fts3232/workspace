@@ -5,10 +5,10 @@
         <li class="active">列表页</li>
     </ol>
     <div class="text-right auto tool-area">
-        <form class="form-inline">
+        <form class="form-inline add">
             <div class="form-group">
                 <label for="add-name">名称</label>
-                <input type="text" class="form-control" id="add-name" name="add-name" placeholder="">
+                <input type="text" class="form-control" id="add-name" name="name" placeholder="">
             </div>
             <button class="btn btn-primary add">添加</button>
         </form>
@@ -65,10 +65,10 @@
                 <h4 class="modal-title" id="edit-modal-label">修改</h4>
             </div>
             <div class="modal-body">
-                <form class="form-inline">
+                <form class="form-inline edit">
                     <div class="form-group">
                         <label for="edit-name">名称</label>
-                        <input type="text" class="form-control" id="edit-name" name="edit-name" placeholder="" value="">
+                        <input type="text" class="form-control" id="edit-name" name="name" placeholder="" value="">
                     </div>
                 </form>
             </div>
@@ -83,7 +83,7 @@
     $(document).ready(function () {
         //添加菜单
         $('button.add').on('click', function () {
-            var name = $.trim($('[name="add-name"]').val());
+            var name = $.trim($('form.add').find('[name="name"]').val());
             if (name == '') {
                 alertMessage('warning', '请输入名称！');
                 return false;
@@ -118,7 +118,7 @@
         $(document).on('click', 'button.edit', function () {
             $('#edit-modal').modal('show');
             var name = $(this).parents('tr').find('td').eq(1).html();
-            $('[name="edit-name"]').val(name);
+            $('form.edit').find('[name="name"]').val(name);
             $('.edit-confirm').attr('data-index', $(this).parents('tr').index());
             $('.edit-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
@@ -127,7 +127,7 @@
         //修改菜单提交
         $('.edit-confirm').on('click', function () {
             var $btn = $(this).button('loading');
-            var name = $.trim($('[name="edit-name"]').val());
+            var name = $.trim($('form.edit').find('[name="name"]').val());
             if (name == '') {
                 alertMessage('warning', '请输入名称！');
                 return false;

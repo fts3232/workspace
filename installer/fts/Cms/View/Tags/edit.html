@@ -6,7 +6,7 @@
             <li><a href="{:U('index')}">列表页</a></li>
             <if condition="$action eq 'create'">
                 <li class="active">添加标签</li>
-            <else />
+                <else/>
                 <li class="active">{$result['TAG_NAME']}</li>
             </if>
         </ol>
@@ -68,11 +68,21 @@
     $(function () {
         //保存
         $('button.save-menu').on('click', function () {
-            var $btn = $(this).button('loading');
             var action = "{$action}";
+            var name = $.trim($('[name="name"]').val());
+            var slug = $.trim($('[name="slug"]').val());
+            if (name == '') {
+                alertMessage('warning', '请输入名称');
+                return false;
+            }
+            if (slug == '') {
+                alertMessage('warning', '请输入别名');
+                return false;
+            }
+            var $btn = $(this).button('loading');
             var data = {
-                'name'           : $('[name="name"]').val(),
-                'slug'           : $('[name="slug"]').val(),
+                'name'           : name,
+                'slug'           : slug,
                 'description'    : $('[name="description"]').val(),
                 'seo_title'      : $('[name="seo_title"]').val(),
                 'seo_keyword'    : $('[name="seo_keyword"]').val(),
