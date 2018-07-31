@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('cache/create', function (Request $request) {
-    Artisan::call('page-cache:create');
-})->middleware(['api', 'verifySign:createCache']);
+Route::post('cache/create', 'ApiController@cacheCreate')->middleware(['verifySign:createCache']);
 
-Route::post('cache/clear', function (Request $request) {
-    Artisan::call('page-cache:clear');
-})->middleware(['api', 'verifySign:clearCache']);
+Route::post('cache/clear', 'ApiController@cacheClear')->middleware(['verifySign:clearCache']);

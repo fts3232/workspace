@@ -19,7 +19,7 @@ class LogServiceProvider extends ServiceProvider
         // the default date format is "Y-m-d H:i:s"
         $dateFormat = "Y-m-d H:i:s";
         // the default output format is "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n"
-        $output = "[%datetime%] %level_name% %message%" . PHP_EOL . PHP_EOL;
+        $output = "[%datetime%] %level_name% %message% " . PHP_EOL . PHP_EOL;
         // finally, create a formatter
         $formatter = new LineFormatter($output, $dateFormat);
         $handler = new RotatingFileHandler($filename);

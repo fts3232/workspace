@@ -5,12 +5,12 @@
 
     首页 /
         关于我们 
-            集团概况    /about
+            集团概况     /about/introduction
             优势        /about/advantage
-            集团认证    /about/authentication
-            投资者保障  /about/guarantee
+            集团认证     /about/authentication
+            投资者保障   /about/guarantee
             公告        /about/notice
-            联系我们    /about/contact
+            联系我们     /about/contact
         开户交易
             真实账户    /transaction/real
             模拟账户    /transaction/simulation
@@ -63,13 +63,8 @@
     	#设置变量
         set $flag 0;
     
-        #如果是关于我们页面，允许访问
-        if ( $request_uri ~* ^/about/?$) {
-            set $flag 1;
-        }
-    
         #如果是关于我们旗下页面，允许访问
-        if ( $request_uri ~* ^/about/(advantage|authentication|guarantee|notice|contactUs)/?$) {
+        if ( $request_uri ~* ^/about/(introduction|advantage|authentication|guarantee|notice|contactUs)/?$) {
             set $flag 1;
         }
     
@@ -83,13 +78,28 @@
             set $flag 1;
         }
     
-         #如果是新闻咨询旗下页面，允许访问
+        #如果是新闻咨询旗下页面，允许访问
         if ( $request_uri ~* ^/news/(comment|headline|realtime|information|data|calendar)/?$) {
             set $flag 1;
         }
     
         #如果是学院旗下页面，允许访问
         if ( $request_uri ~* ^/college/(novice|skill|teacher|rule|investment|wiki)/?$) {
+            set $flag 1;
+        }
+        
+        #如果是学院旗下文章，允许访问
+        if ( $request_uri ~* ^/college/([0-9]+)/?$) {
+            set $flag 1;
+        }
+    
+        #如果是新闻旗下文章，允许访问
+        if ( $request_uri ~* ^/news/([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/([0-9]+)/?$) {
+            set $flag 1;
+        }
+        
+        #api
+        if ( $request_uri ~* ^/api/cache/(create|clear)/?$) {
             set $flag 1;
         }
     
@@ -213,7 +223,7 @@
 ### 栏目管理
 * 存放文章栏目信息
 * 栏目名称：1-10个中文字符
-* 栏目别名：1-10个英文字符
+* 栏目别名：1-30个英文数字字符
 * 栏目描述：1-300个中文字符和特殊符号
 * Seo标题：1-50个中文字符和特殊符号
 * Seo关键词：1-85个中文字符和特殊符号
@@ -271,7 +281,7 @@
 
 ### 标签管理
 * Tag名称：1-10个中文字符
-* Tag 别名：1-10个中文字符
+* Tag 别名：1-30个英文数字字符
 * Tag描述：1-300个中文字符和特殊符号
 * Seo标题：1-50个中文字符和特殊符号
 * Seo关键词：1-85个中文字符和特殊符号
@@ -308,7 +318,7 @@
 
 ### 页面管理
 * 页面名称：1-10个中文字符
-* 页面别名：1-10个中文字符
+* 页面别名：1-30个英文数字字符
 * Seo标题：1-50个中文字符和特殊符号
 * Seo关键词：1-85个中文字符和特殊符号
 * Seo描述：1-300个中文字符和特殊符号

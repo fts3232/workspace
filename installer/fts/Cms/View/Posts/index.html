@@ -71,7 +71,7 @@
                         <td>{$statusMap[$v['POST_STATUS']]}</td>
                         <td>{$v.CREATED_TIME}</td>
                         <td>{$v.PUBLISHED_TIME}</td>
-                        <td>{$v.UPDATED_TIME}</td>
+                        <td>{$v.MODIFIED_TIME}</td>
                         <td>
                             <if condition="ACTION_NAME eq 'index'">
                                 <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>

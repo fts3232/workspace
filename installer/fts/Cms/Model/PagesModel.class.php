@@ -193,6 +193,7 @@ class PagesModel extends Model
     {
         try {
             $return = array('status'=>true);
+            $data['MODIFIED_TIME'] = array('exp', 'NOW()');
             //判断id是否存在
             if (!$this->isExists($data['PAGE_ID'])) {
                 throw new \Exception('该页面id不存在', 200);

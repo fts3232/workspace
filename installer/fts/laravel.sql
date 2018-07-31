@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-30 18:14:19
+Date: 2018-07-31 18:16:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `CATEGORY_ID` int(11) NOT NULL AUTO_INCREMENT,
   `CATEGORY_NAME` varchar(30) DEFAULT NULL COMMENT '栏目名称',
-  `CATEGORY_SLUG` varchar(10) DEFAULT NULL COMMENT '栏目别名',
+  `CATEGORY_SLUG` varchar(30) DEFAULT NULL COMMENT '栏目别名',
   `CATEGORY_PARENT` int(11) DEFAULT NULL COMMENT '栏目父类',
   `CATEGORY_ORDER` tinyint(3) DEFAULT NULL COMMENT '栏目排序',
   `CATEGORY_DESCRIPTION` varchar(1024) DEFAULT NULL COMMENT '栏目描述',
@@ -104,7 +104,7 @@ CREATE TABLE `category` (
   PRIMARY KEY (`CATEGORY_ID`),
   KEY `CATEGORY_NAME` (`CATEGORY_NAME`),
   KEY `CATEGORY_SLUG` (`CATEGORY_SLUG`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
 
 -- ----------------------------
 -- Records of category
@@ -186,7 +186,7 @@ DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (
   `PAGE_ID` int(11) NOT NULL AUTO_INCREMENT,
   `PAGE_NAME` varchar(30) DEFAULT NULL COMMENT '页面名称',
-  `PAGE_SLUG` varchar(10) DEFAULT NULL COMMENT '页面别名',
+  `PAGE_SLUG` varchar(30) DEFAULT NULL COMMENT '页面别名',
   `PAGE_DIRECTING` varchar(50) DEFAULT NULL COMMENT '页面指向',
   `PAGE_PARENT` tinyint(3) DEFAULT NULL COMMENT '页面父类',
   `PAGE_LANG` varchar(10) DEFAULT NULL COMMENT '页面语言',
@@ -198,14 +198,41 @@ CREATE TABLE `pages` (
   PRIMARY KEY (`PAGE_ID`),
   KEY `POST_TRANSLATE_ID` (`PAGE_NAME`) USING BTREE,
   KEY `POST_TITLE` (`PAGE_DIRECTING`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='存放页面信息';
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COMMENT='存放页面信息';
 
 -- ----------------------------
 -- Records of pages
 -- ----------------------------
-INSERT INTO `pages` VALUES ('1', '121', '212', 'index', '0', null, null, null, null, '2018-07-29 09:37:07', null);
-INSERT INTO `pages` VALUES ('2', '122t', '22t', 'index', '1', 'zh_HK', '5435t', '5435t', '3543t', '2018-07-29 09:37:14', null);
-INSERT INTO `pages` VALUES ('5', 'tt', 'tt', 'index', '0', 'zh_CN', 'tt', 'tt', 'tt', '2018-07-30 16:36:33', null);
+INSERT INTO `pages` VALUES ('1', '关于我们', 'about', '', '0', 'zh_CN', null, null, null, '2018-07-29 09:37:07', null);
+INSERT INTO `pages` VALUES ('2', '集团概况', 'introduction', 'AboutController@introduction', '1', 'zh_CN', '5435t', '5435t', '3543t', '2018-07-29 09:37:14', null);
+INSERT INTO `pages` VALUES ('5', '优势', 'advantage', 'AboutController@advantage', '1', 'zh_CN', 'tt', 'tt', 'tt', '2018-07-30 16:36:33', null);
+INSERT INTO `pages` VALUES ('6', '集团认证', 'authentication', 'AboutController@authentication', '1', 'zh_CN', null, null, null, '2018-07-31 12:21:10', null);
+INSERT INTO `pages` VALUES ('7', '投资者保障', 'guarantee', 'AboutController@guarantee', '1', 'zh_CN', null, null, null, '2018-07-31 12:21:10', null);
+INSERT INTO `pages` VALUES ('8', '公告', 'notice', 'AboutController@notice', '1', 'zh_CN', null, null, null, '2018-07-31 12:21:10', null);
+INSERT INTO `pages` VALUES ('9', '联系我们', 'contact', 'AboutController@contact', '1', 'zh_CN', null, null, null, '2018-07-31 12:21:10', null);
+INSERT INTO `pages` VALUES ('10', '开户交易', 'transaction', '', '0', 'zh_CN', null, null, null, '2018-07-31 12:21:11', null);
+INSERT INTO `pages` VALUES ('11', '真实账户', 'real', 'TransactionController@real', '10', 'zh_CN', null, null, null, '2018-07-31 12:21:11', null);
+INSERT INTO `pages` VALUES ('12', '模拟账户', 'simulation', 'TransactionController@simulation', '10', 'zh_CN', null, null, null, '2018-07-31 12:21:11', null);
+INSERT INTO `pages` VALUES ('13', '合约细则', 'rule', 'TransactionController@rule', '10', 'zh_CN', null, null, null, '2018-07-31 12:21:11', null);
+INSERT INTO `pages` VALUES ('14', '合约利息', 'interest', 'TransactionController@interest', '10', 'zh_CN', null, null, null, '2018-07-31 12:21:12', null);
+INSERT INTO `pages` VALUES ('15', '交易指南', 'guide', 'TransactionController@guide', '10', 'zh_CN', null, null, null, '2018-07-31 12:21:12', null);
+INSERT INTO `pages` VALUES ('16', '平台下载', 'platform', '', '0', 'zh_CN', null, null, null, '2018-07-31 12:22:52', null);
+INSERT INTO `pages` VALUES ('17', '电脑交易平台', 'pc', 'PlatformController@pc', '16', 'zh_CN', null, null, null, '2018-07-31 12:22:52', null);
+INSERT INTO `pages` VALUES ('18', '手机交易平台', 'mobile', 'PlatformController@mobile', '16', 'zh_CN', null, null, null, '2018-07-31 12:22:52', null);
+INSERT INTO `pages` VALUES ('19', '新闻咨询', 'news', null, '0', 'zh_CN', null, null, null, '2018-07-31 12:22:52', null);
+INSERT INTO `pages` VALUES ('20', '每日金评', 'comment', 'NewsController@comment', '19', 'zh_CN', null, null, null, '2018-07-31 12:22:52', null);
+INSERT INTO `pages` VALUES ('21', '黄金头条', 'headline', 'NewsController@headline', '19', 'zh_CN', null, null, null, '2018-07-31 12:22:53', null);
+INSERT INTO `pages` VALUES ('22', '汇市新闻', 'market', 'NewsController@market', '19', 'zh_CN', null, null, null, '2018-07-31 12:22:53', null);
+INSERT INTO `pages` VALUES ('23', '行业资讯', 'information', 'NewsController@information', '19', 'zh_CN', null, null, null, '2018-07-31 12:22:53', null);
+INSERT INTO `pages` VALUES ('24', '即时数据', 'data', 'NewsController@data', '19', 'zh_CN', null, null, null, '2018-07-31 12:23:27', null);
+INSERT INTO `pages` VALUES ('25', '财经日历', 'calendar', 'NewsController@calendar', '19', 'zh_CN', null, null, null, '2018-07-31 12:23:27', null);
+INSERT INTO `pages` VALUES ('26', '学院', 'college', null, '0', 'zh_CN', null, null, null, '2018-07-31 12:23:27', null);
+INSERT INTO `pages` VALUES ('27', '新手入门', 'novice', 'CollegeController@novice', '26', 'zh_CN', null, null, null, '2018-07-31 12:23:48', null);
+INSERT INTO `pages` VALUES ('28', '实战技巧', 'skill', 'CollegeController@skill', '26', 'zh_CN', null, null, null, '2018-07-31 12:23:48', null);
+INSERT INTO `pages` VALUES ('29', '名师指路', 'teacher', 'CollegeController@teacher', '26', 'zh_CN', null, null, null, '2018-07-31 12:23:48', null);
+INSERT INTO `pages` VALUES ('30', '黄金法则', 'rule', 'CollegeController@rule', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:02', null);
+INSERT INTO `pages` VALUES ('31', '外汇投资', 'investment', 'CollegeController@investment', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:03', null);
+INSERT INTO `pages` VALUES ('32', '投资百科', 'wiki', 'CollegeController@wiki', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:18', null);
 
 -- ----------------------------
 -- Table structure for posts

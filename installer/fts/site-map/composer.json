@@ -1,0 +1,30 @@
+{
+    "name": "fts/site-map",
+    "description": "laravel 5 site-map",
+    "type": "package",
+    "license": "MIT",
+    "version":"1.0",
+    "keywords":[
+        "laravel",
+        "site-map"
+    ],
+    "authors": [
+        {
+            "name": "tianshuo feng",
+            "email": "550610606@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "fts\\SiteMap\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "fts\\SiteMap\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4"
+    }
+}
