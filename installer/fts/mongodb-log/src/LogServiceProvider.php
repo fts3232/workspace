@@ -11,12 +11,11 @@ use Monolog\Handler\RotatingFileHandler;
 
 class LogServiceProvider extends ServiceProvider
 {
-
     public function boot()
     {
         // 发布配置文件  run php artisan vendor:publish
         $this->publishes([
-            __DIR__ . '/Exceptions/Handler.php' => app_path()('Exceptions/Handler.php')
+            __DIR__ . '/Exceptions/Handler.php' => app_path('Exceptions/Handler.php')
         ]);
 
         $monolog = Log::getMonolog();

@@ -14,7 +14,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        app('siteMap');
         return view('index');
     }
 }

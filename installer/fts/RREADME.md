@@ -113,6 +113,9 @@
     }
 
 ### 定时任务
+
+日志会生成在storage/logs/cron.log
+
 每5分钟执行1次
 
 * 获取到发布时间的状态为等待发布的文章所属栏目别名
@@ -124,6 +127,24 @@
   * 将文件标识push入数组
 * 去除数组的重复项
 * 执行删除操作，遍历数组执行删除操作
+
+每天00:00执行1次
+
+* 生成site map
+
+### 命令
+
+    php artisan vendor:publish --force
+    
+    php artisan schedule:run
+    
+    php artisan site-map:create
+    
+    php artisan page-cache:clear
+    
+    php artisan page-cache:create
+    
+    php artisan cache-manage
 
 ### 接口api
 

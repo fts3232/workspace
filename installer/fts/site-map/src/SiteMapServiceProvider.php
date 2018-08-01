@@ -2,6 +2,7 @@
 
 namespace fts\SiteMap;
 
+use fts\SiteMap\Console\CreateSiteMap;
 use Illuminate\Support\ServiceProvider;
 
 class SiteMapServiceProvider extends ServiceProvider
@@ -17,12 +18,18 @@ class SiteMapServiceProvider extends ServiceProvider
     public function boot()
     {
         // 发布配置文件 run php artisan vendor:publish
+        $this->publishes([
+            __DIR__ . '/../config/siteMap.php' => config_path('siteMap.php')
+        ]);
+
+        //添加构建site map命令
+        $this->commands(CreateSiteMap::class);
     }
 
     public function register()
     {
-        $this->app->singleton('siteMap', function ($app) {
-            return new SiteMap($app['router'],$app['files']);
+        $this->app->singleton(SiteMap::class, function ($app) {
+            return new SiteMap($app['router'], $app['files'], $app['Illuminate\Config\Repository']);
         });
     }
 
@@ -33,6 +40,6 @@ class SiteMapServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['siteMap'];
+        return [SiteMap::class];
     }
 }

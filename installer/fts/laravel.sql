@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-31 18:16:27
+Date: 2018-08-01 16:41:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -104,21 +104,25 @@ CREATE TABLE `category` (
   PRIMARY KEY (`CATEGORY_ID`),
   KEY `CATEGORY_NAME` (`CATEGORY_NAME`),
   KEY `CATEGORY_SLUG` (`CATEGORY_SLUG`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
 
 -- ----------------------------
 -- Records of category
 -- ----------------------------
-INSERT INTO `category` VALUES ('1', '黄金', 'null', '0', '1', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('2', '黄金112312', 'skl', '7', '1', '描述', '标题', '现货黄金，操作建议', '现货黄金市场2018年7月23日14点收盘于1230.9美元/盎司，金价在早间冲击重压1235美元/盎司一线后回撤，目前维持与1230-1233区间窄幅震荡。现货黄金在短期内可能面临小幅调整，在调整过后依然有机会继续上涨。后市关注1225-1230区间能否成为上涨后的回踩支点，为后市', '2018-07-19 17:03:20', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('3', '黄金2', 'hj', '0', '0', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('4', '黄金3', 'null', '3', '0', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('7', '23424', 'null', '0', '2', 'null', 'null', 'null', 'null', '2018-07-19 17:51:39', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('8', 'rtre', 'null', '7', '0', 'null', 'null', 'null', 'null', '2018-07-19 17:51:59', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('9', '123', 'null', '0', '3', '1231t', '31t', '313t', '1231t', '2018-07-22 00:50:10', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('11', '123', 'null', '0', '4', '313', '131', '31', '313', '2018-07-22 21:30:26', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('12', '1232', 'hh', '0', '5', '131', '3213', '131', '131', '2018-07-22 21:30:50', '2018-07-30 15:16:46');
-INSERT INTO `category` VALUES ('13', '2342432体体', 'aadf', '0', '6', '2424', '24', '24', '2424', '2018-07-24 10:56:17', '2018-07-30 15:16:46');
+INSERT INTO `category` VALUES ('1', '新闻咨询', 'news', '0', '0', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('2', '每日金评', 'comment', '1', '0', '描述', '标题', '现货黄金，操作建议', '现货黄金市场2018年7月23日14点收盘于1230.9美元/盎司，金价在早间冲击重压1235美元/盎司一线后回撤，目前维持与1230-1233区间窄幅震荡。现货黄金在短期内可能面临小幅调整，在调整过后依然有机会继续上涨。后市关注1225-1230区间能否成为上涨后的回踩支点，为后市', '2018-07-19 17:03:20', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('3', '黄金头条', 'headline', '1', '1', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('4', '汇市新闻', 'market', '1', '2', 'null', 'null', 'null', 'null', '2018-07-19 17:03:20', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('7', '行业资讯', 'information', '1', '3', 'null', 'null', 'null', 'null', '2018-07-19 17:51:39', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('8', '即时数据', 'data', '1', '4', 'null', 'null', 'null', 'null', '2018-07-19 17:51:59', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('9', '财经日历', 'calendar', '1', '5', '1231t', '31t', '313t', '1231t', '2018-07-22 00:50:10', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('11', '学院', 'college', '0', '1', '313', '131', '31', '313', '2018-07-22 21:30:26', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('12', '新手入门', 'novice', '11', '0', '131', '3213', '131', '131', '2018-07-22 21:30:50', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('13', '实战技巧', 'skill', '11', '1', '2424', '24', '24', '2424', '2018-07-24 10:56:17', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('14', '名师指路', 'teacher', '11', '2', 'null', 'null', 'null', 'null', '2018-08-01 10:58:02', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('15', '黄金法则', 'rule', '11', '3', 'null', 'null', 'null', 'null', '2018-08-01 10:58:02', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('16', '外汇投资', 'investment', '11', '4', 'null', 'null', 'null', 'null', '2018-08-01 10:58:02', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('17', '投资百科', 'wiki', '11', '5', 'null', 'null', 'null', 'null', '2018-08-01 10:58:22', '2018-08-01 11:02:14');
 
 -- ----------------------------
 -- Table structure for menu

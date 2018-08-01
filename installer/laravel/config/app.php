@@ -181,8 +181,8 @@ return [
         fts\CacheResponse\CacheResponseServiceProvider::class,
         fts\HttpClient\HttpClientServiceProvider::class,
         fts\SiteMap\SiteMapServiceProvider::class,
-        //fts\UploadImage\UploadImageServiceProvider::class,
-        //App\Providers\LogServiceProvider::class,
+        fts\MongoDBLog\LogServiceProvider::class,
+        //fts\UploadImage\UploadImageServiceProvider::class
     ],
 
     /*

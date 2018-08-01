@@ -13,10 +13,10 @@ const Child = Loadable({
     loading: Loading,
 });
 
-const TodoList = Loadable({
-    loader: () => import(/* webpackChunkName: "Child" */ '../components/Todo/components/App'),
+/* const TodoList = Loadable({
+    loader: () => import(/!* webpackChunkName: "Child" *!/ '../components/Todo/components/App'),
     loading: Loading,
-});
+}); */
 
 const routes = [
     {
@@ -27,11 +27,11 @@ const routes = [
                 exact: true,
                 component: Counter,
             },
-            {
+            /* {
                 path: '/Todo',
                 exact: true,
                 component: TodoList,
-            },
+            }, */
             {
                 path: '/:id',
                 exact: true,

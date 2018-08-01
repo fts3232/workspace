@@ -6,7 +6,11 @@ class Loading extends React.Component {
     }
 
     render() {
-        return <div>Loading</div>;
+        return (
+            <div>
+                Loading
+            </div>
+        );
     }
 }
 
