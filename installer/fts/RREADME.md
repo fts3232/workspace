@@ -2,7 +2,6 @@
 
 ### url
 
-
     首页 /
         关于我们 
             集团概况     /about/introduction
@@ -116,8 +115,8 @@
 
 日志会生成在storage/logs/cron.log
 
-每5分钟执行1次
-
+#### 清除过期的页面静态文件
+* 每5分钟执行1次
 * 获取到发布时间的状态为等待发布的文章所属栏目别名
   * 更新发布时间的状态为等待发布的文章状态为发布
   * 将栏目别名标识push入数组
@@ -128,23 +127,31 @@
 * 去除数组的重复项
 * 执行删除操作，遍历数组执行删除操作
 
-每天00:00执行1次
-
-* 生成site map
+#### 生成site map
+* 每天00:00执行1次
 
 ### 命令
 
+    发布文件
     php artisan vendor:publish --force
     
+    执行调度任务
     php artisan schedule:run
     
+    生成site map
     php artisan site-map:create
     
+    清空page cache
     php artisan page-cache:clear
     
+    生成page cache
     php artisan page-cache:create
     
+    page cache 管理
     php artisan cache-manage
+    
+    生成路由缓存
+    php artisan route:cache
 
 ### 接口api
 
@@ -174,6 +181,12 @@
 调用方式
 
     php curl发送请求,不暴露api接口
+
+### 日志
+
+#### 错误日志
+* 写入mongodb里
+* storage/logs目录下生成日志文件（即使mongodb链接不上，也能查看错误信息）
 
 # cms
 

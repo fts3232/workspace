@@ -52,6 +52,9 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'options' => [
+                \PDO::ATTR_TIMEOUT => 30
+            ]
         ],
 
         'pgsql' => [
@@ -78,13 +81,13 @@ return [
             'prefix' => '',
         ],
 
-        'mongodb'=>[
+        'mongodb' => [
             'host' => env('MONGODB_HOST', 'localhost'),
             'port' => env('MONGODB_PORT', '27017'),
             'username' => env('MONGODB_USERNAME', ''),
             'password' => env('MONGODB_PASSWORD', ''),
-            'database'=> env('MONGODB_DATABASE', 'LOG'),
-            'collection'=> env('MONGODB_COLLECTION', 'test'),
+            'database' => env('MONGODB_DATABASE', 'LOG'),
+            'collection' => env('MONGODB_COLLECTION', 'test'),
         ]
     ],
 
@@ -121,7 +124,7 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
-            'read_timeout' => 60,
+            'read_write_timeout' => 60,
         ],
 
     ],

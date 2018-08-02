@@ -206,10 +206,10 @@ body > .nav {
     background: #424f63;
     overflow: hidden;
     list-style: none;
-    transition: width 2s;
-    -moz-transition: width 2s; /* Firefox 4 */
-    -webkit-transition: width 2s; /* Safari 和 Chrome */
-    -o-transition: width 2s; /* Opera */
+    transition: width 1s;
+    -moz-transition: width 1s; /* Firefox 4 */
+    -webkit-transition: width 1s; /* Safari 和 Chrome */
+    -o-transition: width 1s; /* Opera */
 }
 
 body > .nav li {
@@ -270,10 +270,10 @@ body > .nav > li .sub-nav li.active a {
 /* container */
 body > .container-fluid {
     margin: 0 0 0 240px;
-    transition: margin-left 2s;
-    -moz-transition: margin-left 2s; /* Firefox 4 */
-    -webkit-transition: margin-left 2s; /* Safari 和 Chrome */
-    -o-transition: margin-left 2s; /* Opera */
+    transition: margin-left 1s;
+    -moz-transition: margin-left 1s; /* Firefox 4 */
+    -webkit-transition: margin-left 1s; /* Safari 和 Chrome */
+    -o-transition: margin-left 1s; /* Opera */
 }
 
 body > .container-fluid.full {

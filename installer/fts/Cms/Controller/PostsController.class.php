@@ -362,11 +362,13 @@ class PostsController extends Controller
                 }
                 foreach ($info as $file) {
                     $return['location'] = '/Uploads/' . $file['savepath'] . $file['savename'];
-                    $image = new \Think\Image();
-                    // 在图片左上角添加水印（水印文件位于./logo.png） 并保存为water.jpg
-                    $image->open('.' . $return['location'])
-                        ->water('./Public/images/watermark.png', \Think\Image::IMAGE_WATER_SOUTHEAST)
-                        ->save('.' . $return['location']);
+                    if (strpos($file['name'], 'no_wm') === false) {
+                        $image = new \Think\Image();
+                        // 在图片左上角添加水印（水印文件位于./logo.png） 并保存为water.jpg
+                        $image->open('.' . $return['location'])
+                            ->water('./Public/images/watermark.png', \Think\Image::IMAGE_WATER_SOUTHEAST)
+                            ->save('.' . $return['location']);
+                    }
                 }
             } catch (\Exception $e) {
                 $return = array(
