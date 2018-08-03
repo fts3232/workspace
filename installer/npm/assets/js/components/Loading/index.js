@@ -1,17 +1,30 @@
 import React from 'react';
 
-class Loading extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+function Loading () {
+    return (
+        <div>
 
-    render() {
-        return (
-            <div>
-                Loading
-            </div>
-        );
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Loading
+        </div>
+    );
 }
 
 export default Loading;

@@ -2,35 +2,59 @@ import React from 'react';
 import axios from 'axios';
 
 class Child extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor (props) {
+        super (props);
         this.state = {
-            name: '',
+            name: ''
         };
     }
-    fetch() {
-        let _this = this;
-        axios
-            .get('http://localhost:3001/name')
-            .then(function(response) {
-                _this.setState({ name: response.data });
-                //console.log(response);
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    }
-    componentDidMount() {
-        console.log(this.state.name);
-        if (!this.state.name) {
-            this.fetch();
+
+    componentDidMount () {
+        const { name } = this.state;
+        if (!name) {
+            this.fetch ();
         }
     }
 
-    render() {
+    fetch () {
+        axios
+            .get ('http://localhost:8080/test.php')
+            .then (response => {
+                this.setState ({ name: response.data });
+                // console.log(response);
+            })
+            .catch (error => {
+                console.log (error);
+            });
+    }
+
+    render () {
+        const { name } = this.state;
         return (
             <div>
-                <h3>ID: {this.state.name}</h3>
+                <h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ID:
+                    {name}
+                </h3>
             </div>
         );
     }

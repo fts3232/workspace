@@ -51,7 +51,7 @@ router.get('/name', (ctx, next) => {
 });
 
 router.get('/*', async (ctx, next) => {
-    await axios.get('http://localhost:3001/name').then((response) => {
+    await axios.get('http://localhost:3001/name').then(response => {
         const preloadedState = { name: response.data, count: 100 };
         const store = createStore((state = { name: '', count: 0 }, action) => {
             const { name, count } = state;
@@ -68,14 +68,18 @@ router.get('/*', async (ctx, next) => {
         const bundles = getBundles(stats, modules);
         const $ = cheerio.load(template);
         $('#app').html(html);
-        bundles.map(bundle => $('script').eq(3).after(`<script src="${bundle.file}"></script>`));
+        bundles.map(bundle =>
+            $('script')
+                .eq(3)
+                .after(`<script src="${bundle.file}"></script>`)
+        );
 
         $('script').eq(3).after(`<script>
             // 警告：关于在 HTML 中嵌入 JSON 的安全问题，请查看以下文档
             // http://redux.js.org/recipes/ServerRendering.html#security-considerations
             window.__PRELOADED_STATE__ = ${JSON.stringify(
-        preloadedState,
-    ).replace(/</g, '\\\u003c')}
+                preloadedState
+            ).replace(/</g, '\\\u003c')}
             </script>`);
         ctx.body = $.html();
         // microCache.set(ctx.request.url, $.html())
@@ -90,7 +94,7 @@ router.get('/*', async (ctx, next) => {
 app.use(router.routes()).use(router.allowedMethods());
 
 // error
-app.on('error', (err) => {
+app.on('error', err => {
     console.log('server error', err);
 });
 

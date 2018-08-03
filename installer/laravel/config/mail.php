@@ -120,4 +120,6 @@ return [
         ],
     ],
 
+    'connect_timeout' => 30,
+
 ];

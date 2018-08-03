@@ -3,14 +3,15 @@ import Loadable from 'react-loadable';
 import App from '../components/App';
 import Loading from '../components/Loading';
 
-const Counter = Loadable({
-    loader: () => import(/* webpackChunkName: "Counter" */ '../components/Counter'),
-    loading: Loading,
+const Counter = Loadable ({
+    loader: () =>
+        import (/* webpackChunkName: "Counter" */ '../components/Counter'),
+    loading: Loading
 });
 
-const Child = Loadable({
-    loader: () => import(/* webpackChunkName: "Child" */ '../components/Child'),
-    loading: Loading,
+const Child = Loadable ({
+    loader : () => import (/* webpackChunkName: "Child" */ '../components/Child'),
+    loading: Loading
 });
 
 /* const TodoList = Loadable({
@@ -21,11 +22,11 @@ const Child = Loadable({
 const routes = [
     {
         component: App,
-        routes: [
+        routes   : [
             {
-                path: '/Counter',
-                exact: true,
-                component: Counter,
+                path     : '/Counter',
+                exact    : true,
+                component: Counter
             },
             /* {
                 path: '/Todo',
@@ -33,12 +34,12 @@ const routes = [
                 component: TodoList,
             }, */
             {
-                path: '/:id',
-                exact: true,
-                component: Child,
-            },
-        ],
-    },
+                path     : '/:id',
+                exact    : true,
+                component: Child
+            }
+        ]
+    }
 ];
 
 export default routes;

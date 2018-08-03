@@ -120,7 +120,16 @@ let getLoader = otpions => {
             },
             {
                 test: /\.(js|jsx)$/,
-                loader: ['babel-loader','eslint-loader'],
+                loader: [
+                    'babel-loader',
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            // some options
+                            fix: true,
+                        },
+                    },
+                ],
                 exclude: /(node_modules|bower_components)/,
             },
             {
