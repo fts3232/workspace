@@ -78,7 +78,10 @@
     function create_item(index, data) {
         var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="' + data.ITEM_URL + '" data-status="' + data.ITEM_STATUS + '" class="ui-sortable-handle"></li>');
         var img = $('<img src="' + data.ITEM_IMG + '" class="img-thumbnail"/>');
+        var statusText = data.ITEM_STATUS == 0 ? '下架' : '上架';
+        var status = $('<span class="status">'+statusText+'</span>');
         img.appendTo(li);
+        status.appendTo(li);
         return li;
     }
 
@@ -165,6 +168,8 @@
             var index = $(this).attr('data-index');
             $('.sortable li').eq(index).attr('data-url', url);
             $('.sortable li').eq(index).attr('data-status', status);
+            var statusText = status == 0 ? '下架' : '上架';
+            $('.sortable li').eq(index).find('span.status').html(statusText);
             $('#img-modal').modal('hide');
             return false;
         });

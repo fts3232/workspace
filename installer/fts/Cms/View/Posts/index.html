@@ -8,10 +8,6 @@
         <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
         <form class="form-inline">
             <div class="form-group">
-                <label for="search-title">标题</label>
-                <input type="text" name="title" class="form-control" id="search-title" placeholder="要查找的标题" value="{$whereData['title']}">
-            </div>
-            <div class="form-group">
                 <label for="search-category">栏目</label>
                 <select id="search-category" name="category" class="form-control category">
                     <option value="">-- 全部 --</option>
@@ -39,6 +35,10 @@
                     </foreach>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="search-title">标题</label>
+                <input type="text" name="title" class="form-control" id="search-title" placeholder="要查找的标题" value="{$whereData['title']}">
+            </div>
             <button type="submit" class="btn btn-default">搜索</button>
         </form>
     </div>
@@ -48,8 +48,8 @@
                 <tr>
                     <th>ID</th>
                     <th>标题</th>
-                    <th>栏目</th>
-                    <th>语言</th>
+                    <th><nobr>栏目</nobr></th>
+                    <th><nobr>语言</nobr></th>
                     <th>作者</th>
                     <th>文章排序</th>
                     <th>文章状态</th>
@@ -64,8 +64,8 @@
                     <tr>
                         <td>{$v.POST_ID}</td>
                         <td><a href="javascript:void(0)">{$v.POST_TITLE}</a></td>
-                        <td>{$v.CATEGORY_NAME}</td>
-                        <td>{$languageMap[$v['POST_LANG']]}</td>
+                        <td><nobr>{$v.CATEGORY_NAME}</nobr></td>
+                        <td><nobr>{$languageMap[$v['POST_LANG']]}</nobr></td>
                         <td>{$v.POST_AUTHOR}</td>
                         <td>{$v.POST_ORDER}</td>
                         <td>{$statusMap[$v['POST_STATUS']]}</td>

@@ -21,6 +21,7 @@
                 <th>ID</th>
                 <th>名称</th>
                 <th>别名</th>
+                <th>描述</th>
                 <th nowrap width="120">操作</th>
             </tr>
             </thead>
@@ -30,6 +31,7 @@
                     <td>{$v.TAG_ID}</td>
                     <td>{$v.TAG_NAME}</td>
                     <td>{$v.TAG_SLUG}</td>
+                    <td>{$v.TAG_DESCRIPTION}</td>
                     <td>
                         <a class="btn btn-primary btn-sm " role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
                         <button class="btn btn-danger delete btn-sm " data-id="{$v['TAG_ID']}"><b>删除</b></button>

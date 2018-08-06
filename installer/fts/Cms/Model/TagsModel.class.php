@@ -48,7 +48,7 @@ class TagsModel extends Model
     public function getAll($whereData, $offset, $size)
     {
         $where = $this->getWhere($whereData);
-        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG')->where($where)->order('TAG_ID DESC')->limit($offset, $size)->select();
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION')->where($where)->order('TAG_ID DESC')->limit($offset, $size)->select();
         return $result ? $result : array();
     }
 

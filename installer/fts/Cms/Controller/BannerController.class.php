@@ -183,7 +183,7 @@ class BannerController extends Controller
             try {
                 $return = array('status' => true, 'msg' => '上传成功');
                 $upload = new \Think\Upload();// 实例化上传类
-                $upload->maxSize = 102400;// 设置附件上传大小
+                $upload->maxSize = 204800;// 设置附件上传大小
                 $upload->exts = array('jpg', 'gif', 'png', 'jpeg', 'pdf');// 设置附件上传类型
                 $upload->rootPath = './Uploads'; // 设置附件上传根目录
                 $upload->savePath = 'cms_banner/'; // 设置附件上传（子）目录

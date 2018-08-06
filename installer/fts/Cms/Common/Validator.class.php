@@ -716,7 +716,7 @@ class Validator
      */
     private function postTitle($val)
     {
-        $regex = '/^[0-9A-Za-z\x{4e00}-\x{9fa5}\s，]{1,50}$/u';
+        $regex = '/^.{1,50}$/u';
         return self::regex($val, $regex);
     }
 

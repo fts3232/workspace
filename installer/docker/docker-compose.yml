@@ -1,0 +1,6 @@
+version: "1"
+
+services:
+### NGINX Server #########################################
+    redis:
+        image: 'redis'
