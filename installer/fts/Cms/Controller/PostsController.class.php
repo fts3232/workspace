@@ -61,14 +61,6 @@ class PostsController extends Controller
 
     private function showList()
     {
-        //整合搜索条件
-        $whereData = array(
-            'title' => I('get.title'),
-            'category' => I('get.category', false, 'int'),
-            'status' => I('get.status', false, 'int'),
-            'language' => I('get.language'),
-            'time' => I('get.time')
-        );
         //状态map
         $statusMap = C('post.statusMap');
         if (ACTION_NAME == 'index') {
@@ -76,9 +68,19 @@ class PostsController extends Controller
             $deleteUrl = U('softDelete');
         } else {
             unset($statusMap[0], $statusMap[1], $statusMap[2]);
-            $whereData['status'] = 3;
             $deleteUrl = U('delete');
         }
+        //过滤出文章状态数组
+        $statusIDList = array_keys($statusMap);
+        //整合搜索条件
+        $whereData = array(
+            'title' => I('get.title'),
+            'category' => I('get.category', false, 'int'),
+            'getOrder' => I('get.getOrder', false, 'int'),
+            'status' => I('get.status', array('in', $statusIDList), 'int'),
+            'language' => I('get.language'),
+            'time' => I('get.time')
+        );
         $this->assign('deleteUrl', $deleteUrl);
         $this->assign('statusMap', $statusMap);
         $model = D('Posts');
@@ -86,16 +88,31 @@ class PostsController extends Controller
         $pageSize = C('pageSize');
         //获取总条数
         $count = $model->getCount($whereData);
+        $this->assign('count', $count);
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
+        $this->assign('pagination', $pagination);
         //获取分页数据
         $list = $model->getAll($whereData, $page->firstRow, $pageSize);
         $this->assign('list', $list);
-        $this->assign('pagination', $pagination);
+        //过滤出文章id数组
+        $postIDList = array_reduce($list, function ($carry, $item) {
+            $carry[] = $item['POST_ID'];
+            return $carry;
+        });
+        //获取文章tags
+        $tagsList = $model->getTagsList($postIDList);
+        $this->assign('tagsList', $tagsList);
+        //获取各个文章状态数量
+        $statusCount = $model->getStatusCount($statusIDList);
+        $this->assign('statusCount', $statusCount);
+        //获取置顶文章数量
+        $orderCount = $model->getOrderPostsCount();
+        $this->assign('orderCount', $orderCount);
         //获取栏目
         $model = D('Category');
-        $categoryMap = $model->getAll();
+        $categoryMap = $model->getList();
         $this->assign('categoryMap', $categoryMap);
         //语言map
         $this->assign('languageMap', C('languageMap'));
@@ -109,7 +126,7 @@ class PostsController extends Controller
     {
         //获取栏目
         $model = D('Category');
-        $categoryMap = $model->getAll();
+        $categoryMap = $model->getList();
         $this->assign('categoryMap', $categoryMap);
         //要翻译的文章id
         $translateID = I('get.translate', 0, 'int');
@@ -157,6 +174,7 @@ class PostsController extends Controller
                 if (!$result['status']) {
                     throw new \Exception($result['msg'], $result['code']);
                 }
+                $return['id'] = $result['id'];
                 if ($data['POST_STATUS'] == 2) {
                     //添加定时任务
                     $slug = D('Category')->getSlug($data['POST_CATEGORY_ID']);
@@ -182,7 +200,7 @@ class PostsController extends Controller
             $model = D('Posts');
             $categoryModel = D('Category');
             //获取输入
-            $data =array(
+            $data = array(
                 'POST_ID' => I('get.id', false, 'int')
             );
             //验证输入
@@ -190,25 +208,31 @@ class PostsController extends Controller
             if (!$result = $model->get($data['POST_ID'])) {
                 throw new \Exception('该文章id不存在', 100);
             }
+            $this->assign('result', $result);
             //获取栏目
-            $category = $categoryModel->getAll();
+            $category = $categoryModel->getList();
+            $this->assign('categoryMap', $category);
             //获取tags信息
             $tags = D('PostsTagsRelation')->getTags($data['POST_ID']);
+            $this->assign('tags', $tags);
             //获取对照文章信息
             $translate = $model->getTranslate($result['POST_TRANSLATE_ID'], $data['POST_ID']);
-            $this->assign('translateID', $result['TRANSLATE_ID'] == 0 ? $data['POST_ID'] : $result['TRANSLATE_ID']);
+            $this->assign('translateID', $result['POST_TRANSLATE_ID'] == 0 ? $data['POST_ID'] : $result['TRANSLATE_ID']);
             $this->assign('translate', $translate);
-
-            $this->assign('tags', $tags);
+            //获取历史修改记录
+            $revisionHistory = D('PostsRevisionHistory')->getHistory($data['POST_ID']);
+            $this->assign('revisionHistory', $revisionHistory);
+            //id
             $this->assign('id', $data['POST_ID']);
-            $this->assign('result', $result);
-            $this->assign('categoryMap', $category);
             //action
             $this->assign('action', 'update');
             //语言map
             $this->assign('languageMap', C('languageMap'));
             //状态map
             $this->assign('statusMap', C('post.statusMap'));
+            //父栏目
+            $slug = $categoryModel->getParentSlug($result['POST_CATEGORY_ID']);
+            $this->assign('parentSlug', $slug);
             $this->display();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -231,6 +255,7 @@ class PostsController extends Controller
                     'POST_CONTENT' => I('post.content'),
                     'POST_LANG' => I('post.language'),
                     'POST_STATUS' => I('post.status', false, 'int'),
+                    'POST_AUTHOR_ID' => I('session.uid'),
                     'POST_TAGS_ID' => I('post.tags'),
                     'POST_ORDER' => I('post.order', false, 'int'),
                     'SEO_TITLE' => I('post.seo_title'),

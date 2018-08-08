@@ -23,6 +23,16 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['POST_TITLE']|default=''}"/>
                         </div>
+                        <if condition="$action eq 'update'">
+                            <div class="col-sm-10 col-sm-offset-2 link">
+                                <if condition="$parentSlug eq 'news'">
+                                    <a href="http://xxxx.com/{$parentSlug}/{:date('Y-m-d',strtotime($result['PUBLISHED_TIME']))}/{$result['POST_ID']}">http://xxxx.com/{$parentSlug}/{:date('Y-m-d',strtotime($result['PUBLISHED_TIME']))}/{$result['POST_ID']}</a>
+                                <else/>
+                                    <a href="http://xxxx.com/{$parentSlug}/{$result['POST_ID']}">http://xxxx.com/{$parentSlug}/{$result['POST_ID']}</a>
+                                </if>
+
+                            </div>
+                        </if>
                     </div>
                     <div class="form-group">
                         <label for="textarea" class="col-sm-2 control-label">正文</label>
@@ -30,15 +40,25 @@
                             <textarea id="textarea" name="content">{$result['POST_CONTENT']|default=''}</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SEO标题</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="seo_title" class="form-control" value="{$result['SEO_TITLE']|default=''}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">SEO关键词</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="seo_keyword" class="form-control" value="{$result['SEO_KEYWORD']|default=''}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SEO描述</label>
+                        <div class="col-sm-10">
+                            <textarea name="seo_description" rows="10" class="form-control">{$result['SEO_DESCRIPTION']|default=''}</textarea>
+                        </div>
+                    </div>
                 </form>
-            </div>
-            <div class="panel-footer">
-                <a href="{:U('index')}">
-                    <button type="submit" class="btn btn-default right">返回</button>
-                </a>
-                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..."
-                        style="margin-right: 10px">保存
-                </button>
             </div>
         </div>
         <if condition="$action eq 'update'">
@@ -82,33 +102,6 @@
         </if>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">SEO</h3>
-            </div>
-            <div class="panel-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">SEO标题</label>
-                        <div class="col-sm-8">
-                            <input type="text" name="seo_title" class="form-control" value="{$result['SEO_TITLE']|default=''}"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label  class="col-sm-4 control-label">SEO关键词</label>
-                        <div class="col-sm-8">
-                            <input type="text" name="seo_keyword" class="form-control" value="{$result['SEO_KEYWORD']|default=''}"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">SEO描述</label>
-                        <div class="col-sm-8">
-                            <textarea name="seo_description" rows="10" class="form-control">{$result['SEO_DESCRIPTION']|default=''}</textarea>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
                 <h3 class="panel-title">属性</h3>
             </div>
             <div class="panel-body">
@@ -136,7 +129,9 @@
                     <div class="form-group">
                         <label for="category" class="col-sm-4 control-label">栏目</label>
                         <div class="col-sm-8">
-                            <select id="category" class="category form-control" name="category"></select>
+                            <select id="category" class="category form-control" name="category">
+                                <option value="">- 请选择 -</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -181,7 +176,7 @@
                             <input class="form-control hour"/>
                             <span>:</span>
                             <input class="form-control minute"/>
-                            <if condition="$aciton eq 'create'">
+                            <if condition="$action eq 'create'">
                                 <button type="submit" class="btn btn-primary right btn-xs now">当前时间</button>
                             </if>
                             <button type="submit" class="btn btn-primary right btn-xs save">修改</button>
@@ -202,14 +197,39 @@
                     </div>
                 </form>
             </div>
+            <div class="panel-footer">
+                <a href="{:U('index')}">
+                    <button type="submit" class="btn btn-default right">返回</button>
+                </a>
+                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..."
+                        style="margin-right: 10px">发布
+                </button>
+            </div>
         </div>
+        <if condition="$action eq 'update'">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">历史修改</h3>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                    <foreach name="revisionHistory" item="v">
+                        <li>
+                            <span>{$v.AUTHOR_NAME}</span>
+                            <span>({$v.CREATED_TIME})</span>
+                        </li>
+                    </foreach>
+                    </ul>
+                </div>
+            </div>
+        </if>
     </div>
 </div>
 <script src="https://cdn.bootcss.com/tinymce/4.7.13/tinymce.min.js"></script>
 <script>
     $(function () {
         //创建栏目
-        create_category_select({$categoryMap}, '{$result["CATEGORY_ID"]|default=""}');
+        create_category_select({$categoryMap}, '{$result["POST_CATEGORY_ID"]|default=""}');
         //tinymce初始化
         tinymce.init({
             selector               : '#textarea',
@@ -319,11 +339,11 @@
             location.href = url + '?translate=' + translate + '&language=' + language;
             return false;
         });
+        var action = "{$action}";
         //保存
         $('button.save-menu').on('click', function () {
             var $btn = $(this).button('loading');
             var tags = [];
-            var action = "{$action}";
             $('.tags .label').map(function (i) {
                 tags.push($('.tags .label').eq(i).attr('data-id'));
             });
@@ -362,6 +382,43 @@
                 }
             })
         })
+        <if condition="$action eq 'create'">
+        window.onbeforeunload = function(e){
+            e.returnValue='是否离开页面';
+            var tags = [];
+            $('.tags .label').map(function (i) {
+                tags.push($('.tags .label').eq(i).attr('data-id'));
+            });
+            var data = {
+                'title'          : $.trim($('[name="title"]').val()),
+                'category_id'    : $('[name="category"]').val(),
+                'order'          : $('[name="order"]').val(),
+                'content'        : tinyMCE.activeEditor.getContent(),
+                'language'       : $('[name="language"]').val(),
+                'status'         : 0,
+                'tags'           : tags,
+                'seo_title'      : $('[name="seo_title"]').val(),
+                'seo_keyword'    : $('[name="seo_keyword"]').val(),
+                'seo_description': $('[name="seo_description"]').val(),
+                'published_time' : $('[name="published_time"]').val(),
+                'translate_id' : $('[name="translate_id"]').val()
+
+            };
+            if(data.title != '' || data.category_id == 0){
+                $.ajax({
+                    'url'     : "{:U($action)}",
+                    'type'    : 'post',
+                    'data'    : data,
+                    'success' : function (data) {
+                        if(data.status){
+                            action = 'update';
+                            $('[name="id"]').val(data.id)
+                        }
+                    }
+                })
+            }
+        }
+        </if>
     });
 </script>
 <include file="Common:footer"/>

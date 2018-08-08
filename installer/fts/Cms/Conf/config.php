@@ -5,7 +5,7 @@ return array(
         'zh_CN' => '简体中文',
         'zh_HK' => '繁体中文'
     ),
-    'pageSize' => 10,
+    'pageSize' => 20,
     'post' => array(
         'statusMap' => array(
             '0' => '草稿',

@@ -39,7 +39,6 @@ class PostsModel extends Model
         'POST_TRANSLATE_ID',
         'POST_CATEGORY_ID',
         'POST_LANG',
-        'POST_AUTHOR_ID',
         'POST_STATUS',
         'POST_ORDER',
         'SEO_TITLE',
@@ -64,12 +63,72 @@ class PostsModel extends Model
         $result = $this
             ->alias('a')
             ->where($where)
-            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, POST_STATUS, a.PUBLISHED_TIME, a.CREATED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, POST_STATUS, a.PUBLISHED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
             ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
-            ->order('a.POST_ORDER DESC, a.PUBLISHED_TIME DESC')
+            ->order('a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
             ->select();
         return $result ? $result : array();
+    }
+
+    /**
+     * 获取文章标签
+     *
+     * @param $ids
+     * @return array|mixed
+     */
+    public function getTagsList($ids)
+    {
+        $tagList = array();
+        $tags = $this->alias('a')
+            ->field('c.TAG_NAME,b.POST_ID')
+            ->join('posts_tags_relation b on b.POST_ID = a.POST_ID')
+            ->join('tags c on c.TAG_ID = b.TAG_ID')
+            ->where(array('b.POST_ID' => array('in', $ids)))
+            ->select();
+        if ($tags) {
+            $tagList = array_reduce($tags, function ($carry, $item) {
+                $carry[$item['POST_ID']][] = $item['TAG_NAME'];
+                return $carry;
+            });
+        }
+        return $tagList;
+    }
+
+    /**
+     * 获取各个状态总文章数
+     *
+     * @param $statusMap
+     * @return mixed
+     */
+    public function getStatusCount($statusMap)
+    {
+        $result = $this->field('COUNT(*) AS TOTAL, POST_STATUS')
+            ->where(array('POST_STATUS' => array('in', $statusMap)))
+            ->group('POST_STATUS')
+            ->select();
+        if ($result) {
+            $statusCount = array_reduce($result, function ($carry, $item) {
+                $carry[$item['POST_STATUS']] = $item['TOTAL'];
+                return $carry;
+            });
+        } else {
+            $statusCount = array_reduce($statusMap, function ($carry, $item) {
+                $carry[$item] = 0;
+                return $carry;
+            });
+        }
+        return $statusCount;
+    }
+
+    /**
+     * 获取置顶文章数量
+     *
+     * @return mixed
+     */
+    public function getOrderPostsCount()
+    {
+        return $this->where(array('POST_ORDER'=>array('gt', 0)))->count();
     }
 
     /**
@@ -92,12 +151,13 @@ class PostsModel extends Model
      */
     private function getWhere($whereData)
     {
-        $where = array('a.POST_STATUS' => array('in', '0,1,2'));
+        $where = array();
         !empty($whereData['title']) && $where['a.POST_TITLE'] = $whereData['title'];
         !empty($whereData['category']) && $where['a.POST_CATEGORY_ID'] = $whereData['category'];
         !empty($whereData['language']) && $where['a.POST_LANG'] = $whereData['language'];
-        !empty($whereData['status']) && $where['a.POST_STATUS'] = $whereData['status'];
+        $whereData['status'] !== false && $where['a.POST_STATUS'] = $whereData['status'];
         !empty($whereData['time']) && $where['DATE(a.PUBLISHED_TIME)'] = $whereData['time'];
+        !empty($whereData['getOrder']) && $where['POST_ORDER'] = array('gt', 0);
         return $where;
     }
 
@@ -129,6 +189,7 @@ class PostsModel extends Model
                     throw new \Exception('添加关系失败', 201);
                 }
             }
+            $return['id'] = $id;
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
@@ -208,6 +269,12 @@ class PostsModel extends Model
                 if (!$result) {
                     throw new \Exception('添加对应关系失败', 203);
                 }
+            }
+            //添加修改历史记录
+            $relationModel = D('PostsRevisionHistory');
+            $result = $relationModel->addHistory($data['POST_ID'], $data['POST_AUTHOR_ID']);
+            if (!$result) {
+                throw new \Exception('添加修改失败', 204);
             }
             $this->commit();
         } catch (\Exception $e) {

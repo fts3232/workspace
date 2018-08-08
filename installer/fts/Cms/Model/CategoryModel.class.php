@@ -48,13 +48,16 @@ class CategoryModel extends Model
      * @param int    $parent
      * @return array
      */
-    protected function getTree($data, $parent = 0)
+    protected function getTree($data, $parent = null)
     {
         $tree = array();
         foreach ($data as $k => $v) {
+            if ($parent == null) {
+                $parent = $v['CATEGORY_PARENT'];
+            }
             if ($v['CATEGORY_PARENT'] == $parent) {        //父亲找到儿子
-                $v['CHILD'] = $this->getTree($data, $v['CATEGORY_ID']);
                 $tree[] = $v;
+                $tree = array_merge($tree, $this->getTree($data, $v['CATEGORY_ID']));
                 //unset($data[$k]);
             }
         }
@@ -66,10 +69,58 @@ class CategoryModel extends Model
      *
      * @return mixed|string|void
      */
+    public function getList($whereData, $offset, $size)
+    {
+        $where = $this->getWhere($whereData);
+        $list = $this
+            ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_SLUG, CREATED_TIME, MODIFIED_TIME')
+            ->where($where)
+            ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
+            ->select();
+
+        if ($list) {
+            $list = $this->getTree($list);
+            $list = array_slice($list, $offset, $size);
+        }
+        return $list;
+    }
+
+    /**
+     * 获取总条数
+     *
+     * @param $whereData
+     * @return mixed
+     */
+    public function getCount($whereData)
+    {
+        $where = $this->getWhere($whereData);
+        return $this->where($where)->count();
+    }
+
+    /**
+     * 获取搜索条件
+     *
+     * @param $whereData
+     * @return array
+     */
+    private function getWhere($whereData)
+    {
+        $where = array();
+        !empty($whereData['name']) && $where['PAGE_NAME'] = $whereData['name'];
+        !empty($whereData['language']) && $where['PAGE_LANG'] = $whereData['language'];
+        !empty($whereData['time']) && $where['_string'] = "DATE_FORMAT(CREATED_TIME, '%Y-%m') = '{$whereData['time']}'";
+        return $where;
+    }
+
+    /**
+     * 获取所有栏目列表
+     *
+     * @return mixed|string|void
+     */
     public function getAll()
     {
         $list = $this
-            ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_SLUG, CATEGORY_ORDER, CATEGORY_DESCRIPTION, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+            ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_SLUG')
             ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
             ->select();
 
@@ -192,6 +243,18 @@ class CategoryModel extends Model
      */
     public function getSlug($id)
     {
-        return $this->where(array('CATEGORY_ID'))->getField('CATEGORY_SLUG');
+        return $this->where(array('CATEGORY_ID' => $id))->getField('CATEGORY_SLUG');
+    }
+
+    /**
+     * 获取指定id父类别名
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getParentSlug($id)
+    {
+        $parent = $this->where(array('CATEGORY_ID' => $id))->getField('CATEGORY_PARENT');
+        return $this->where(array('CATEGORY_ID' => $parent))->getField('CATEGORY_SLUG');
     }
 }

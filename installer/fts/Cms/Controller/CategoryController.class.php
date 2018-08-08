@@ -33,9 +33,26 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        //整合搜索条件
+        $whereData = array(
+            'name' => I('get.name', false),
+            'language' => I('get.language', false)
+        );
         $model = D('Category');
-        $items = $model->getAll();
-        $this->assign('items', $items);
+        //每页显示多少条
+        $pageSize = C('pageSize');
+        //获取总条数
+        $count = $model->getCount($whereData);
+        //分页器
+        $page = new \Think\Page($count, $pageSize);
+        $pagination = $page->show();
+        //获取分页数据
+        $list = $model->getList($whereData, $page->firstRow, $pageSize);
+        $this->assign('list', $list);
+        $this->assign('pagination', $pagination);
+        $this->assign('whereData', $whereData);
+        //获取语言map
+        $this->assign('languageMap', C('languageMap'));
         $this->display();
     }
 
