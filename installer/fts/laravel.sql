@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-08-08 18:27:13
+Date: 2018-08-09 18:10:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,42 +22,43 @@ DROP TABLE IF EXISTS `banner`;
 CREATE TABLE `banner` (
   `BANNER_ID` int(11) NOT NULL AUTO_INCREMENT,
   `BANNER_NAME` varchar(30) DEFAULT NULL COMMENT 'banner名称',
+  `BANNER_LANG` varchar(10) DEFAULT NULL COMMENT 'bannner所属语言',
   `CREATED_TIEM` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`BANNER_ID`),
   KEY `BANNER_NAME` (`BANNER_NAME`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='存放banner信息';
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='存放banner信息';
 
 -- ----------------------------
 -- Records of banner
 -- ----------------------------
-INSERT INTO `banner` VALUES ('6', '124', '2018-07-20 16:06:12', '2018-07-24 09:55:36');
-INSERT INTO `banner` VALUES ('7', '12312', '2018-07-20 16:06:13', null);
-INSERT INTO `banner` VALUES ('8', '12312', '2018-07-20 16:06:13', null);
-INSERT INTO `banner` VALUES ('9', '12312', '2018-07-20 16:06:13', null);
-INSERT INTO `banner` VALUES ('10', '12312', '2018-07-20 16:06:14', null);
-INSERT INTO `banner` VALUES ('11', '12312', '2018-07-20 16:06:14', null);
-INSERT INTO `banner` VALUES ('12', '12312', '2018-07-20 16:06:14', null);
-INSERT INTO `banner` VALUES ('13', '12312', '2018-07-20 16:06:14', null);
-INSERT INTO `banner` VALUES ('14', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('15', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('16', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('17', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('18', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('19', '12312', '2018-07-20 16:06:15', null);
-INSERT INTO `banner` VALUES ('20', '12312', '2018-07-20 16:06:16', null);
-INSERT INTO `banner` VALUES ('21', '12312', '2018-07-20 16:06:16', null);
-INSERT INTO `banner` VALUES ('22', '345', '2018-07-20 18:02:35', null);
-INSERT INTO `banner` VALUES ('23', '123', '2018-07-22 20:07:57', null);
-INSERT INTO `banner` VALUES ('24', '111', '2018-07-22 20:08:07', null);
-INSERT INTO `banner` VALUES ('25', '3242', '2018-07-22 20:46:13', null);
-INSERT INTO `banner` VALUES ('26', '复旦复华具体化服返回', '2018-07-24 10:36:14', null);
-INSERT INTO `banner` VALUES ('27', '复旦复华具体化服返回', '2018-07-24 10:36:21', null);
-INSERT INTO `banner` VALUES ('28', '复旦复华具体化服返回', '2018-07-24 10:36:56', null);
-INSERT INTO `banner` VALUES ('29', '现货黄金', '2018-07-24 16:48:26', null);
-INSERT INTO `banner` VALUES ('31', '123456', '2018-07-30 14:55:44', '2018-07-30 14:55:51');
-INSERT INTO `banner` VALUES ('32', '12', '2018-07-30 14:59:43', null);
-INSERT INTO `banner` VALUES ('33', '455', '2018-07-30 14:59:47', '2018-07-30 14:59:51');
+INSERT INTO `banner` VALUES ('6', '124', 'zh_CN', '2018-07-20 16:06:12', '2018-07-24 09:55:36');
+INSERT INTO `banner` VALUES ('7', '12312', 'zh_CN', '2018-07-20 16:06:13', null);
+INSERT INTO `banner` VALUES ('8', '12312', 'zh_CN', '2018-07-20 16:06:13', null);
+INSERT INTO `banner` VALUES ('9', '12312', 'zh_CN', '2018-07-20 16:06:13', null);
+INSERT INTO `banner` VALUES ('10', '12312', 'zh_CN', '2018-07-20 16:06:14', null);
+INSERT INTO `banner` VALUES ('11', '12312', 'zh_CN', '2018-07-20 16:06:14', null);
+INSERT INTO `banner` VALUES ('12', '12312', 'zh_CN', '2018-07-20 16:06:14', null);
+INSERT INTO `banner` VALUES ('13', '12312', 'zh_CN', '2018-07-20 16:06:14', null);
+INSERT INTO `banner` VALUES ('14', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('15', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('16', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('17', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('18', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('19', '12312', 'zh_CN', '2018-07-20 16:06:15', null);
+INSERT INTO `banner` VALUES ('20', '12312', 'zh_CN', '2018-07-20 16:06:16', null);
+INSERT INTO `banner` VALUES ('21', '12312', 'zh_CN', '2018-07-20 16:06:16', null);
+INSERT INTO `banner` VALUES ('22', '345', 'zh_CN', '2018-07-20 18:02:35', null);
+INSERT INTO `banner` VALUES ('23', '123', 'zh_CN', '2018-07-22 20:07:57', null);
+INSERT INTO `banner` VALUES ('24', '111', 'zh_CN', '2018-07-22 20:08:07', null);
+INSERT INTO `banner` VALUES ('25', '3242', 'zh_CN', '2018-07-22 20:46:13', null);
+INSERT INTO `banner` VALUES ('26', '复旦复华具体化服返回', 'zh_CN', '2018-07-24 10:36:14', null);
+INSERT INTO `banner` VALUES ('27', '复旦复华具体化服返回', 'zh_CN', '2018-07-24 10:36:21', null);
+INSERT INTO `banner` VALUES ('28', '复旦复华具体化服返回', 'zh_CN', '2018-07-24 10:36:56', null);
+INSERT INTO `banner` VALUES ('29', '现货黄金', 'zh_CN', '2018-07-24 16:48:26', null);
+INSERT INTO `banner` VALUES ('31', '123456', 'zh_CN', '2018-07-30 14:55:44', '2018-07-30 14:55:51');
+INSERT INTO `banner` VALUES ('32', '1g', 'zh_CN', '2018-07-30 14:59:43', '2018-08-09 10:08:11');
+INSERT INTO `banner` VALUES ('37', '54', 'zh_HK', '2018-08-09 12:23:21', null);
 
 -- ----------------------------
 -- Table structure for banner_item
@@ -75,7 +76,7 @@ CREATE TABLE `banner_item` (
   PRIMARY KEY (`ITEM_ID`),
   KEY `BANNER_ID` (`BANNER_ID`) USING BTREE,
   KEY `ITEM_STATUS` (`ITEM_STATUS`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
 
 -- ----------------------------
 -- Records of banner_item
@@ -87,6 +88,12 @@ INSERT INTO `banner_item` VALUES ('8', '31', '/Uploads/cms_banner/2018-07-30/5b5
 INSERT INTO `banner_item` VALUES ('9', '27', '/Uploads/cms_banner/2018-08-06/5b680a1907b53.jpg', '', '0', '0', '2018-08-06 16:43:19', null);
 INSERT INTO `banner_item` VALUES ('10', '27', '/Uploads/cms_banner/2018-08-06/5b680a220acb8.jpg', '', '1', '1', '2018-08-06 16:43:19', null);
 INSERT INTO `banner_item` VALUES ('11', '29', '/Uploads/cms_banner/2018-08-06/5b68173a6972b.png', '', '0', '0', '2018-08-06 17:39:34', null);
+INSERT INTO `banner_item` VALUES ('15', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2150b413.png', '', '0', '1', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('16', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2344a30f.png', '', '0', '2', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('22', '32', '/Uploads/cms_banner/2018-08-09/5b6ba29d05574.png', '', '0', '3', '2018-08-09 10:12:34', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('23', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5c2ce4a7.png', 'null', '0', '0', '2018-08-09 10:24:02', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('24', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5dee42ad.png', '', '0', '4', '2018-08-09 10:24:30', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('25', '32', '/Uploads/cms_banner/2018-08-09/5b6ba7f58ce81.png', '', '0', '5', '2018-08-09 10:33:25', '2018-08-09 10:33:30');
 
 -- ----------------------------
 -- Table structure for category
@@ -107,7 +114,7 @@ CREATE TABLE `category` (
   PRIMARY KEY (`CATEGORY_ID`),
   KEY `CATEGORY_NAME` (`CATEGORY_NAME`),
   KEY `CATEGORY_SLUG` (`CATEGORY_SLUG`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='文章栏目信息';
 
 -- ----------------------------
 -- Records of category
@@ -126,6 +133,8 @@ INSERT INTO `category` VALUES ('14', '名师指路', 'teacher', '11', 'null', 'z
 INSERT INTO `category` VALUES ('15', '黄金法则', 'rule', '11', 'null', 'zh_CN', 'null', 'null', 'null', '2018-08-01 10:58:02', '2018-08-01 11:02:14');
 INSERT INTO `category` VALUES ('16', '外汇投资', 'investment', '11', 'null', 'zh_CN', 'null', 'null', 'null', '2018-08-01 10:58:02', '2018-08-01 11:02:14');
 INSERT INTO `category` VALUES ('17', '投资百科', 'wiki', '11', 'null', 'zh_CN', 'null', 'null', 'null', '2018-08-01 10:58:22', '2018-08-01 11:02:14');
+INSERT INTO `category` VALUES ('18', '新闻咨询1', 'news2424', '0', '234424', 'zh_HK', '4224', '4224', '424242', '2018-08-09 12:28:27', '2018-08-09 14:08:27');
+INSERT INTO `category` VALUES ('19', '35', '3453', '18', '5', 'zh_HK', '34', '34', '345', '2018-08-09 12:28:46', '2018-08-09 14:15:13');
 
 -- ----------------------------
 -- Table structure for menu
@@ -134,24 +143,27 @@ DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `MENU_ID` int(11) NOT NULL AUTO_INCREMENT,
   `MENU_NAME` varchar(30) DEFAULT NULL COMMENT '菜单名',
+  `MENU_LANG` varchar(10) DEFAULT NULL COMMENT '菜单所属语言',
   `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `MODIFIED_TIME` datetime DEFAULT NULL,
   PRIMARY KEY (`MENU_ID`),
   KEY `NAME` (`MENU_NAME`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='保存菜单信息';
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='保存菜单信息';
 
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
-INSERT INTO `menu` VALUES ('1', 'test', '2018-07-18 15:36:55', null);
-INSERT INTO `menu` VALUES ('18', 'sa12', '2018-07-19 16:59:23', '2018-07-20 15:05:23');
-INSERT INTO `menu` VALUES ('19', '111', '2018-07-24 10:00:59', null);
-INSERT INTO `menu` VALUES ('22', '复旦复华具体化服返回', '2018-07-24 10:39:59', null);
-INSERT INTO `menu` VALUES ('23', '23411', '2018-07-30 14:27:51', '2018-07-30 14:31:54');
-INSERT INTO `menu` VALUES ('25', '44', '2018-07-30 14:31:56', null);
-INSERT INTO `menu` VALUES ('26', '444', '2018-07-30 14:45:26', null);
-INSERT INTO `menu` VALUES ('27', '4444', '2018-07-30 14:46:04', null);
-INSERT INTO `menu` VALUES ('28', '测试123', '2018-08-06 15:15:48', '2018-08-08 17:55:59');
+INSERT INTO `menu` VALUES ('1', 'test', 'zh_CN', '2018-07-18 15:36:55', null);
+INSERT INTO `menu` VALUES ('18', 'sa12', 'zh_CN', '2018-07-19 16:59:23', '2018-07-20 15:05:23');
+INSERT INTO `menu` VALUES ('19', '111', 'zh_CN', '2018-07-24 10:00:59', null);
+INSERT INTO `menu` VALUES ('22', '复旦复华具体化服返回', 'zh_CN', '2018-07-24 10:39:59', null);
+INSERT INTO `menu` VALUES ('23', '23411', 'zh_CN', '2018-07-30 14:27:51', '2018-07-30 14:31:54');
+INSERT INTO `menu` VALUES ('25', '44', 'zh_CN', '2018-07-30 14:31:56', null);
+INSERT INTO `menu` VALUES ('26', '444', 'zh_CN', '2018-07-30 14:45:26', null);
+INSERT INTO `menu` VALUES ('27', '4444', 'zh_CN', '2018-07-30 14:46:04', null);
+INSERT INTO `menu` VALUES ('28', '测试123', 'zh_CN', '2018-08-06 15:15:48', '2018-08-08 17:55:59');
+INSERT INTO `menu` VALUES ('30', 'test4', 'zh_HK', '2018-08-09 12:08:48', '2018-08-09 12:24:03');
+INSERT INTO `menu` VALUES ('31', '4234', 'zh_HK', '2018-08-09 12:23:58', null);
 
 -- ----------------------------
 -- Table structure for menu_item
@@ -168,7 +180,7 @@ CREATE TABLE `menu_item` (
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`ITEM_ID`),
   KEY `MENU_ID` (`MENU_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
 
 -- ----------------------------
 -- Records of menu_item
@@ -185,10 +197,9 @@ INSERT INTO `menu_item` VALUES ('27', '1', '3453455435', '5435', '0', '6', '2018
 INSERT INTO `menu_item` VALUES ('28', '18', '1231', '231', '0', '0', '2018-07-22 20:43:34', null);
 INSERT INTO `menu_item` VALUES ('29', '18', '1231', '231', '0', '1', '2018-07-22 20:43:34', null);
 INSERT INTO `menu_item` VALUES ('30', '1', '撒大声地撒奥所', '23424234', '0', '7', '2018-07-24 10:47:25', null);
-INSERT INTO `menu_item` VALUES ('33', '23', '244', '2242', '0', '0', '2018-07-30 14:34:25', null);
-INSERT INTO `menu_item` VALUES ('45', '28', '345345', '345', '0', '0', '2018-08-08 18:00:12', '2018-08-08 18:06:27');
-INSERT INTO `menu_item` VALUES ('46', '28', '234244', '234324', '45', '0', '2018-08-08 18:07:02', null);
-INSERT INTO `menu_item` VALUES ('47', '28', '234244', '234324', '46', '0', '2018-08-08 18:07:02', '2018-08-08 18:07:08');
+INSERT INTO `menu_item` VALUES ('55', '28', '123', '123', '0', '0', '2018-08-09 10:00:52', null);
+INSERT INTO `menu_item` VALUES ('57', '28', '23424', '23424', '0', '1', '2018-08-09 10:01:55', null);
+INSERT INTO `menu_item` VALUES ('58', '28', '23424', '2342', '0', '0', '2018-08-09 10:02:54', '2018-08-09 10:02:55');
 
 -- ----------------------------
 -- Table structure for pages
@@ -209,7 +220,7 @@ CREATE TABLE `pages` (
   PRIMARY KEY (`PAGE_ID`),
   KEY `POST_TRANSLATE_ID` (`PAGE_NAME`) USING BTREE,
   KEY `POST_TITLE` (`PAGE_DIRECTING`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='存放页面信息';
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='存放页面信息';
 
 -- ----------------------------
 -- Records of pages
@@ -244,6 +255,8 @@ INSERT INTO `pages` VALUES ('29', '名师指路', 'teacher', 'CollegeController@
 INSERT INTO `pages` VALUES ('30', '黄金法则', 'rule', 'CollegeController@rule', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:02', null);
 INSERT INTO `pages` VALUES ('31', '外汇投资', 'investment', 'CollegeController@investment', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:03', null);
 INSERT INTO `pages` VALUES ('32', '投资百科', 'wiki', 'CollegeController@wiki', '26', 'zh_CN', null, null, null, '2018-07-31 12:24:18', null);
+INSERT INTO `pages` VALUES ('36', '532342', '5353542', '5342', '0', 'zh_HK', '54242', '54242', '43524', '2018-08-09 15:33:17', '2018-08-09 15:33:24');
+INSERT INTO `pages` VALUES ('37', 'dad53', 'sa345', 'a535', '36', 'zh_HK', 'da4353', 'da4353', 'dad45', '2018-08-09 15:35:36', '2018-08-09 15:35:52');
 
 -- ----------------------------
 -- Table structure for posts
@@ -272,14 +285,14 @@ CREATE TABLE `posts` (
   KEY `POST_TITLE` (`POST_TITLE`) USING BTREE,
   KEY `POST_STATUS` (`POST_STATUS`) USING BTREE,
   KEY `PUBLISHED_TIME` (`PUBLISHED_TIME`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8 COMMENT='存放文章信息\r\n状态\r\n0：草稿\r\n1：等待发布\r\n2：发布\r\n3：删除';
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='存放文章信息\r\n状态\r\n0：草稿\r\n1：等待发布\r\n2：发布\r\n3：删除';
 
 -- ----------------------------
 -- Records of posts
 -- ----------------------------
 INSERT INTO `posts` VALUES ('31', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', '0', null, '0', '', '', '', '2018-07-22 18:42:36', '2018-07-22 18:42:36', null, null);
 INSERT INTO `posts` VALUES ('32', '0', '3', '3123', '&lt;p&gt;123123&lt;/p&gt;', 'zh_CN', '0', '0', null, '0', '', '', '', '2018-07-22 18:42:37', '2018-07-22 18:42:37', null, null);
-INSERT INTO `posts` VALUES ('33', '0', '3', '123', '&lt;p&gt;213123123&lt;/p&gt;', 'zh_HK', '0', '2', null, '0', '', '', '', '2018-07-22 18:43:34', '2018-07-22 18:43:34', null, null);
+INSERT INTO `posts` VALUES ('33', '0', '3', '123', '&lt;p&gt;213123123&lt;/p&gt;', 'zh_HK', '0', '0', null, '0', '', '', '', '2018-07-22 18:43:34', '2018-07-22 18:43:34', null, '2018-08-09 15:13:46');
 INSERT INTO `posts` VALUES ('35', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '0', null, '0', '', '', '', '2018-07-22 23:06:06', '2018-07-22 23:06:06', null, null);
 INSERT INTO `posts` VALUES ('36', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '2', null, '0', '', '', '', '2018-07-22 23:06:43', '2018-07-22 23:06:43', null, null);
 INSERT INTO `posts` VALUES ('37', '0', '3', '123', '&lt;p&gt;1313&lt;/p&gt;', 'zh_CN', '0', '2', null, '0', '', '', '', '2018-07-22 23:06:47', '2018-07-22 23:06:47', null, null);
@@ -322,6 +335,15 @@ INSERT INTO `posts` VALUES ('83', '0', '7', 'asdsa', '&lt;p&gt;dadsad&lt;/p&gt;'
 INSERT INTO `posts` VALUES ('84', '0', '7', 'asdsa', '&lt;p&gt;dadsad&lt;/p&gt;', 'zh_CN', '0', '0', '0', '0', 'ad', 'ad', 'ad', '2018-08-08 17:47:13', '2018-08-08 17:47:13', null, null);
 INSERT INTO `posts` VALUES ('85', '0', '2', 'asdsa54646', '&lt;p&gt;dadsad456546&lt;/p&gt;', 'zh_CN', '0', '0', '0', '0', 'ad', 'ad', 'ad', '2018-08-08 17:47:18', '2018-08-08 17:47:18', '2018-08-08 17:50:33', null);
 INSERT INTO `posts` VALUES ('86', '0', '7', 'asdsa', '&lt;p&gt;dadsad&lt;/p&gt;', 'zh_CN', '0', '3', '0', '0', 'ad', 'ad', 'ad', '2018-08-08 17:47:38', '2018-08-08 17:47:38', null, '2018-08-08 17:50:03');
+INSERT INTO `posts` VALUES ('87', '0', '19', '43543', '&lt;p&gt;535、&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:30:46', '2018-08-09 14:30:46', null, null);
+INSERT INTO `posts` VALUES ('88', '0', '19', '43543', '&lt;p&gt;535、&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:30:48', '2018-08-09 14:30:48', null, null);
+INSERT INTO `posts` VALUES ('89', '0', '19', '43543', '&lt;p&gt;535、&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:31:21', '2018-08-09 14:31:21', null, null);
+INSERT INTO `posts` VALUES ('90', '0', '19', '43543', '&lt;p&gt;535、&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:31:24', '2018-08-09 14:31:24', null, null);
+INSERT INTO `posts` VALUES ('91', '0', '19', '43543', '&lt;p&gt;535、&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:31:29', '2018-08-09 14:31:29', null, '2018-08-09 15:14:14');
+INSERT INTO `posts` VALUES ('96', '91', '3', '5345345', '&lt;p&gt;34543&lt;/p&gt;', 'zh_CN', '1', '0', '0', '0', '', '', '', '2018-08-09 14:48:15', '2018-08-09 14:48:15', null, null);
+INSERT INTO `posts` VALUES ('97', '0', '19', 'dasd', '&lt;p&gt;sd234&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 14:52:48', '2018-08-09 14:52:48', '2018-08-09 15:05:08', null);
+INSERT INTO `posts` VALUES ('98', '97', '3', '234', '&lt;p&gt;24324&lt;/p&gt;', 'zh_CN', '1', '0', '0', '0', '', '', '', '2018-08-09 14:56:54', '2018-08-09 14:56:54', null, null);
+INSERT INTO `posts` VALUES ('99', '0', '19', '3453', '&lt;p&gt;5345&lt;/p&gt;', 'zh_HK', '1', '0', '0', '0', '', '', '', '2018-08-09 15:09:39', '2018-08-09 15:09:39', null, '2018-08-09 15:14:11');
 
 -- ----------------------------
 -- Table structure for posts_revision_history
@@ -334,7 +356,7 @@ CREATE TABLE `posts_revision_history` (
   `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ROW_ID`),
   KEY `POST_ID` (`POST_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='文章修改历史记录';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='文章修改历史记录';
 
 -- ----------------------------
 -- Records of posts_revision_history
@@ -344,6 +366,14 @@ INSERT INTO `posts_revision_history` VALUES ('2', '71', '1', '2018-08-07 11:54:0
 INSERT INTO `posts_revision_history` VALUES ('3', '85', '0', '2018-08-08 17:50:15');
 INSERT INTO `posts_revision_history` VALUES ('4', '85', '0', '2018-08-08 17:50:25');
 INSERT INTO `posts_revision_history` VALUES ('5', '85', '0', '2018-08-08 17:50:33');
+INSERT INTO `posts_revision_history` VALUES ('6', '97', '1', '2018-08-09 14:57:59');
+INSERT INTO `posts_revision_history` VALUES ('7', '97', '1', '2018-08-09 14:59:10');
+INSERT INTO `posts_revision_history` VALUES ('8', '97', '1', '2018-08-09 14:59:34');
+INSERT INTO `posts_revision_history` VALUES ('9', '97', '1', '2018-08-09 15:04:07');
+INSERT INTO `posts_revision_history` VALUES ('10', '97', '1', '2018-08-09 15:04:16');
+INSERT INTO `posts_revision_history` VALUES ('11', '97', '1', '2018-08-09 15:04:59');
+INSERT INTO `posts_revision_history` VALUES ('12', '97', '1', '2018-08-09 15:05:03');
+INSERT INTO `posts_revision_history` VALUES ('13', '97', '1', '2018-08-09 15:05:08');
 
 -- ----------------------------
 -- Table structure for posts_tags_relation
@@ -357,7 +387,7 @@ CREATE TABLE `posts_tags_relation` (
   PRIMARY KEY (`ROW_ID`),
   KEY `POST_ID` (`POST_ID`) USING BTREE,
   KEY `TAG_ID` (`TAG_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='保存文章和标签的对应关系';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='保存文章和标签的对应关系';
 
 -- ----------------------------
 -- Records of posts_tags_relation
@@ -379,6 +409,8 @@ INSERT INTO `posts_tags_relation` VALUES ('19', '84', '79', '2018-08-08 17:47:13
 INSERT INTO `posts_tags_relation` VALUES ('20', '85', '79', '2018-08-08 17:47:18');
 INSERT INTO `posts_tags_relation` VALUES ('22', '86', '79', '2018-08-08 17:47:38');
 INSERT INTO `posts_tags_relation` VALUES ('23', '86', '89', '2018-08-08 17:47:38');
+INSERT INTO `posts_tags_relation` VALUES ('24', '97', '104', '2018-08-09 15:04:07');
+INSERT INTO `posts_tags_relation` VALUES ('25', '99', '105', '2018-08-09 15:09:39');
 
 -- ----------------------------
 -- Table structure for tags
@@ -388,6 +420,7 @@ CREATE TABLE `tags` (
   `TAG_ID` int(11) NOT NULL AUTO_INCREMENT,
   `TAG_NAME` varchar(30) DEFAULT NULL COMMENT '标签名称',
   `TAG_SLUG` varchar(30) DEFAULT NULL COMMENT '标签别名',
+  `TAG_LANG` varchar(10) DEFAULT NULL COMMENT '标签所属语言',
   `TAG_DESCRIPTION` varchar(1024) DEFAULT NULL COMMENT '标签描述',
   `SEO_TITLE` varchar(50) DEFAULT NULL COMMENT 'seo标题',
   `SEO_KEYWORD` varchar(255) DEFAULT NULL COMMENT 'seo关键词',
@@ -397,35 +430,42 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`TAG_ID`),
   KEY `TAG_NAME` (`TAG_NAME`) USING BTREE,
   KEY `TAG_SLUG` (`TAG_SLUG`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8 COMMENT='存放文章标签信息';
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COMMENT='存放文章标签信息';
 
 -- ----------------------------
 -- Records of tags
 -- ----------------------------
-INSERT INTO `tags` VALUES ('75', '242444', 'sdfsdf', '23424226565', '边个', '现货黄金，操作建议', '现货黄金市场2018年7月23日14点收盘于1230.9美元/盎司，金价在早间冲击重压1235美元/盎司一线后回撤，目前维持与1230-1233区间窄幅震荡。现货黄金在短期内可能面临小幅调整，在调整过后依然有机会继续上涨。后市关注1225-1230区间能否成为上涨后的回踩支点，为后市', '2018-07-22 01:10:52', null);
-INSERT INTO `tags` VALUES ('78', '112', null, '', '', '', '', '2018-07-22 18:52:52', null);
-INSERT INTO `tags` VALUES ('79', '123', null, '13', '131', '31', '313', '2018-07-22 19:06:20', null);
-INSERT INTO `tags` VALUES ('80', '1', null, '', '', '', '', '2018-07-24 16:27:26', null);
-INSERT INTO `tags` VALUES ('81', '23432242', '424', '2424', '24', '24', '424', '2018-07-24 17:09:39', null);
-INSERT INTO `tags` VALUES ('82', '1313', '1313', '', '', '', '', '2018-07-24 17:24:25', null);
-INSERT INTO `tags` VALUES ('83', '13123', '13123', '', '', '', '', '2018-07-24 17:56:36', null);
-INSERT INTO `tags` VALUES ('84', '1312344', '1312344', '', '', '', '', '2018-07-24 17:56:37', null);
-INSERT INTO `tags` VALUES ('85', 'asdsad', 'asdsad', '', '', '', '', '2018-07-24 17:56:58', null);
-INSERT INTO `tags` VALUES ('86', 'asdsadasd', 'asdsadasd', '', '', '', '', '2018-07-24 17:57:03', null);
-INSERT INTO `tags` VALUES ('87', 'asds', 'asds', '', '', '', '', '2018-07-24 17:58:10', null);
-INSERT INTO `tags` VALUES ('88', 'asdsd', 'asdsd', '', '', '', '', '2018-07-24 17:58:11', null);
-INSERT INTO `tags` VALUES ('89', '1234', '1234', '', '', '', '', '2018-07-24 23:27:51', null);
-INSERT INTO `tags` VALUES ('90', '12346', '12346', '', '', '', '', '2018-07-24 23:36:46', null);
-INSERT INTO `tags` VALUES ('91', '12347', '12347', '', '', '', '', '2018-07-24 23:36:57', null);
-INSERT INTO `tags` VALUES ('92', '123476', '123476', '', '', '', '', '2018-07-24 23:37:21', null);
-INSERT INTO `tags` VALUES ('93', '12345679', '12345679', '', '', '', '', '2018-07-24 23:38:02', null);
-INSERT INTO `tags` VALUES ('94', '66666', '66666', '', '', '', '', '2018-07-24 23:50:47', null);
-INSERT INTO `tags` VALUES ('95', '123444', '123444', '', '', '', '', '2018-07-24 23:53:45', null);
-INSERT INTO `tags` VALUES ('96', '12313123', '12313123', '', '', '', '', '2018-07-24 23:54:15', null);
-INSERT INTO `tags` VALUES ('97', '456546456', '456546456', '', '', '', '', '2018-07-24 23:54:24', null);
-INSERT INTO `tags` VALUES ('98', '1231', '1231', null, null, null, null, '2018-07-30 16:05:15', null);
-INSERT INTO `tags` VALUES ('99', '123144', '1231', '3131', '1', '2131', '31', '2018-07-30 16:19:33', null);
-INSERT INTO `tags` VALUES ('100', '345', '435', '', '', '', '', '2018-07-30 16:23:19', null);
-INSERT INTO `tags` VALUES ('101', 'kama', 'kama', null, null, null, null, '2018-08-06 16:49:38', null);
-INSERT INTO `tags` VALUES ('102', '213', '213', null, null, null, null, '2018-08-06 18:00:20', null);
-INSERT INTO `tags` VALUES ('103', '4234', '4234', null, null, null, null, '2018-08-07 11:08:03', null);
+INSERT INTO `tags` VALUES ('75', '242444', 'sdfsdf', null, '23424226565', '边个', '现货黄金，操作建议', '现货黄金市场2018年7月23日14点收盘于1230.9美元/盎司，金价在早间冲击重压1235美元/盎司一线后回撤，目前维持与1230-1233区间窄幅震荡。现货黄金在短期内可能面临小幅调整，在调整过后依然有机会继续上涨。后市关注1225-1230区间能否成为上涨后的回踩支点，为后市', '2018-07-22 01:10:52', null);
+INSERT INTO `tags` VALUES ('78', '112', null, null, '', '', '', '', '2018-07-22 18:52:52', null);
+INSERT INTO `tags` VALUES ('79', '123', null, null, '13', '131', '31', '313', '2018-07-22 19:06:20', null);
+INSERT INTO `tags` VALUES ('80', '1', null, null, '', '', '', '', '2018-07-24 16:27:26', null);
+INSERT INTO `tags` VALUES ('81', '23432242', '424', null, '2424', '24', '24', '424', '2018-07-24 17:09:39', null);
+INSERT INTO `tags` VALUES ('82', '1313', '1313', null, '', '', '', '', '2018-07-24 17:24:25', null);
+INSERT INTO `tags` VALUES ('83', '13123', '13123', null, '', '', '', '', '2018-07-24 17:56:36', null);
+INSERT INTO `tags` VALUES ('84', '1312344', '1312344', null, '', '', '', '', '2018-07-24 17:56:37', null);
+INSERT INTO `tags` VALUES ('85', 'asdsad', 'asdsad', null, '', '', '', '', '2018-07-24 17:56:58', null);
+INSERT INTO `tags` VALUES ('86', 'asdsadasd', 'asdsadasd', null, '', '', '', '', '2018-07-24 17:57:03', null);
+INSERT INTO `tags` VALUES ('87', 'asds', 'asds', null, '', '', '', '', '2018-07-24 17:58:10', null);
+INSERT INTO `tags` VALUES ('88', 'asdsd', 'asdsd', null, '', '', '', '', '2018-07-24 17:58:11', null);
+INSERT INTO `tags` VALUES ('89', '1234', '1234', null, '', '', '', '', '2018-07-24 23:27:51', null);
+INSERT INTO `tags` VALUES ('90', '12346', '12346', null, '', '', '', '', '2018-07-24 23:36:46', null);
+INSERT INTO `tags` VALUES ('91', '12347', '12347', null, '', '', '', '', '2018-07-24 23:36:57', null);
+INSERT INTO `tags` VALUES ('92', '123476', '123476', null, '', '', '', '', '2018-07-24 23:37:21', null);
+INSERT INTO `tags` VALUES ('93', '12345679', '12345679', null, '', '', '', '', '2018-07-24 23:38:02', null);
+INSERT INTO `tags` VALUES ('94', '66666', '66666', null, '', '', '', '', '2018-07-24 23:50:47', null);
+INSERT INTO `tags` VALUES ('95', '123444', '123444', null, '', '', '', '', '2018-07-24 23:53:45', null);
+INSERT INTO `tags` VALUES ('96', '12313123', '12313123', null, '', '', '', '', '2018-07-24 23:54:15', null);
+INSERT INTO `tags` VALUES ('97', '456546456', '456546456', null, '', '', '', '', '2018-07-24 23:54:24', null);
+INSERT INTO `tags` VALUES ('98', '1231', '1231', null, null, null, null, null, '2018-07-30 16:05:15', null);
+INSERT INTO `tags` VALUES ('99', '123144', '1231', null, '3131', '1', '2131', '31', '2018-07-30 16:19:33', null);
+INSERT INTO `tags` VALUES ('100', '345', '435', null, '', '', '', '', '2018-07-30 16:23:19', null);
+INSERT INTO `tags` VALUES ('101', 'kama', 'kama', null, null, null, null, null, '2018-08-06 16:49:38', null);
+INSERT INTO `tags` VALUES ('102', '213', '213', null, null, null, null, null, '2018-08-06 18:00:20', null);
+INSERT INTO `tags` VALUES ('103', '4234', '4234', null, null, null, null, null, '2018-08-07 11:08:03', null);
+INSERT INTO `tags` VALUES ('104', '345', '345', 'zh_HK', null, null, null, null, '2018-08-09 15:03:59', null);
+INSERT INTO `tags` VALUES ('105', '13213', '13213', 'zh_HK', null, null, null, null, '2018-08-09 15:09:28', null);
+INSERT INTO `tags` VALUES ('106', '34535', '34535', 'zh_CN', null, null, null, null, '2018-08-09 15:09:47', null);
+INSERT INTO `tags` VALUES ('107', '4234242', '42', 'zh_HK', '4242', '4', '242', '424', '2018-08-09 15:21:12', null);
+INSERT INTO `tags` VALUES ('108', '234242', '42', 'zh_CN', '4242', '42', '42', '44', '2018-08-09 15:21:27', null);
+INSERT INTO `tags` VALUES ('109', '4234242', '42', 'zh_CN', '4242', '42', '42', '44', '2018-08-09 15:22:35', null);
+INSERT INTO `tags` VALUES ('110', '4234242', '421', 'zh_CN', '4242', '42', '42', '44', '2018-08-09 15:26:56', null);

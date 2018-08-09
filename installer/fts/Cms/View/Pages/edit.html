@@ -30,22 +30,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="language" class="col-sm-2 control-label">语言</label>
-                        <div class="col-sm-10">
-                            <select id="language" class="form-control" name="language">
-                                <foreach name="languageMap" item="v" key="k">
-                                    <option value="{$k}" <if condition="!empty($result) && $result['PAGE_LANG'] eq $k">selected='selected'</if>>{$v}</option>
-                                </foreach>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="parent" class="col-sm-2 control-label">父页面</label>
+                        <label for="parent" class="col-sm-2 control-label">上级页面</label>
                         <div class="col-sm-10">
                             <select id="parent" class="form-control" name="parent">
-                                <option value="0">根页面</option>
+                                <option value="0">一级页面</option>
                                 <foreach name="parentMap" item="v" key="k">
-                                    <option value="{$v.PAGE_ID}" <if condition="!empty($result) && $result['PAGE_PARENT'] eq $v['PAGE_ID']">selected='selected'</if>>{$v.PAGE_NAME}</option>
+                                    <option value="{$v.PAGE_ID}" <if condition="!empty($result) && $result['PAGE_PARENT'] eq $v['PAGE_ID']">selected='selected'</if>>|-{$v.PAGE_NAME}</option>
                                 </foreach>
                             </select>
                         </div>
@@ -94,7 +84,6 @@
             var data = {
                 'name'           : $('[name="name"]').val(),
                 'slug'           : $('[name="slug"]').val(),
-                'language'       : $('[name="language"]').val(),
                 'parent_id'      : $('[name="parent"]').val(),
                 'type'           : $('[name="type"]').val(),
                 'directing'      : $('[name="directing"]').val(),
@@ -112,9 +101,9 @@
                 'data'    : data,
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {

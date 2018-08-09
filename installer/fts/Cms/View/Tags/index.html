@@ -83,11 +83,11 @@
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {

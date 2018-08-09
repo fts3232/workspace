@@ -3,6 +3,18 @@ body {
     background: #eff0f4;
 }
 
+a{
+    color:#000;
+}
+
+a.link {
+    color: #337ab7;
+}
+
+ul {
+    list-style: none;
+}
+
 table {
     background: #fff;
 }
@@ -63,6 +75,11 @@ table {
     right: 0;
     z-index: 9999999;
     margin: 0 auto;
+    display: none;
+}
+
+.alert.in{
+    display: block;
 }
 
 .modal {
@@ -171,6 +188,7 @@ table {
 .status-tools  ul li a{
     line-height: 2;
     padding: .2em;
+    color:#777;
 }
 .status-tools ul li a .count{
     color: #555d66;
@@ -209,28 +227,48 @@ table {
     font-size: 20px;
 }
 
-.header .user {
+.header .right {
     height: 100%;
 }
 
-.header .user > a {
+.header .right > ul > li {
+    float: left;
+    position: relative;
+}
+
+.header .right > ul > li > a:hover, .header .right li.open > a{
+    background: #424f63;
+    color: #65cea7;
+}
+
+.header .right > ul > li > a {
     height: 100%;
     width: 100px;
     padding: 16px 12px;
     font-size: 14px;
     display: inline-block;
     font-weight: 400;
+    border-radius: 0;
 }
 
-.header .user > a span {
+.header .right > ul > li > a span {
     vertical-align: middle;
 }
 
-.header .user .dropdown-menu {
+.header .right .dropdown-menu {
     right: 0;
     left: auto;
 }
 
+.header .right .btn{
+    line-height: 18px;
+}
+
+.header .right .language.btn span:nth-child(1){
+    margin-right: 5px;
+}
+
+/* page */
 .page {
     text-align: center;
 }

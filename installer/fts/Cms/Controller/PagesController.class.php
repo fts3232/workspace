@@ -2,46 +2,50 @@
 
 namespace Cms\Controller;
 
-use Think\Controller;
-
-class PagesController extends Controller
+/**
+ * 页面管理
+ *
+ * Class PagesController
+ * @package Cms\Controller
+ */
+class PagesController extends CommonController
 {
     use Validate;
 
+    //验证规则
     protected $validateRule = array(
         'PAGE_ID' => 'required|int',
         'PAGE_NAME' => 'required|itemName',
         'PAGE_SLUG' => 'required|itemSlug',
         'PAGE_PARENT' => 'required|int',
-        'PAGE_LANG' => 'required|lang',
         'SEO_TITLE' => 'seoTitle',
         'SEO_KEYWORD' => 'seoKeyword',
         'SEO_DESCRIPTION' => 'seoDescription',
     );
+
+    //验证错误信息
     protected $validateMsg = array(
         'PAGE_ID' => '页面id不正确',
         'PAGE_NAME' => '页面名称格式不正确',
         'PAGE_SLUG' => '页面别名格式不正确',
         'PAGE_PARENT' => '页面父类不正确',
-        'PAGE_LANG' => '页面语言不正确',
         'SEO_TITLE' => 'SEO标题格式不正确',
         'SEO_KEYWORD' => 'SEO关键词格式不正确',
         'SEO_DESCRIPTION' => 'SEO描述格式不正确',
     );
 
     /**
-     * 查看栏目信息
+     * 页面列表页
      */
     public function index()
     {
         //整合搜索条件
         $whereData = array(
-            'name' => I('get.name'),
-            'language' => I('get.language')
+            'name' => I('get.name', false),
+            'language' => $this->currentLanguage,
+            'time' => I('get.time', false)
         );
-        //状态map
-        $statusMap = C('post.status');
-        $this->assign('statusMap', $statusMap);
+        $this->assign('whereData', $whereData);
         $model = D('Pages');
         //每页显示多少条
         $pageSize = C('pageSize');
@@ -50,18 +54,15 @@ class PagesController extends Controller
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
-        //获取分页数据
-        $list = $model->getAll($whereData, $page->firstRow, $pageSize);
-        $this->assign('list', $list);
         $this->assign('pagination', $pagination);
-        $this->assign('whereData', $whereData);
-        //获取语言map
-        $this->assign('languageMap', C('languageMap'));
+        //获取分页数据
+        $list = $model->getList($whereData, $page->firstRow, $pageSize);
+        $this->assign('list', $list);
         $this->display();
     }
 
     /**
-     * 删除page
+     * 删除页面
      */
     public function delete()
     {
@@ -99,12 +100,8 @@ class PagesController extends Controller
         //获取栏目
         $model = D('Pages');
         //获取父页面
-        $parentMap = $model->getParent();
+        $parentMap = $model->getParent($this->currentLanguage);
         $this->assign('parentMap', $parentMap);
-        //获取语言map
-        $this->assign('languageMap', C('languageMap'));
-        //获取页面类型Map
-        $this->assign('typeMap', C('page.typeMap'));
         //action
         $this->assign('action', 'create');
         $this->display('edit');
@@ -124,9 +121,8 @@ class PagesController extends Controller
                     'PAGE_NAME' => I('post.name'),
                     'PAGE_SLUG' => I('post.slug'),
                     'PAGE_PARENT' => I('post.parent_id', false, 'int'),
-                    'PAGE_TYPE' => I('post.type', false, 'int'),
                     'PAGE_DIRECTING' => I('post.directing'),
-                    'PAGE_LANG' => I('post.language'),
+                    'PAGE_LANG' => $this->currentLanguage,
                     'SEO_TITLE' => I('post.seo_keyword'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description')
@@ -134,9 +130,9 @@ class PagesController extends Controller
                 //验证输入格式
                 $this->validate($data);
                 //添加操作
-                $result = $model->add($data);
-                if (!$result) {
-                    throw new \Exception('添加失败', 101);
+                $result = $model->addPage($data);
+                if (!$result['status']) {
+                    throw new \Exception($result['msg'], $result['code']);
                 }
             } catch (\Exception $e) {
                 $return = array(
@@ -166,16 +162,14 @@ class PagesController extends Controller
             if (!$result = $model->get($data['PAGE_ID'])) {
                 throw new \Exception('该页面id不存在', 101);
             }
-            $this->assign('id', $data['PAGE_ID']);
             $this->assign('result', $result);
+            //id
+            $this->assign('id', $data['PAGE_ID']);
+            //action
             $this->assign('action', 'update');
             //获取父页面
-            $parentMap = $model->getParent($data['PAGE_ID']);
+            $parentMap = $model->getParent($result['PAGE_LANG'], $data['PAGE_ID']);
             $this->assign('parentMap', $parentMap);
-            //获取语言map
-            $this->assign('languageMap', C('languageMap'));
-            //获取页面类型Map
-            $this->assign('typeMap', C('page.typeMap'));
             $this->display();
         } catch (\Exception  $e) {
             $this->error($e->getMessage());
@@ -197,16 +191,14 @@ class PagesController extends Controller
                     'PAGE_NAME' => I('post.name'),
                     'PAGE_SLUG' => I('post.slug'),
                     'PAGE_PARENT' => I('post.parent_id', false, 'int'),
-                    'PAGE_TYPE' => I('post.type', false, 'int'),
                     'PAGE_DIRECTING' => I('post.directing'),
-                    'PAGE_LANG' => I('post.language'),
                     'SEO_TITLE' => I('post.seo_keyword'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description')
                 );
                 //验证输入格式
                 $this->validate($data);
-
+                //更新操作
                 $result = $model->updatePage($data);
                 if (!$result['status']) {
                     throw new \Exception($result['msg'], $result['code']);

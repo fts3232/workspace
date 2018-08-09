@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * 文章模型
+ *
+ * Class PostsModel
+ * @package Cms\Model
+ */
 class PostsModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -38,7 +44,6 @@ class PostsModel extends Model
         'POST_CONTENT',
         'POST_TRANSLATE_ID',
         'POST_CATEGORY_ID',
-        'POST_LANG',
         'POST_STATUS',
         'POST_ORDER',
         'SEO_TITLE',
@@ -57,18 +62,48 @@ class PostsModel extends Model
      * @param $size
      * @return array
      */
-    public function getAll($whereData, $offset, $size)
+    public function getList($whereData, $offset, $size)
     {
         $where = $this->getWhere($whereData);
         $result = $this
             ->alias('a')
             ->where($where)
-            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID, POST_STATUS, a.PUBLISHED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME')
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID AS POST_AUTHOR, POST_STATUS, a.PUBLISHED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME, b.CATEGORY_PARENT')
             ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
             ->order('a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
             ->select();
+        if ($result) {
+            $categoryParent = D('Category')->getParent($whereData['language']);
+            $parentList = array_reduce($categoryParent, function ($carry, $item) {
+                $carry[$item['CATEGORY_ID']] = $item['CATEGORY_SLUG'];
+                return $carry;
+            });
+            foreach ($result as $k => $v) {
+                $parentSlug = isset($parentList[$v['CATEGORY_PARENT']]) ? $parentList[$v['CATEGORY_PARENT']] : '';
+                $result[$k]['POST_URL'] = $this->getPostUrl($parentSlug, $v['POST_ID'], $v['PUBLISHED_TIME']);
+            }
+        }
         return $result ? $result : array();
+    }
+
+    /**
+     * 生成文件访问链接
+     *
+     * @param $slug
+     * @param $id
+     * @param $publishedTime
+     * @return string
+     */
+    private function getPostUrl($slug, $id, $publishedTime)
+    {
+        if ($slug == 'news') {
+            $date = date('Y-m-d', strtotime($publishedTime));
+            $url = "http://xxxx.com/{$slug}/{$date}/{$id}";
+        } else {
+            $url = "http://xxxx.com/{$slug}/{$id}";
+        }
+        return $url;
     }
 
     /**
@@ -98,13 +133,14 @@ class PostsModel extends Model
     /**
      * 获取各个状态总文章数
      *
+     * @param $language
      * @param $statusMap
      * @return mixed
      */
-    public function getStatusCount($statusMap)
+    public function getStatusCount($language, $statusMap)
     {
         $result = $this->field('COUNT(*) AS TOTAL, POST_STATUS')
-            ->where(array('POST_STATUS' => array('in', $statusMap)))
+            ->where(array('POST_LANG' => $language, 'POST_STATUS' => array('in', $statusMap)))
             ->group('POST_STATUS')
             ->select();
         if ($result) {
@@ -124,11 +160,12 @@ class PostsModel extends Model
     /**
      * 获取置顶文章数量
      *
+     * @param $language
      * @return mixed
      */
-    public function getOrderPostsCount()
+    public function getOrderPostsCount($language)
     {
-        return $this->where(array('POST_ORDER'=>array('gt', 0)))->count();
+        return $this->where(array('POST_LANG' => $language, 'POST_ORDER' => array('gt', 0)))->count();
     }
 
     /**
@@ -177,16 +214,26 @@ class PostsModel extends Model
                 $data['PUBLISHED_TIME'] = array('exp', 'NOW()');
             }
             $data['POST_LAST_STATUS'] = $data['POST_STATUS'];
+            //判断是否有当前对照语言版本存在
+            if ($data['POST_TRANSLATE_ID']) {
+                $count = $this->where(array('POST_TRANSLATE_ID' => $data['POST_TRANSLATE_ID'], 'POST_LANG' => $data['POST_LANG']))
+                    ->count();
+                if ($count > 0) {
+                    throw new \Exception('当前语言版本已存在', 200);
+                }
+            }
             //添加
             $id = $this->add($data);
             if (!$id) {
-                throw new \Exception('添加失败', 200);
+                throw new \Exception('添加失败', 201);
             }
             //添加post和tag的关系
-            foreach ($data['POST_TAGS_ID'] as $tag) {
-                $result = D('PostsTagsRelation')->addRelation($id, $tag);
-                if (!$result) {
-                    throw new \Exception('添加关系失败', 201);
+            if (!empty($data['POST_TAGS_ID'])) {
+                foreach ($data['POST_TAGS_ID'] as $tag) {
+                    $result = D('PostsTagsRelation')->addRelation($id, $tag);
+                    if (!$result) {
+                        throw new \Exception('添加关系失败', 202);
+                    }
                 }
             }
             $return['id'] = $id;
@@ -213,14 +260,16 @@ class PostsModel extends Model
     {
         $delete = [];
         $add = [];
-        foreach ($source as $item) {
-            if (!in_array($item, $target)) {
-                $delete[] = $item;
+        if (!empty($source) && !empty($target)) {
+            foreach ($source as $item) {
+                if (!in_array($item, $target)) {
+                    $delete[] = $item;
+                }
             }
-        }
-        foreach ($target as $item) {
-            if (!in_array($item, $source)) {
-                $add[] = $item;
+            foreach ($target as $item) {
+                if (!in_array($item, $source)) {
+                    $add[] = $item;
+                }
             }
         }
         return ['delete' => $delete, 'add' => $add];
@@ -230,7 +279,7 @@ class PostsModel extends Model
      * 修改文章
      *
      * @param $data
-     * @return bool
+     * @return array
      */
     public function editPost($data)
     {
@@ -296,9 +345,15 @@ class PostsModel extends Model
      */
     public function get($id)
     {
-        return $this->field('POST_ID, POST_TITLE, POST_CONTENT, POST_AUTHOR_ID, POST_CATEGORY_ID, POST_TRANSLATE_ID, POST_LANG, POST_STATUS, PUBLISHED_TIME, SEO_KEYWORD, SEO_DESCRIPTION, SEO_TITLE, POST_ORDER')
+        $post = $this->field('POST_ID, POST_TITLE, POST_CONTENT, POST_CATEGORY_ID, POST_TRANSLATE_ID, POST_LANG, POST_STATUS, PUBLISHED_TIME, SEO_KEYWORD, SEO_DESCRIPTION, SEO_TITLE, POST_ORDER')
             ->where(array('POST_ID' => $id))
             ->find();
+        if ($post) {
+            //父栏目
+            $slug = D('Category')->getParentSlug($post['POST_CATEGORY_ID']);
+            $post['POST_URL'] = $this->getPostUrl($slug, $post['POST_ID'], $post['PUBLISHED_TIME']);
+        }
+        return $post;
     }
 
     /**
@@ -331,7 +386,7 @@ class PostsModel extends Model
      * 删除文章
      *
      * @param $id
-     * @return bool
+     * @return array
      */
     public function deletePost($id)
     {
@@ -353,6 +408,12 @@ class PostsModel extends Model
             $result = $relationModel->deleteRelation($id);
             if ($result === false) {
                 throw new \Exception('清空tag关联失败', 202);
+            }
+            //删除文章历史修改记录
+            $historyModel = D('PostsRevisionHistory');
+            $historyModel->deleteHistory($id);
+            if ($result === false) {
+                throw new \Exception('清空文章历史修改失败', 203);
             }
             $this->commit();
         } catch (\Exception $e) {
@@ -380,6 +441,7 @@ class PostsModel extends Model
             if (!$this->isExists($id)) {
                 throw new \Exception('该文章id不存在', 200);
             }
+            //保存删除时间
             $result = $this->where(array('POST_ID' => $id))
                 ->save(array('DELETED_TIME' => array('exp', 'NOW()'), 'POST_STATUS' => 3));
             if (!$result) {
@@ -396,10 +458,10 @@ class PostsModel extends Model
     }
 
     /**
-     * 还原post
+     * 还原文章
      *
      * @param $id
-     * @return bool
+     * @return array
      */
     public function restorePost($id)
     {
@@ -435,39 +497,6 @@ class PostsModel extends Model
     {
         $count = $this->where(array('POST_ID' => $id))->count();
         return $count > 0;
-    }
-
-
-    /**
-     * 获取文章栏目别名
-     *
-     * @param $id
-     * @return bool
-     */
-    public function getCategorySlug($id)
-    {
-        $result = $this->field('b.CATEGORY_SLUG')
-            ->alias('a')
-            ->join('category b on b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
-            ->where(array('POST_ID' => $id))
-            ->find();
-        return !empty($result['CATEGORY_SLUG']) ? $result['CATEGORY_SLUG'] : false;
-    }
-
-    /**
-     * 获取文章栏目别名和最后更改状态
-     *
-     * @param $id
-     * @return bool
-     */
-    public function getCategorySlugAndLastStatus($id)
-    {
-        $result = $this->field('b.CATEGORY_SLUG, a.POST_LAST_STATUS')
-            ->alias('a')
-            ->join('category b on b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
-            ->where(array('POST_ID' => $id))
-            ->find();
-        return $result;
     }
 
     /**

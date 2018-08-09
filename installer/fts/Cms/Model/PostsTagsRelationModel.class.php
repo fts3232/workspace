@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * 文章和标签关系模型
+ *
+ * Class PostsTagsRelationModel
+ * @package Cms\Model
+ */
 class PostsTagsRelationModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -60,7 +66,10 @@ class PostsTagsRelationModel extends Model
      */
     public function getTags($postID)
     {
-        return $this->alias('a')->field('b.TAG_NAME, b.TAG_ID')->join('tags b ON a.TAG_ID = b.TAG_ID')->where(array('a.POST_ID' => $postID))->select();
+        return $this->alias('a')->field('b.TAG_NAME, b.TAG_ID')
+            ->join('tags b ON a.TAG_ID = b.TAG_ID')
+            ->where(array('a.POST_ID' => $postID))
+            ->select();
     }
 
     /**

@@ -2,15 +2,13 @@
 
 namespace Cms\Controller;
 
-use Think\Controller;
-
 /**
- * banner
+ * banner管理
  *
  * Class BannerController
  * @package Cms\Controller
  */
-class BannerController extends Controller
+class BannerController extends CommonController
 {
     use Validate;
 
@@ -31,18 +29,22 @@ class BannerController extends Controller
      */
     public function index()
     {
+        //查询条件
+        $whereData = array(
+            'language' => $this->currentLanguage
+        );
         $model = D('Banner');
         //每页显示多少条
         $pageSize = C('pageSize');
         //获取总条数
-        $count = $model->count();
+        $count = $model->getCount($whereData);
         //分页器
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
-        //获取分页信息
-        $list = $model->getAll($page->firstRow, $pageSize);
-        $this->assign('list', $list);
         $this->assign('pagination', $pagination);
+        //获取分页信息
+        $list = $model->getList($whereData, $page->firstRow, $pageSize);
+        $this->assign('list', $list);
         $this->display();
     }
 
@@ -56,7 +58,8 @@ class BannerController extends Controller
             try {
                 //获取输入
                 $data = array(
-                    'BANNER_NAME' => I('post.name')
+                    'BANNER_NAME' => I('post.name'),
+                    'BANNER_LANG' => $this->currentLanguage
                 );
                 //验证输入格式
                 $this->validate($data);
@@ -157,17 +160,20 @@ class BannerController extends Controller
             );
             //验证输入格式
             $this->validate($data);
+            $this->assign('bannerID', $data['BANNER_ID']);
             $model = D('Banner');
             $bannerName = $model->getName($data['BANNER_ID']);
             if (empty($bannerName)) {
-                throw new Exception('该bannerID不存在', 100);
+                throw new Exception('该bannerID不存在', 101);
             }
+            $this->assign('bannerName', $bannerName);
+            //模型实例化
             $model = D('BannerItem');
+            //获取banner项
             $items = $model->getItem($data['BANNER_ID']);
             $this->assign('items', $items);
+            //status
             $this->assign('statusMap', C('banner.statusMap'));
-            $this->assign('bannerID', $data['BANNER_ID']);
-            $this->assign('bannerName', $bannerName);
             $this->display();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -182,20 +188,36 @@ class BannerController extends Controller
         if (IS_AJAX) {
             try {
                 $return = array('status' => true, 'msg' => '上传成功');
+                //获取输入
+                $data = array(
+                    'BANNER_ID' => I('post.banner_id', false, 'int')
+                );
+                //验证输入格式
+                $this->validate($data);
+                //判断banner是否存在
+                if (!D('Banner')->isExists($data['BANNER_ID'])) {
+                    throw new \Exception('该bannerID不存在', 101);
+                }
+                //上传
                 $upload = new \Think\Upload();// 实例化上传类
                 $upload->maxSize = 204800;// 设置附件上传大小
                 $upload->exts = array('jpg', 'gif', 'png', 'jpeg', 'pdf');// 设置附件上传类型
                 $upload->rootPath = './Uploads'; // 设置附件上传根目录
                 $upload->savePath = 'cms_banner/'; // 设置附件上传（子）目录
                 // 上传文件
-                $info = $upload->upload();
+                $info = $upload->uploadOne($_FILES['file']);
                 //print_r($info);
                 if (!$info) {// 上传错误提示错误信息
-                    throw new \Exception($upload->getError(), 100);
+                    throw new \Exception($upload->getError(), 102);
                 }
-                foreach ($info as $file) {
-                    $return['img'] = '/Uploads/' . $file['savepath'] . $file['savename'];
+                $return['img'] = '/Uploads/' . $info['savepath'] . $info['savename'];
+                //添加菜单项
+                $model = D('BannerItem');
+                $result = $model->addItem($data['BANNER_ID'], $return['img']);
+                if (!$result) {
+                    throw new \Exception('添加失败', 103);
                 }
+                $return['id'] = $result;
             } catch (\Exception $e) {
                 $return = array(
                     'status' => false,
@@ -223,6 +245,10 @@ class BannerController extends Controller
                 );
                 //验证输入格式
                 $this->validate($data);
+                //判断id是否存在
+                if (!D('Banner')->isExists($data['BANNER_ID'])) {
+                    throw new \Exception('该bannerID不存在', 101);
+                }
                 $model = D('BannerItem');
                 //更新操作
                 $result = $model->updateItem($data);

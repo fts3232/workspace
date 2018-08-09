@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * banner模型
+ *
+ * Class BannerModel
+ * @package Cms\Model
+ */
 class BannerModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -14,7 +20,8 @@ class BannerModel extends Model
      * @var array
      */
     protected $insertFields = array(
-        'BANNER_NAME'
+        'BANNER_NAME',
+        'BANNER_LANG'
     );
 
     /**
@@ -30,13 +37,19 @@ class BannerModel extends Model
     /**
      * 获取分页banner信息
      *
+     * @param $whereData
      * @param $offset
      * @param $size
      * @return array
      */
-    public function getAll($offset, $size)
+    public function getList($whereData, $offset, $size)
     {
-        $result = $this->field('BANNER_ID, BANNER_NAME')->order('BANNER_ID DESC')->limit($offset, $size)->select();
+        $where = $this->getWhere($whereData);
+        $result = $this->field('BANNER_ID, BANNER_NAME')
+            ->where($where)
+            ->order('BANNER_ID DESC')
+            ->limit($offset, $size)
+            ->select();
         return $result ? $result : array();
     }
 
@@ -48,7 +61,34 @@ class BannerModel extends Model
      */
     public function getName($id)
     {
-        return $this->field('BANNER_NAME')->where(array('BANNER_ID' => $id))->getField('BANNER_NAME');
+        return $this->field('BANNER_NAME')
+            ->where(array('BANNER_ID' => $id))
+            ->getField('BANNER_NAME');
+    }
+
+    /**
+     * 获取总条数
+     *
+     * @param $whereData
+     * @return mixed
+     */
+    public function getCount($whereData)
+    {
+        $where = $this->getWhere($whereData);
+        return $this->where($where)->count();
+    }
+
+    /**
+     * 获取查询条件
+     *
+     * @param $whereData
+     * @return array
+     */
+    public function getWhere($whereData)
+    {
+        $where = array();
+        $where['BANNER_LANG'] = $whereData['language'];
+        return $where;
     }
 
     /**
@@ -62,9 +102,10 @@ class BannerModel extends Model
         try {
             $return = array('status' => true);
             //判断名称是否存在
-            if ($this->isExists($data['BANNER_NAME'], 'BANNER_NAME')) {
+            if ($this->isNameExists($data['BANNER_LANG'], $data['BANNER_NAME'])) {
                 throw new \Exception('该banner名称已存在', 200);
             }
+            //添加操作
             $id = $this->add($data);
             if (!$id) {
                 throw new \Exception('添加失败', 201);
@@ -90,14 +131,16 @@ class BannerModel extends Model
     {
         try {
             $return = array('status' => true);
-            //判断名称是否存在
-            if (!$this->isExists($data['BANNER_ID'], 'BANNER_ID')) {
+            //判断id是否存在
+            $banner = $this->field('BANNER_LANG')->where(array('BANNER_ID' => $data['BANNER_ID']))->find();
+            if (!$banner) {
                 throw new \Exception('该bannerID不存在', 200);
             }
             //判断名称是否存在
-            if ($this->isExists($data['BANNER_NAME'], 'BANNER_NAME')) {
+            if ($this->isNameExists($banner['BANNER_LANG'], $data['BANNER_NAME'], $data['BANNER_ID'])) {
                 throw new \Exception('该banner名称已存在', 201);
             }
+            //更新操作
             $data['MODIFIED_TIME'] = array('exp', 'NOW()');
             $result = $this->where(array('BANNER_ID' => $data['BANNER_ID']))->save($data);
             if (!$result) {
@@ -117,7 +160,7 @@ class BannerModel extends Model
      * 删除banner
      *
      * @param $id
-     * @return bool
+     * @return array
      */
     public function deleteBanner($id)
     {
@@ -125,9 +168,10 @@ class BannerModel extends Model
             $return = array('status' => true);
             $this->startTrans();
             //判断名称是否存在
-            if (!$this->isExists($id, 'BANNER_ID')) {
+            if (!$this->isExists($id)) {
                 throw new \Exception('该bannerID不存在', 200);
             }
+            //删除操作
             $result = $this->delete($id);
             if (!$result) {
                 throw new \Exception('删除banner失败', 201);
@@ -155,12 +199,26 @@ class BannerModel extends Model
      * @param $id
      * @return bool
      */
-    public function isExists($val, $type = 'BANNER_ID')
+    public function isExists($id)
     {
-        if ($type == 'BANNER_ID') {
-            $where = array('BANNER_ID' => $val);
-        } else {
-            $where = array('BANNER_NAME' => $val);
+        $where = array('BANNER_ID' => $id);
+        $count = $this->where($where)->count();
+        return $count > 0;
+    }
+
+    /**
+     * 判断指定的banner名是否存在
+     *
+     * @param        $lang
+     * @param        $name
+     * @param string $id
+     * @return bool
+     */
+    public function isNameExists($lang, $name, $id = '')
+    {
+        $where = array('BANNER_NAME' => $name, 'BANNER_LANG' => $lang);
+        if ($id) {
+            $where['BANNER_ID'] = array('neq', $id);
         }
         $count = $this->where($where)->count();
         return $count > 0;

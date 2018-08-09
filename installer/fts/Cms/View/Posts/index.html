@@ -12,14 +12,6 @@
                     <option value="">-- 全部栏目 --</option>
                 </select>
             </div>
-            <div class="form-group">
-                <select id="search-language" name="language" class="form-control">
-                    <option value="">-- 全部语言 --</option>
-                    <foreach name="languageMap" item="v" key="k">
-                        <option value="{$k}" <if condition="$whereData['language'] eq $k">selected='selected'</if>>{$v}</option>
-                    </foreach>
-                </select>
-            </div>
             <div class="form-group time">
                 <input type="text"  name="time" class="form-control" id="datetimepicker" placeholder="要查找的发布时间" value="{$whereData['time']}">
             </div>
@@ -41,12 +33,14 @@
                 <li>
                     <a href="{:U('')}" <if condition="is_array($whereData['status']) && empty($whereData['getOrder'])">class="current"</if>>全部<span class="count">({:array_sum($statusCount)})</span></a>
                 </li>
-                <li>
-                    <a href="{:U('',array('getOrder'=>1))}" <if condition="!empty($whereData['getOrder'])">class="current"</if>>置顶文章<span class="count">({$orderCount})</span></a>
-                </li>
+                <if condition="ACTION_NAME eq 'index'">
+                    <li>
+                        <a href="{:U('',array('getOrder'=>1))}" <if condition="!empty($whereData['getOrder'])">class="current"</if>>置顶文章<span class="count">({$orderCount})</span></a>
+                    </li>
+                </if>
                 <foreach name="statusMap" item="v" key="k">
                 <li>
-                    <a href="{:U('',array('status'=>$k))}" <if condition="$whereData['status'] heq $k">class="current"</if>>{$v}<span class="count">({$statusCount[$k]})</span></a>
+                    <a href="{:U('',array('status'=>$k))}" <if condition="$whereData['status'] heq $k">class="current"</if>>{$v}<span class="count">({$statusCount[$k]|default='0'})</span></a>
                 </li>
                 </foreach>
             </ul>
@@ -59,7 +53,6 @@
                     <th>ID</th>
                     <th>标题</th>
                     <th><nobr>栏目</nobr></th>
-                    <th><nobr>语言</nobr></th>
                     <th>作者</th>
                     <th>文章排序</th>
                     <th>文章状态</th>
@@ -73,9 +66,8 @@
                 <foreach name="list" item="v" key="k">
                     <tr>
                         <td>{$v.POST_ID}</td>
-                        <td><a href="javascript:void(0)">{$v.POST_TITLE}</a></td>
+                        <td><a class="link" href="{$v.POST_URL}">{$v.POST_TITLE}</a></td>
                         <td><nobr>{$v.CATEGORY_NAME}</nobr></td>
-                        <td><nobr>{$languageMap[$v['POST_LANG']]}</nobr></td>
                         <td>{$v.POST_AUTHOR}</td>
                         <td>{$v.POST_ORDER}</td>
                         <td>{$statusMap[$v['POST_STATUS']]}</td>
@@ -170,11 +162,11 @@
                 },
                 'success' : function (data) {
                     if (data.status || data.code == 103) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {
@@ -204,11 +196,11 @@
                     },
                     'success' : function (data) {
                         if (data.status || data.code == 103) {
-                            alertMessage('success', data.msg);
+                            alertSuccessMessage(data.msg);
                             $('#restore-modal').modal('hide');
                             $('.data tbody tr').eq(_this.attr('data-index')).remove();
                         } else {
-                            alertMessage('danger', data.msg, data.code);
+                            alertErrorMessage(data.msg, data.code);
                         }
                     },
                     'complete': function () {

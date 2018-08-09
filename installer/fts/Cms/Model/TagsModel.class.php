@@ -17,6 +17,7 @@ class TagsModel extends Model
         'TAG_NAME',
         'TAG_SLUG',
         'TAG_DESCRIPTION',
+        'TAG_LANG',
         'SEO_TITLE',
         'SEO_KEYWORD',
         'SEO_DESCRIPTION'
@@ -45,10 +46,14 @@ class TagsModel extends Model
      * @param $size
      * @return array
      */
-    public function getAll($whereData, $offset, $size)
+    public function getList($whereData, $offset, $size)
     {
         $where = $this->getWhere($whereData);
-        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION')->where($where)->order('TAG_ID DESC')->limit($offset, $size)->select();
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION')
+            ->where($where)
+            ->order('TAG_ID DESC')
+            ->limit($offset, $size)
+            ->select();
         return $result ? $result : array();
     }
 
@@ -73,6 +78,7 @@ class TagsModel extends Model
     private function getWhere($whereData)
     {
         $where = array();
+        $where['TAG_LANG'] = $whereData['language'];
         !empty($whereData['name']) && $where['TAG_NAME'] = $whereData['name'];
         return $where;
     }
@@ -100,8 +106,8 @@ class TagsModel extends Model
     {
         try {
             $return = array('status'=>true);
-            if ($this->isExists($data['TAG_NAME'], 'TAG_NAME')) {
-                throw new \Exception('该标签名称已存在', 200);
+            if ($this->isSlugExists($data['TAG_LANG'], $data['TAG_SLUG'])) {
+                throw new \Exception('该标签别名已存在', 200);
             }
             $id = $this->add($data);
             if (!$id) {
@@ -151,7 +157,7 @@ class TagsModel extends Model
     /**
      * 删除tag
      *
-     * @param $data
+     * @param $id
      * @return array
      */
     public function deleteTag($id)
@@ -178,16 +184,26 @@ class TagsModel extends Model
     /**
      * 判断tag是否存在
      *
-     * @param $name
+     * @param $id
      * @return bool
      */
-    public function isExists($val, $type = 'TAG_ID')
+    public function isExists($id)
     {
-        if ($type == 'TAG_ID') {
-            $where = array('TAG_ID' => $val);
-        } else {
-            $where = array('TAG_NAME' => $val);
-        }
+        $where = array('TAG_ID' => $id);
+        $count = $this->where($where)->count();
+        return $count > 0;
+    }
+
+    /**
+     * 判断tag名称是否存在
+     *
+     * @param $language
+     * @param $slug
+     * @return mixed
+     */
+    public function isSlugExists($language, $slug)
+    {
+        $where = array('TAG_SLUG' => $slug, 'TAG_LANG' => $language);
         return $this->field('TAG_ID')->where($where)->getField('TAG_ID');
     }
 }

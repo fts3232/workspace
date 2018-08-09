@@ -11,14 +11,9 @@
                 <label for="search-name">名称</label>
                 <input type="text" name="name" class="form-control" id="search-name" placeholder="要查找的名称" value="{$whereData['name']}">
             </div>
-            <div class="form-group">
-                <label for="search-language">语言</label>
-                <select id="search-language" name="language" class="form-control">
-                    <option value="">-- 全部 --</option>
-                    <foreach name="languageMap" item="v" key="k">
-                        <option value="{$k}" <if condition="$whereData['language'] eq $k">selected='selected'</if>>{$v}</option>
-                    </foreach>
-                </select>
+            <div class="form-group time">
+                <label for="datetimepicker">月份</label>
+                <input type="text"  name="time" class="form-control" id="datetimepicker" placeholder="要查找的月份" value="{$whereData['time']}">
             </div>
             <button type="submit" class="btn btn-default">搜索</button>
         </form>
@@ -74,8 +69,13 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM'
+        });
         //删除page
         $(document).on('click', 'button.delete', function () {
             $('#delete-modal').modal('show');
@@ -96,11 +96,11 @@
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {

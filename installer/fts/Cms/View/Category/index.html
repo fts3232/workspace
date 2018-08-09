@@ -1,80 +1,62 @@
-<include file="Common:header"/>
+<include file="Common:header" />
 <div class="container-fluid">
-    <div class="table-responsive inject item-body category">
-        <ol class="breadcrumb">
-            <li class="active">栏目管理</li>
-        </ol>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">添加栏目</h3>
+    <ol class="breadcrumb auto">
+        <li><a href="{:U('index')}">栏目管理</a></li>
+        <li class="active">列表页</li>
+    </ol>
+    <div class="text-right auto tool-area">
+        <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="search-name">名称</label>
+                <input type="text" name="name" class="form-control" id="search-name" placeholder="要查找的名称" value="{$whereData['name']}">
             </div>
-            <div class="panel-body">
-                <form class="form-horizontal add">
-                    <div class="form-group">
-                        <label for="input-name" class="col-sm-3 control-label">名称</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="input-name" name="name"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-slug" class="col-sm-3 control-label">别名</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="input-slug" name="slug"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-description" class="col-sm-3 control-label">描述</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" rows="5" id="input-description" name="description"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-title" class="col-sm-3 control-label">SEO标题</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="input-title" name="title"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-keyword" class="col-sm-3 control-label">SEO关键词</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="input-keyword" name="keyword"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-seo-description" class="col-sm-3 control-label">SEO描述</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" rows="5" id="input-seo-description" name="seo_description"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-default right add">添加</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">栏目</h3>
-            </div>
-            <div class="panel-body">
-                <ul class="sortable">
-
-                </ul>
-            </div>
-            <div class="panel-footer">
-                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading...">保存</button>
-            </div>
-        </div>
+            <button type="submit" class="btn btn-default">搜索</button>
+        </form>
     </div>
+    <div class="data auto">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>栏目名称</th>
+                    <th>栏目别名</th>
+                    <th>栏目描述</th>
+                    <th width="155">创建时间</th>
+                    <th width="155">更新时间</th>
+                    <th nowrap width="120">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <foreach name="list" item="v" key="k">
+                    <tr>
+                        <td>{$v.CATEGORY_ID}</td>
+                        <td>
+                            <a href="javascript:void(0)">
+                                <if condition="$v['CATEGORY_PARENT'] neq 0">--</if>{$v.CATEGORY_NAME}
+                            </a>
+                        </td>
+                        <td>{$v.CATEGORY_SLUG}</td>
+                        <td>{$v.CATEGORY_DESCRIPTION}</td>
+                        <td>{$v.CREATED_TIME}</td>
+                        <td>{$v.MODIFIED_TIME}</td>
+                        <td>
+                            <a href="{:U('edit',array('id'=>$v['CATEGORY_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
+                            <button class="btn btn-danger btn-sm delete" data-id="{$v['CATEGORY_ID']}"><b>删除</b></button>
+                        </td>
+                    </tr>
+                </foreach>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">{$pagination}</div>
 </div>
+<!-- Modal -->
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="delete-modal-label">删除</h4>
             </div>
             <div class="modal-body">
@@ -87,255 +69,33 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-    /**
-     * 创建栏目项
-     *
-     * @param index
-     * @param data
-     * @param depth
-     * @returns {jQuery|HTMLElement}
-     */
-    function create_item(index, data, depth) {
-        var li = $('<li data-index="' + index + '" data-id="' + data.CATEGORY_ID + '" data-parent="' + data.CATEGORY_PARENT + '" data-depth="' + depth + '" data-order="' + data.CATEGORY_ORDER + '" class="ui-sortable-handle"></li>');
-        li.css('marginLeft', depth * 30 + 'px');
-
-        var div = $('<div class="ui-state-default"></div>');
-        var itemName = $('<span>' + data.CATEGORY_NAME + '</span>');
-
-        var collapseID = 'item-index-' + index;
-
-        var collapseButton = $('<a role="button" data-toggle="collapse" href="#' + collapseID + '" aria-expanded="false" aria-controls="' + collapseID + '"> <span class="glyphicon glyphicon-menu-down right" aria-hidden="true"></span> </a>');
-
-        itemName.appendTo(div);
-        collapseButton.appendTo(div);
-
-
-        var collapse = $('<div class="collapse" id="' + collapseID + '"></div>');
-        var well = $('<div class="well"></div>');
-
-        var form = $('<form class="form-horizontal"></form>');
-        var nameGroup = $('<div class="form-group"></div>');
-        var nameLabel = $('<label for="input-name-edit-' + index + '" class="col-sm-3 control-label">名称</label>');
-        var nameInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<input type="text"  class="form-control" id="input-name-edit-' + index + '" name="name" value="' + data.CATEGORY_NAME + '"/>').appendTo(nameInputWrapper);
-        nameLabel.appendTo(nameGroup);
-        nameInputWrapper.appendTo(nameGroup);
-
-        var slugGroup = $('<div class="form-group"></div>');
-        var slugLabel = $('<label for="input-slug-edit-' + index + '" class="col-sm-3 control-label">别名</label>');
-        var slugInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<input type="text"  class="form-control" id="input-slug-edit-' + index + '" name="slug" value="' + data.CATEGORY_SLUG + '"/>').appendTo(slugInputWrapper);
-        slugLabel.appendTo(slugGroup);
-        slugInputWrapper.appendTo(slugGroup);
-
-        var descriptionGroup = $('<div class="form-group"></div>');
-        var descriptionLabel = $('<label for="input-description-edit-' + index + '" class="col-sm-3 control-label">描述</label>');
-        var descriptionInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<textarea  class="form-control" rows="5" id="input-description-edit-' + index + '" name="description">' + data.CATEGORY_DESCRIPTION + '</textarea>').appendTo(descriptionInputWrapper);
-        descriptionLabel.appendTo(descriptionGroup);
-        descriptionInputWrapper.appendTo(descriptionGroup);
-
-        var titleGroup = $('<div class="form-group"></div>');
-        var titleLabel = $('<label for="input-title-edit-' + index + '" class="col-sm-3 control-label">SEO标题</label>');
-        var titleInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<input type="text"  class="form-control" id="input-title-edit-' + index + '" name="title" value="' + data.SEO_TITLE + '"/>').appendTo(titleInputWrapper);
-        titleLabel.appendTo(titleGroup);
-        titleInputWrapper.appendTo(titleGroup);
-
-        var keywordGroup = $('<div class="form-group"></div>');
-        var keywordLabel = $('<label for="input-keyword-edit-' + index + '" class="col-sm-3 control-label">SEO关键词</label>');
-        var keywordInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<input type="text"  class="form-control" id="input-keyword-edit-' + index + '" name="keyword" value="' + data.SEO_KEYWORD + '"/>').appendTo(keywordInputWrapper);
-        keywordLabel.appendTo(keywordGroup);
-        keywordInputWrapper.appendTo(keywordGroup);
-
-        var seoDescriptionGroup = $('<div class="form-group"></div>');
-        var seoDescriptionLabel = $('<label for="input-seo-description-edit-' + index + '" class="col-sm-3 control-label">SEO描述</label>');
-        var seoDescriptionInputWrapper = $('<div class="col-sm-9"></div>');
-        $('<textarea  class="form-control" rows="5" id="input-seo-description-edit-' + index + '" name="seo_description">' + data.SEO_DESCRIPTION + '</textarea>').appendTo(seoDescriptionInputWrapper);
-        seoDescriptionLabel.appendTo(seoDescriptionGroup);
-        seoDescriptionInputWrapper.appendTo(seoDescriptionGroup);
-
-        var button = $('<div class="form-group"></div>');
-        var buttonWrapper = $('<div class="col-sm-offset-2 col-sm-10"></div>');
-        $('<button type="submit" class="btn btn-danger right delete">删除</button>').appendTo(buttonWrapper);
-        buttonWrapper.appendTo(button);
-
-        nameGroup.appendTo(form);
-        slugGroup.appendTo(form);
-        descriptionGroup.appendTo(form);
-        titleGroup.appendTo(form);
-        keywordGroup.appendTo(form);
-        seoDescriptionGroup.appendTo(form);
-        button.appendTo(form);
-
-        form.appendTo(well);
-        well.appendTo(collapse);
-
-        div.appendTo(li);
-        collapse.appendTo(li);
-
-        var clone = $('<ul></ul>');
-        clone.appendTo(li);
-
-        return li;
-    }
-
-    /**
-     * 创建栏目
-     *
-     * @type {number}
-     */
-    var i = 0;
-
-    function create_category(category, depth) {
-        var depth = depth == undefined ? 0 : depth;
-        category.map(function (v, k) {
-            var item = create_item(i, v, depth);
-            i++;
-            item.appendTo($('.sortable'));
-            if (v.CHILD != '') {
-                create_category(v.CHILD, depth + 1);
-            }
-        })
-    }
-
-    $(function () {
-        var category = {$items};
-        if (category != null) {
-            create_category(category);
-        }
-
-        //排序初始化
-        var sort = $(".sortable").sortable({
-            revert     : true,
-            containment: "document",
-            placeholder: "ui-state-highlight",
-            start      : function (event, ui) {
-                var ownLeft = parseInt($(ui.item).css('marginLeft'));
-                var id = $(ui.item).attr('data-id');
-                $('.ui-state-highlight').css('marginLeft', ownLeft);
-
-                if (id != 0) {
-                    var child = $(ui.item).parent('ul').find('[data-parent="' + id + '"]');
-                    clone_item($(ui.item), child)
-                }
-                $(".sortable").sortable("refreshPositions");
-            },
-            sort       : function (event, ui) {
-                if ($(ui.item).prev('.ui-sortable-handle').length > 0 || $(ui.item).parents('.child').length > 0) {
-                    var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
-                    var ownLeft = parseInt($(ui.item).css('marginLeft'));
-                    var maxLeft = parentLeft + 30;
-                    var offset = 0;
-                    if (ui.position.left - ui.originalPosition.left > 30) {
-                        offset = ownLeft + 30 > maxLeft ? maxLeft : ownLeft + 30;
-                        $('.ui-state-highlight').css('margin-left', offset + 'px')
-                    } else if (ui.originalPosition.left - ui.position.left > 30) {
-                        offset = ownLeft - 30 < 0 ? 0 : ownLeft - 30;
-                        $('.ui-state-highlight').css('margin-left', offset + 'px')
-                    }
-                }
-            },
-            stop       : function (event, ui) {
-                var root = $(ui.item).parent('ul');
-                var list = root.find('li');
-                //parent
-                list.map(function (i, v) {
-                    var depth = list.eq(i).attr('data-depth');
-                    if (depth == 0) {
-                        list.eq(i).attr('data-parent', 0)
-                    } else {
-                        depth = depth - 1;
-                        var parent = list.eq(i).prevAll('[data-depth="' + depth + '"]').attr('data-id');
-                        list.eq(i).attr('data-parent', parent)
-                    }
-                });
-                //排序
-                reset_order();
-
-                //释放child
-                list = $(ui.item).find('ul li');
-                var after = $(ui.item);
-                list.map(function (i) {
-                    after.after(list.eq(i));
-                    after = list.eq(i)
-                })
-            },
-            beforeStop : function (event, ui) {
-                if ($(ui.item).prev('.ui-sortable-handle').length > 0 || $(ui.item).parents('.child').length > 0) {
-                    var parentLeft = parseInt($(ui.item).prev('.ui-sortable-handle').css('marginLeft'));
-                    var ownLeft = parseInt($(ui.item).css('marginLeft'));
-                    var maxLeft = parentLeft + 30;
-                    var child = $(ui.item).find('ul').eq(0).find('li');
-                    if (ui.position.left - ui.originalPosition.left > 30) {
-                        calculate_depth($(ui.item), 'right');
-                    } else if (ui.originalPosition.left - ui.position.left > 30) {
-                        calculate_depth($(ui.item), 'left');
-                    }
-                }
-            }
-        });
-
-        //添加栏目
-        $('button.add').on('click', function () {
-            var index = $('.sortable li').length + 1;
-            var name = $.trim($('form.add input[name="name"]').val());
-            if (name == '') {
-                alertMessage('warning', '请输入名称！');
-                return false;
-            }
-            var slug = $.trim($('form.add input[name="slug"]').val());
-            if (slug == '') {
-                alertMessage('warning', '请输入别名！');
-                return false;
-            }
-            var data = {
-                'CATEGORY_ID'         : 0,
-                'CATEGORY_NAME'       : name,
-                'CATEGORY_SLUG'       : slug,
-                'CATEGORY_PARENT'     : 0,
-                'CATEGORY_ORDER'      : 0,
-                'CATEGORY_DESCRIPTION': $.trim($('form.add textarea[name="description"]').val()),
-                'SEO_TITLE'           : $.trim($('form.add input[name="title"]').val()),
-                'SEO_KEYWORD'         : $.trim($('form.add input[name="keyword"]').val()),
-                'SEO_DESCRIPTION'     : $.trim($('form.add textarea[name="seo_description"]').val())
-            };
-            var item = create_item(index, data, 0);
-            item.appendTo('.sortable');
-            //排序
-            reset_order();
-            return false;
-        });
+    $(document).ready(function () {
         //删除栏目
         $(document).on('click', 'button.delete', function () {
-            var id = $(this).parents('li').attr('data-id');
-            var index = $(this).parents('li').index();
-            $('#delete-modal .delete-confirm').attr('data-index', index);
-            $('#delete-modal .delete-confirm').attr('data-id', id);
             $('#delete-modal').modal('show');
+            $('.delete-confirm').attr('data-index', $(this).parents('tr').index());
+            $('.delete-confirm').attr('data-id', $(this).attr('data-id'));
             return false;
         });
-        //删除确认
-        $('button.delete-confirm').on('click', function () {
+
+        //删除栏目确认
+        $('.delete-confirm').on('click', function () {
             var $btn = $(this).button('loading');
-            var index = $(this).attr('data-index');
-            var id = $(this).attr('data-id');
+            var _this = $(this);
             $.ajax({
-                'url'     : '{:U("delete")}',
+                'url'     : "{:U('delete')}",
                 'type'    : 'post',
                 'data'    : {
-                    'id': id
+                    'id': _this.attr('data-id')
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#delete-modal').modal('hide');
-                        $('.sortable li').eq(index).remove();
+                        $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {
@@ -343,54 +103,6 @@
                 }
             })
         });
-
-        //展开后修改名称同步显示
-        $(document).on('keyup', '.sortable li [name="name"]', function () {
-            $(this).parents('li').find('.ui-state-default>span').html($(this).val());
-        });
-
-        //保存
-        $('button.save-menu').on('click', function () {
-            var $btn = $(this).button('loading');
-            var items = [];
-            var addItems = [];
-            $('.sortable li').map(function (v) {
-                var arr = {
-                    'CATEGORY_ID'         : $('.sortable li').eq(v).attr('data-id'),
-                    'CATEGORY_NAME'       : $('.sortable li').eq(v).find('[name="name"]').val(),
-                    'CATEGORY_SLUG'       : $('.sortable li').eq(v).find('[name="slug"]').val(),
-                    'CATEGORY_PARENT'     : $('.sortable li').eq(v).attr('data-parent'),
-                    'CATEGORY_ORDER'      : $('.sortable li').eq(v).attr('data-order'),
-                    'CATEGORY_DESCRIPTION': $('.sortable li').eq(v).find('[name="description"]').val(),
-                    'SEO_TITLE'           : $('.sortable li').eq(v).find('[name="title"]').val(),
-                    'SEO_KEYWORD'         : $('.sortable li').eq(v).find('[name="keyword"]').val(),
-                    'SEO_DESCRIPTION'     : $('.sortable li').eq(v).find('[name="seo_description"]').val(),
-                }
-                if (arr['CATEGORY_ID'] == 0) {
-                    addItems.push(arr);
-                } else {
-                    items.push(arr);
-                }
-            });
-            $.ajax({
-                'url'     : "{:U('update')}",
-                'type'    : 'post',
-                'data'    : {
-                    'items'    : items,
-                    'add_items': addItems
-                },
-                'success' : function (data) {
-                    if (data.status) {
-                        alertMessage('success', data.msg);
-                    } else {
-                        alertMessage('danger', data.msg, data.code);
-                    }
-                },
-                'complete': function () {
-                    $btn.button('reset');
-                }
-            })
-        })
-    });
+    })
 </script>
-<include file="Common:footer"/>
+<include file="Common:footer" />

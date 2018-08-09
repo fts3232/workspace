@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * 栏目模型
+ *
+ * Class CategoryModel
+ * @package Cms\Model
+ */
 class CategoryModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -16,7 +22,7 @@ class CategoryModel extends Model
     protected $insertFields = array(
         'CATEGORY_NAME',
         'CATEGORY_PARENT',
-        'CATEGORY_ORDER',
+        'CATEGORY_LANG',
         'CATEGORY_SLUG',
         'CATEGORY_DESCRIPTION',
         'SEO_TITLE',
@@ -32,7 +38,6 @@ class CategoryModel extends Model
     protected $updateFields = array(
         'CATEGORY_NAME',
         'CATEGORY_PARENT',
-        'CATEGORY_ORDER',
         'CATEGORY_SLUG',
         'CATEGORY_DESCRIPTION',
         'SEO_TITLE',
@@ -65,19 +70,40 @@ class CategoryModel extends Model
     }
 
     /**
+     * 生成供select下拉列表用的树状数组
+     *
+     * @param      $data
+     * @param null $parent
+     * @return array
+     */
+    protected function getTreeForSelect($data, $parent = null)
+    {
+        $tree = array();
+        foreach ($data as $k => $v) {
+            if ($v['CATEGORY_PARENT'] == $parent) {        //父亲找到儿子
+                $v['CHILD'] = $this->getTreeForSelect($data, $v['CATEGORY_ID']);
+                $tree[] = $v;
+            }
+        }
+        return $tree;
+    }
+
+    /**
      * 获取所有栏目信息
      *
-     * @return mixed|string|void
+     * @param $whereData
+     * @param $offset
+     * @param $size
+     * @return array
      */
     public function getList($whereData, $offset, $size)
     {
         $where = $this->getWhere($whereData);
         $list = $this
-            ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_SLUG, CREATED_TIME, MODIFIED_TIME')
+            ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_DESCRIPTION, CATEGORY_SLUG, CREATED_TIME, MODIFIED_TIME')
             ->where($where)
-            ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
+            ->order('CATEGORY_PARENT ASC, CATEGORY_ID ASC')
             ->select();
-
         if ($list) {
             $list = $this->getTree($list);
             $list = array_slice($list, $offset, $size);
@@ -106,26 +132,27 @@ class CategoryModel extends Model
     private function getWhere($whereData)
     {
         $where = array();
-        !empty($whereData['name']) && $where['PAGE_NAME'] = $whereData['name'];
-        !empty($whereData['language']) && $where['PAGE_LANG'] = $whereData['language'];
-        !empty($whereData['time']) && $where['_string'] = "DATE_FORMAT(CREATED_TIME, '%Y-%m') = '{$whereData['time']}'";
+        !empty($whereData['name']) && $where['CATEGORY_NAME'] = $whereData['name'];
+        !empty($whereData['language']) && $where['CATEGORY_LANG'] = $whereData['language'];
         return $where;
     }
 
     /**
      * 获取所有栏目列表
      *
+     * @param $language
      * @return mixed|string|void
      */
-    public function getAll()
+    public function getAll($language)
     {
         $list = $this
             ->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT, CATEGORY_SLUG')
-            ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
+            ->where(array('CATEGORY_LANG'=>$language))
+            ->order('CATEGORY_PARENT ASC, CATEGORY_ID ASC')
             ->select();
 
         if ($list) {
-            $list = $this->getTree($list, 0);
+            $list = $this->getTreeForSelect($list, 0);
         } else {
             $list = array();
         }
@@ -145,6 +172,21 @@ class CategoryModel extends Model
     }
 
     /**
+     * 获取父栏目
+     *
+     * @param string $id
+     * @return mixed
+     */
+    public function getParent($language, $id = '')
+    {
+        $where = array('CATEGORY_PARENT' => 0, 'CATEGORY_LANG' => $language);
+        if (!empty($id)) {
+            $where['CATEGORY_ID'] = array('neq', $id);
+        }
+        return $this->field('CATEGORY_ID, CATEGORY_SLUG, CATEGORY_NAME')->where($where)->select();
+    }
+
+    /**
      * 判断id是否存在
      *
      * @param $id
@@ -153,6 +195,24 @@ class CategoryModel extends Model
     public function isExists($id)
     {
         $count = $this->where(array('CATEGORY_ID' => $id))->count();
+        return $count > 0;
+    }
+
+    /**
+     * 判断指定别名是否存在
+     *
+     * @param        $slug
+     * @param        $lang
+     * @param string $id
+     * @return bool
+     */
+    public function isSlugExists($slug, $lang, $id = '')
+    {
+        $where = array('CATEGORY_SLUG' => $slug, 'CATEGORY_LANG' => $lang);
+        if ($id) {
+            $where['CATEGORY_ID'] = array('neq', $id);
+        }
+        $count = $this->where($where)->count();
         return $count > 0;
     }
 
@@ -189,43 +249,24 @@ class CategoryModel extends Model
     }
 
     /**
-     * 更新栏目信息
+     * 添加栏目
      *
      * @param $data
-     * @return bool
+     * @return array
      */
-    public function updateCategory($data)
+    public function addCategory($data)
     {
         try {
             $return = array('status' => true);
-            $this->startTrans();
-            $list = $this->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_SLUG, CATEGORY_PARENT, CATEGORY_ORDER')
-                ->order('CATEGORY_PARENT ASC, CATEGORY_ORDER ASC')
-                ->select();
-            $temp = array();
-            foreach ($data['ITEMS'] as $k => $v) {
-                $temp[$v['CATEGORY_ID']] = $v;
+            //判断别名是否存在
+            if ($this->isSlugExists($data['CATEGORY_SLUG'], $data["CATEGORY_LANG"])) {
+                throw new \Exception('该栏目别名已存在！', 200);
             }
-            foreach ($data['ADD_ITEMS'] as $v) {
-                $result = $this->add($v);
-                if (!$result) {
-                    throw new \Exception('添加失败', 200);
-                }
+            $result = $this->add($data);
+            if (!$result) {
+                throw new \Exception('添加失败！', 201);
             }
-            //判断哪些是有更新的栏目
-            foreach ($list as $k => $v) {
-                if ($v == $temp[$v['ITEM_ID']]) {
-                    continue;
-                }
-                $temp[$v['CATEGORY_ID']]['MODIFIED_TIME'] = array('exp', 'NOW()');
-                $result = $this->where(array('CATEGORY_ID' => $v['CATEGORY_ID']))->save($temp[$v['CATEGORY_ID']]);
-                if (!$result) {
-                    throw new \Exception('更新失败', 201);
-                }
-            }
-            $this->commit();
         } catch (\Exception $e) {
-            $this->rollback();
             $return = array(
                 'status' => false,
                 'msg' => $e->getMessage(),
@@ -236,14 +277,41 @@ class CategoryModel extends Model
     }
 
     /**
-     * 获取指定id别名
+     * 更新栏目信息
      *
-     * @param $id
-     * @return mixed
+     * @param $data
+     * @return array
      */
-    public function getSlug($id)
+    public function updateCategory($data)
     {
-        return $this->where(array('CATEGORY_ID' => $id))->getField('CATEGORY_SLUG');
+        try {
+            $return = array('status'=>true);
+            $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+            //判断id是否存在
+            if (!$this->isExists($data['CATEGORY_ID'])) {
+                throw new \Exception('该栏目id不存在', 200);
+            }
+            //判断别名是否存在
+            if ($this->isSlugExists($data['CATEGORY_SLUG'], $data["CATEGORY_LANG"], $data['CATEGORY_ID'])) {
+                throw new \Exception('该栏目别名已存在！', 201);
+            }
+            //判断是否存在子栏目
+            if ($data['CATEGORY_PARENT'] != 0 && $this->hasChild($data['CATEGORY_ID'])) {
+                throw new \Exception('该栏目还有子栏目，不能移到别的栏目下！', 200);
+            }
+            //修改操作
+            $result = $this->where(array('CATEGORY_ID' => $data['CATEGORY_ID']))->save($data);
+            if (!$result) {
+                throw new \Exception('删除失败', 202);
+            }
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
     }
 
     /**
@@ -256,5 +324,18 @@ class CategoryModel extends Model
     {
         $parent = $this->where(array('CATEGORY_ID' => $id))->getField('CATEGORY_PARENT');
         return $this->where(array('CATEGORY_ID' => $parent))->getField('CATEGORY_SLUG');
+    }
+
+    /**
+     * 获取指定id的栏目信息
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->field('CATEGORY_ID, CATEGORY_NAME, CATEGORY_SLUG, CATEGORY_PARENT, CATEGORY_DESCRIPTION, CATEGORY_LANG, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+            ->where(array('CATEGORY_ID' => $id))
+            ->find();
     }
 }

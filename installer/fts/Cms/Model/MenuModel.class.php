@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * 菜单模型
+ *
+ * Class MenuModel
+ * @package Cms\Model
+ */
 class MenuModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -14,7 +20,8 @@ class MenuModel extends Model
      * @var array
      */
     protected $insertFields = array(
-        'MENU_NAME'
+        'MENU_NAME',
+        'MENU_LANG'
     );
 
     /**
@@ -30,14 +37,45 @@ class MenuModel extends Model
     /**
      * 获取分页菜单信息
      *
+     * @param $whereData
      * @param $offset
      * @param $size
      * @return array
      */
-    public function getAll($offset, $size)
+    public function getList($whereData, $offset, $size)
     {
-        $result = $this->field('MENU_ID,MENU_NAME')->order('MENU_ID DESC')->limit($offset, $size)->select();
+        $where = $this->getWhere($whereData);
+        $result = $this->field('MENU_ID, MENU_NAME')
+            ->where($where)
+            ->order('MENU_ID DESC')
+            ->limit($offset, $size)
+            ->select();
         return $result ? $result : array();
+    }
+
+    /**
+     * 获取总条数
+     *
+     * @param $whereData
+     * @return mixed
+     */
+    public function getCount($whereData)
+    {
+        $where = $this->getWhere($whereData);
+        return $this->where($where)->count();
+    }
+
+    /**
+     * 获取查询条件
+     *
+     * @param $whereData
+     * @return array
+     */
+    public function getWhere($whereData)
+    {
+        $where = array();
+        $where['MENU_LANG'] = $whereData['language'];
+        return $where;
     }
 
     /**
@@ -48,7 +86,9 @@ class MenuModel extends Model
      */
     public function getName($id)
     {
-        return $this->field('MENU_NAME')->where(array('MENU_ID' => $id))->getField('MENU_NAME');
+        return $this->field('MENU_NAME')
+            ->where(array('MENU_ID' => $id))
+            ->getField('MENU_NAME');
     }
 
     /**
@@ -61,15 +101,17 @@ class MenuModel extends Model
     {
         try {
             $return = array('status' => true);
-            //判断名称是否存在
-            if (!$this->isExists($data['MENU_ID'], 'MENU_ID')) {
+            //判断id是否存在
+            $menu = $this->field('MENU_LANG')->where(array('MENU_ID' => $data['MENU_ID']))->find();
+            if (!$menu) {
                 throw new \Exception('该菜单ID不存在', 200);
             }
             //判断名称是否存在
-            if ($this->isExists($data['MENU_NAME'], 'MENU_NAME')) {
+            if ($this->isNameExists($menu['MENU_LANG'], $data['MENU_NAME'], $data['MENU_ID'])) {
                 throw new \Exception('该菜单名称已存在', 201);
             }
             $data['MODIFIED_TIME'] = array('exp', 'NOW()');
+            //更新操作
             $result = $this->where(array('MENU_ID' => $data['MENU_ID']))->save($data);
             if (!$result) {
                 throw new \Exception('修改失败', 202);
@@ -95,9 +137,10 @@ class MenuModel extends Model
         try {
             $return = array('status' => true);
             //判断名称是否存在
-            if ($this->isExists($data['MENU_NAME'], 'MENU_NAME')) {
+            if ($this->isNameExists($data['MENU_LANG'], $data['MENU_NAME'])) {
                 throw new \Exception('该菜单名称已存在', 200);
             }
+            //添加操作
             $id = $this->add($data);
             if (!$id) {
                 throw new \Exception('添加失败', 201);
@@ -117,7 +160,7 @@ class MenuModel extends Model
      * 删除菜单
      *
      * @param $id
-     * @return bool
+     * @return array
      */
     public function deleteMenu($id)
     {
@@ -125,9 +168,10 @@ class MenuModel extends Model
             $return = array('status' => true);
             $this->startTrans();
             //判断名称是否存在
-            if (!$this->isExists($id, 'MENU_ID')) {
+            if (!$this->isExists($id)) {
                 throw new \Exception('该菜单ID不存在', 200);
             }
+            //删除操作
             $result = $this->delete($id);
             if (!$result) {
                 throw new \Exception('删除菜单失败', 201);
@@ -150,18 +194,31 @@ class MenuModel extends Model
     }
 
     /**
-     * 判断是否对应field值存在
+     * 判断指定的菜单id是否存在
      *
-     * @param        $val
-     * @param string $field
+     * @param $id
      * @return bool
      */
-    public function isExists($val, $field = 'MENU_ID')
+    public function isExists($id)
     {
-        if ($field == 'MENU_ID') {
-            $where = array('MENU_ID' => $val);
-        } else {
-            $where = array('MENU_NAME' => $val);
+        $where = array('MENU_ID' => $id);
+        $count = $this->where($where)->count();
+        return $count > 0;
+    }
+
+    /**
+     * 判断指定的菜单名是否存在
+     *
+     * @param        $lang
+     * @param        $name
+     * @param string $id
+     * @return bool
+     */
+    public function isNameExists($lang, $name, $id = '')
+    {
+        $where = array('MENU_NAME' => $name, 'MENU_LANG' => $lang);
+        if ($id) {
+            $where['MENU_ID'] = array('neq', $id);
         }
         $count = $this->where($where)->count();
         return $count > 0;

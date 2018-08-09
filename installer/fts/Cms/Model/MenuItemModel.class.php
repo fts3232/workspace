@@ -4,6 +4,12 @@ namespace Cms\Model;
 
 use Think\Model;
 
+/**
+ * 菜单项模型
+ *
+ * Class MenuItemModel
+ * @package Cms\Model
+ */
 class MenuItemModel extends Model
 {
     protected $connection = 'DB_CONFIG_TEST';
@@ -77,6 +83,32 @@ class MenuItemModel extends Model
     }
 
     /**
+     * 添加菜单项
+     *
+     * @param $data
+     * @return array
+     */
+    public function addItem($data)
+    {
+        try {
+            $return = array('status' => true);
+            $data['ITEM_PARENT'] = 0;
+            $result = $this->add($data);
+            if (!$result) {
+                throw new \Exception('添加失败', 200);
+            }
+            $return['id'] = $result;
+        } catch (\Exception $e) {
+            $return = array(
+                'status' => false,
+                'msg' => $e->getMessage(),
+                'code' => $e->getCode()
+            );
+        }
+        return $return;
+    }
+
+    /**
      * 更新菜单项
      *
      * @param $data
@@ -90,23 +122,15 @@ class MenuItemModel extends Model
             $where = array(
                 'MENU_ID' => $data['MENU_ID']
             );
-            //判断id是否存在
-            if (!D('Menu')->isExists($data['MENU_ID'])) {
-                throw new \Exception('该菜单ID不存在', 200);
-            }
             $list = $this->field('ITEM_ID, ITEM_NAME, ITEM_URL, ITEM_PARENT, ITEM_ORDER')
                 ->where($where)
                 ->order('ITEM_PARENT ASC, ITEM_ORDER ASC')
                 ->select();
+            //获取项
             $temp = array();
-            foreach ($data['ITEMS'] as $k => $v) {
-                $temp[$v['ITEM_ID']] = $v;
-            }
-            foreach ($data['ADD_ITEMS'] as $v) {
-                $v['MENU_ID'] = $data['MENU_ID'];
-                $result = $this->add($v);
-                if (!$result) {
-                    throw new \Exception('添加失败', 201);
+            if (is_array($data['ITEMS'])) {
+                foreach ($data['ITEMS'] as $k => $v) {
+                    $temp[$v['ITEM_ID']] = $v;
                 }
             }
             //判断哪些是更新项
@@ -114,7 +138,7 @@ class MenuItemModel extends Model
                 if (!isset($temp[$v['ITEM_ID']])) {
                     $result = $this->delete($v['ITEM_ID']);
                     if (!$result) {
-                        throw new \Exception('删除失败', 202);
+                        throw new \Exception('删除失败', 200);
                     }
                 } else {
                     if ($v == $temp[$v['ITEM_ID']]) {
@@ -123,7 +147,7 @@ class MenuItemModel extends Model
                     $temp[$v['ITEM_ID']]['MODIFIED_TIME'] = array('exp', 'NOW()');
                     $result = $this->where(array('ITEM_ID' => $v['ITEM_ID']))->save($temp[$v['ITEM_ID']]);
                     if (!$result) {
-                        throw new \Exception('更新失败', 203);
+                        throw new \Exception('更新失败', 201);
                     }
                 }
             }

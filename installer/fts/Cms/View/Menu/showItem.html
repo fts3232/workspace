@@ -213,17 +213,36 @@
                 alertMessage('warning', '请输入菜单项url！');
                 return false;
             }
-            var data = {
-                'ITEM_ID'    : 0,
-                'ITEM_NAME'  : name,
-                'ITEM_PARENT': 0,
-                'ITEM_URL'   : url,
-                'ITEM_ORDER' : 0,
+            var itemData = {
+                'name'   : name,
+                'url'    : url,
+                'menu_id': {$menuID},
+                'order' : $('.sortable li[data-parent="0"]').length
             };
-            var item = create_item(index, data, 0);
-            item.appendTo('.sortable');
-            //排序
-            reset_order();
+            $.ajax({
+                'url'     : "{:U('addItem')}",
+                'type'    : 'post',
+                'data'    : itemData,
+                'dataType': 'json',
+                'success' : function (data) {
+                    if (data.status) {
+                        alertSuccessMessage(data.msg);
+                        itemData = {
+                            'ITEM_NAME' : itemData.name,
+                            'ITEM_URL'  : itemData.url,
+                            'ITEM_ORDER': itemData.order,
+                            'ITEM_ID'   : data.id
+                        };
+                        var item = create_item(index, itemData, 0);
+                        item.appendTo('.sortable');
+                        //排序
+                        reset_order();
+                    } else {
+                        alertErrorMessage(data.msg, data.code);
+                    }
+
+                }
+            });
             return false;
         });
         //删除菜单项
@@ -242,7 +261,6 @@
         $('button.save-menu').on('click', function () {
             var $btn = $(this).button('loading');
             var items = [];
-            var addItems = [];
             $('.sortable li').map(function (v) {
                 var arr = {
                     'ITEM_ID'    : $('.sortable li').eq(v).attr('data-id'),
@@ -251,25 +269,20 @@
                     'ITEM_URL'   : $('.sortable li').eq(v).find('[name="url"]').val(),
                     'ITEM_ORDER' : $('.sortable li').eq(v).attr('data-order'),
                 };
-                if (arr['ITEM_ID'] == 0) {
-                    addItems.push(arr);
-                } else {
-                    items.push(arr);
-                }
+                items.push(arr);
             });
             $.ajax({
                 'url'     : "{:U('updateItem')}",
                 'type'    : 'post',
                 'data'    : {
                     'items'    : items,
-                    'add_items': addItems,
                     'menu_id'  : {$menuID}
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {

@@ -102,9 +102,9 @@
                         var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"  class="btn btn-sm btn-default" role="button"><b>查看</b></a>  <button class="btn btn-sm btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-sm btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
                         td.appendTo(tr);
                         tr.prependTo($('tbody'));
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {
@@ -142,11 +142,11 @@
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#edit-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).find('td').eq(1).html(name);
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {
@@ -175,11 +175,11 @@
                 },
                 'success' : function (data) {
                     if (data.status) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg);
                         $('#delete-modal').modal('hide');
                         $('.data tbody tr').eq(_this.attr('data-index')).remove();
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code);
                     }
                 },
                 'complete': function () {

@@ -1,7 +1,8 @@
 //警告框
 var alertMessageTimer = null;
 
-function alertMessage(type, message, error) {
+function alertMessage(type, message, isAutoClose) {
+    isAutoClose = typeof isAutoClose == 'undefined' ? true : isAutoClose;
     clearTimeout(alertMessageTimer);
     $('.alert').removeClass('alert-success alert-danger alert-info alert-warning');
     var className;
@@ -20,13 +21,23 @@ function alertMessage(type, message, error) {
             break;
     }
     $('.alert').addClass('in').addClass(className).removeClass('out');
-    if (error != undefined) {
+    $('.alert p').html(message);
+    if (isAutoClose) {
+        alertMessageTimer = setTimeout(function () {
+            $('.alert').removeClass('in').addClass('out');
+        }, 3000);
+    }
+}
+
+function alertSuccessMessage(message, isAutoClose) {
+    alertMessage('success', message, isAutoClose)
+}
+
+function alertErrorMessage(message, error, isAutoClose) {
+    if (typeof error != 'undefined' && error != '') {
         message += ' 错误码: ' + error;
     }
-    $('.alert p').html(message);
-    alertMessageTimer = setTimeout(function () {
-        $('.alert').removeClass('in').addClass('out');
-    }, 3000);
+    alertMessage('danger', message, isAutoClose)
 }
 
 function pad_zero(i) {
@@ -70,7 +81,30 @@ function reset_order() {
             });
             checkParent.push[parent];
         }
+        if (parent != 0) {
+            var parentLi = root.find('[data-id="' + parent + '"]');
+            var depth = parentLi.length > 0 ? parseInt(parentLi.attr('data-depth')) + 1 : 0;
+            list.eq(i).attr('data-depth', depth);
+            list.eq(i).css('margin-left', depth * 30);
+            var p = parentLi.length > 0 ? parent : 0;
+            list.eq(i).attr('data-parent', p);
+        }
     });
+}
+
+function reset_parent(parent) {
+    var root = $('.sortable');
+    var isExistsParent = root.find('[data-id="' + parent + '"]').length;
+    var siblings = root.find('[data-parent="' + parent + '"]');
+    if (isExistsParent == 0) {
+        var hasChild = root.find('[data-parent="' + siblings.eq(i).attr('id') + '"]').length;
+        var depth = siblings.eq(i).attr('data-depth') - 1 <= 0 ? 0 : siblings.eq(i).attr('data-depth') - 1;
+        var parent = siblings.eq(i).prev('[data-depth="0"]');
+        parent = parent.length > 0 ? parent.attr('data-id') : 0;
+        siblings.eq(i).attr('data-parent', parent);
+        siblings.eq(i).attr('data-depth', depth);
+        siblings.eq(i).css('margin-left', depth * 30);
+    }
 }
 
 function clone_item(item, child) {
@@ -96,12 +130,8 @@ function clone_item(item, child) {
  * @param depth
  * @returns {jQuery|HTMLElement}
  */
-function create_category_option(item, select, depth) {
-    var before = '';
-    for (i = 0; i < depth; i++) {
-        before += '|－';
-    }
-    var li = $('<option value="' + item.CATEGORY_ID + '">' + before + item.CATEGORY_NAME + '</option>');
+function create_category_option(item, select) {
+    var li = $('<option value="' + item.CATEGORY_ID + '">' + item.CATEGORY_NAME + '</option>');
     if (select == item.CATEGORY_ID) {
         li.attr('selected', true);
     }
@@ -115,15 +145,43 @@ function create_category_option(item, select, depth) {
  * @param select
  * @param depth
  */
-function create_category_select(category, select, depth) {
-    var depth = depth == undefined ? 0 : depth;
+function create_category_select(category, select, root) {
+    root = typeof root == 'undefined' ? $('select.category') : root;
     category.map(function (v, k) {
-        var item = create_category_option(v, select, depth);
-        item.appendTo($('select.category'));
+        var item;
+        if (v.CATEGORY_PARENT == 0) {
+            item = create_category_optgroup(v);
+        } else {
+            item = create_category_option(v, select);
+        }
+        item.appendTo(root);
         if (v.CHILD != '') {
-            create_category_select(v.CHILD, select, depth + 1);
+            create_category_select(v.CHILD, select, item);
         }
     })
+}
+
+/**
+ * 创建选项组
+ *
+ * @param v
+ * @returns {jQuery|HTMLElement}
+ */
+function create_category_optgroup(v) {
+    return $("<optgroup label='" + v.CATEGORY_NAME + "'></optgroup>");
+}
+
+/**
+ * set cookie
+ *
+ * @param name
+ * @param value
+ * @param expire day
+ */
+function setCookie(name, value, expire) {
+    var date = new Date();
+    date.setDate(date.getDate() + expire);
+    document.cookie = name + "=" + escape(value) + ((expire == null) ? "" : ";path=/;expires=" + date.toGMTString())
 }
 
 $(document).ready(function () {
@@ -138,7 +196,7 @@ $(document).ready(function () {
                 score += 25;
             }
         });
-        scores.push({'index':i,'score':score});
+        scores.push({'index': i, 'score': score});
     });
 
     var compare = function (obj1, obj2) {
@@ -176,6 +234,12 @@ $(document).ready(function () {
             $('body>.container-fluid').addClass('full');
             menu.addClass('out').removeClass('in');
         }
+    });
+
+    //头部切换语言按钮
+    $('.header .language-list a').on('click', function () {
+        var language = $(this).attr('data-language');
+        setCookie('language', language, 365);
     });
 
     //菜单栏

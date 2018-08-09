@@ -24,14 +24,29 @@
             </a>
             <span>文章发布后台</span>
         </div>
-        <div class="user right">
-            <a class="btn" role="button" data-toggle="dropdown">
-                <span>{$Think.session.username}</span>
-                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <!--<li><a href="{:U('Home/Member/setpwd')}">修改密码</a></li>-->
-                <li><a href="{:U('Home/Index/logout')}">退出登录</a></li>
+        <div class="right">
+            <ul>
+                <li>
+                    <a class="btn language" role="button" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                        <span>{$languageMap[$currentLanguage]}</span>
+                    </a>
+                    <ul class="dropdown-menu language-list">
+                        <foreach name="languageMap" item="v" key="k">
+                            <li><a href="" data-language="{$k}">{$v}</a></li>
+                        </foreach>
+                    </ul>
+                </li>
+                <li>
+                    <a class="btn user" role="button" data-toggle="dropdown">
+                        <span>{$Think.session.username}</span>
+                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!--<li><a href="{:U('Home/Member/setpwd')}">修改密码</a></li>-->
+                        <li><a href="{:U('Home/Index/logout')}">退出登录</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

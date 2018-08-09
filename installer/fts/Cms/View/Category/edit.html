@@ -1,18 +1,18 @@
 <include file="Common:header"/>
 <div class="container-fluid">
-    <div class="table-responsive inject item-body tags">
+    <div class="table-responsive inject item-body pages">
         <ol class="breadcrumb">
-            <li><a href="{:U('index')}">标签管理</a></li>
+            <li><a href="{:U('index')}">栏目管理</a></li>
             <li><a href="{:U('index')}">列表页</a></li>
             <if condition="$action eq 'create'">
-                <li class="active">添加标签</li>
+                <li class="active">添加栏目</li>
                 <else/>
-                <li class="active">{$result['TAG_NAME']}</li>
+                <li class="active">{$result['CATEGORY_NAME']}</li>
             </if>
         </ol>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Tag</h3>
+                <h3 class="panel-title">栏目</h3>
             </div>
             <div class="panel-body">
                 <form class="form-horizontal">
@@ -20,37 +20,48 @@
                     <div class="form-group">
                         <label for="input-name" class="col-sm-2 control-label">名称</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="input-name" name="name" value="{$result['TAG_NAME']|default=''}"/>
+                            <input type="text" class="form-control" id="input-name" name="name" value="{$result['CATEGORY_NAME']|default=''}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="input-slug" class="col-sm-2 control-label">别名</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="input-slug" name="slug" value="{$result['TAG_SLUG']|default=''}"/>
+                            <input type="text" class="form-control" id="input-slug" name="slug" value="{$result['CATEGORY_SLUG']|default=''}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="parent" class="col-sm-2 control-label">上级栏目</label>
+                        <div class="col-sm-10">
+                            <select id="parent" class="form-control" name="parent">
+                                <option value="0">一级栏目</option>
+                                <foreach name="parentMap" item="v" key="k">
+                                    <option value="{$v.CATEGORY_ID}" <if condition="!empty($result) && $result['CATEGORY_PARENT'] eq $v['CATEGORY_ID']">selected='selected'</if>>|-{$v.CATEGORY_NAME}</option>
+                                </foreach>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="input-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" id="input-description" rows="10" name="description">{$result['TAG_DESCRIPTION']|default=''}</textarea>
+                            <textarea class="form-control" id="input-description" rows="10" name="description">{$result['CATEGORY_DESCRIPTION']|default=''}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-seo-title" class="col-sm-2 control-label">SEO标题</label>
+                        <label class="col-sm-2 control-label">SEO标题</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="input-seo-title" name="seo_title" value="{$result['SEO_TITLE']|default=''}"/>
+                            <input type="text" name="seo_title" class="form-control" value="{$result['SEO_TITLE']|default=''}"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-seo-keyword" class="col-sm-2 control-label">SEO关键词</label>
+                        <label class="col-sm-2 control-label">SEO关键词</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="input-seo-keyword" name="seo_keyword" value="{$result['SEO_KEYWORD']|default=''}"/>
+                            <input type="text" name="seo_keyword" class="form-control" value="{$result['SEO_KEYWORD']|default=''}"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-seo-desc" class="col-sm-2 control-label">SEO描述</label>
+                        <label class="col-sm-2 control-label">SEO描述</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" id="input-seo-desc" rows="10" name="seo_description">{$result['SEO_DESCRIPTION']|default=''}</textarea>
+                            <textarea name="seo_description" rows="10" class="form-control">{$result['SEO_DESCRIPTION']|default=''}</textarea>
                         </div>
                     </div>
                 </form>
@@ -59,7 +70,7 @@
                 <a href="{:U('index')}">
                     <button type="submit" class="btn btn-default right">返回</button>
                 </a>
-                <button type="submit" class="btn btn-primary right save-menu margin-right-10" data-loading-text="Loading...">保存</button>
+                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">保存</button>
             </div>
         </div>
     </div>
@@ -68,25 +79,17 @@
     $(function () {
         //保存
         $('button.save-menu').on('click', function () {
-            var action = "{$action}";
-            var name = $.trim($('[name="name"]').val());
-            var slug = $.trim($('[name="slug"]').val());
-            if (name == '') {
-                alertMessage('warning', '请输入名称');
-                return false;
-            }
-            if (slug == '') {
-                alertMessage('warning', '请输入别名');
-                return false;
-            }
             var $btn = $(this).button('loading');
+            var action = "{$action}";
             var data = {
-                'name'           : name,
-                'slug'           : slug,
-                'description'    : $('[name="description"]').val(),
+                'name'           : $('[name="name"]').val(),
+                'slug'           : $('[name="slug"]').val(),
+                'parent_id'      : $('[name="parent"]').val(),
+                'description'      : $('[name="description"]').val(),
                 'seo_title'      : $('[name="seo_title"]').val(),
                 'seo_keyword'    : $('[name="seo_keyword"]').val(),
                 'seo_description': $('[name="seo_description"]').val()
+
             };
             if (action == 'update') {
                 data.id = $('[name="id"]').val()

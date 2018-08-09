@@ -5,6 +5,7 @@ return array(
         'zh_CN' => '简体中文',
         'zh_HK' => '繁体中文'
     ),
+    'defaultLanguage' => 'zh_CN',
     'pageSize' => 20,
     'post' => array(
         'statusMap' => array(

@@ -2,9 +2,7 @@
 
 namespace Cms\Controller;
 
-use Think\Controller;
-
-class TagsController extends Controller
+class TagsController extends CommonController
 {
     use Validate;
 
@@ -35,7 +33,8 @@ class TagsController extends Controller
     {
         //整合搜索条件
         $whereData = array(
-            'name' => I('get.name')
+            'name' => I('get.name'),
+            'language' => $this->currentLanguage
         );
         $model = D('Tags');
         //每页显示多少条
@@ -46,7 +45,7 @@ class TagsController extends Controller
         $page = new \Think\Page($count, $pageSize);
         $pagination = $page->show();
         //获取分页数据
-        $list = $model->getAll($whereData, $page->firstRow, $pageSize);
+        $list = $model->getList($whereData, $page->firstRow, $pageSize);
         $this->assign('list', $list);
         $this->assign('pagination', $pagination);
         $this->assign('whereData', $whereData);
@@ -152,14 +151,16 @@ class TagsController extends Controller
             try {
                 //验证输入格式
                 $name = I('post.name');
+                $language = I('post.language');
                 $data = array(
                     'TAG_NAME' => $name,
-                    'TAG_SLUG' => $name
+                    'TAG_SLUG' => $name,
+                    'TAG_LANG' => $language
                 );
                 $this->validate($data);
                 $model = D('Tags');
                 //判断tag 名称是否存在
-                $tagID = $model->isExists($data['TAG_NAME'], 'TAG_NAME');
+                $tagID = $model->isSlugExists($data['TAG_LANG'], $data['TAG_SLUG']);
                 if (!$tagID) {
                     //添加tag操作
                     $tagID = $model->add($data);
@@ -192,6 +193,7 @@ class TagsController extends Controller
                     'TAG_NAME' => I('post.name'),
                     'TAG_SLUG' => I('post.slug'),
                     'TAG_DESCRIPTION' => I('post.description'),
+                    'TAG_LANG' => $this->currentLanguage,
                     'SEO_TITLE' => I('post.seo_title'),
                     'SEO_DESCRIPTION' => I('post.seo_description'),
                     'SEO_KEYWORD' => I('post.seo_keyword')

@@ -18,19 +18,15 @@
                 <form class="form-horizontal">
                     <input type="hidden" name="id" value="{$id|default=''}"/>
                     <input type="hidden" name="translate_id" value="{$translateID|default='0'}"/>
+                    <input type="hidden" name="language" value="{$language|default=''}"/>
                     <div class="form-group">
                         <label for="inputTitle" class="col-sm-2 control-label">标题</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['POST_TITLE']|default=''}"/>
                         </div>
                         <if condition="$action eq 'update'">
-                            <div class="col-sm-10 col-sm-offset-2 link">
-                                <if condition="$parentSlug eq 'news'">
-                                    <a href="http://xxxx.com/{$parentSlug}/{:date('Y-m-d',strtotime($result['PUBLISHED_TIME']))}/{$result['POST_ID']}">http://xxxx.com/{$parentSlug}/{:date('Y-m-d',strtotime($result['PUBLISHED_TIME']))}/{$result['POST_ID']}</a>
-                                <else/>
-                                    <a href="http://xxxx.com/{$parentSlug}/{$result['POST_ID']}">http://xxxx.com/{$parentSlug}/{$result['POST_ID']}</a>
-                                </if>
-
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <a class="link" href="{$result.POST_URL}">{$result.POST_URL}</a>
                             </div>
                         </if>
                     </div>
@@ -76,7 +72,7 @@
                     <foreach name="translate" item="v">
                         <div class="translate col-sm-12">
                             <h4>{$languageMap[$v['POST_LANG']]}</h4>
-                            <a href="{:U('edit',array('id'=>$v['POST_ID']))}">{$v.POST_TITLE}</a>
+                            <a class="link" href="{:U('edit',array('id'=>$v['POST_ID']))}">{$v.POST_TITLE}</a>
                         </div>
                         <php>
                             if(isset($notExistsLanguage[$v['POST_LANG']])){
@@ -110,20 +106,6 @@
                         <label for="category" class="col-sm-4 control-label">排序</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="order" value="{$result['POST_ORDER']|default=0}"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="language" class="col-sm-4 control-label">语言</label>
-                        <div class="col-sm-8">
-                            <select id="language" class="form-control" name="language">
-                                <if condition="$action eq 'create' && !empty($language)">
-                                    <option value="{$language}">{$languageMap[$language]}</option>
-                                <else/>
-                                    <foreach name="languageMap" item="v" key="k">
-                                        <option value="{$k}" <if condition="isset($result) && $result['POST_LANG'] eq $k">selected='selected'</if>>{$v}</option>
-                                    </foreach>
-                                </if>
-                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -191,9 +173,11 @@
                         </div>
                     </div>
                     <div class="tags">
-                        <foreach name="tags" item="v">
-                            <span class="label label-default" data-id="{$v.TAG_ID}" data-name="{$v.TAG_NAME}"><span aria-hidden="true">×</span>{$v.TAG_NAME}</span>
-                        </foreach>
+                        <if condition="isset($tags)">
+                            <foreach name="tags" item="v">
+                                <span class="label label-default" data-id="{$v.TAG_ID}" data-name="{$v.TAG_NAME}"><span aria-hidden="true">×</span>{$v.TAG_NAME}</span>
+                            </foreach>
+                        </if>
                     </div>
                 </form>
             </div>
@@ -265,6 +249,7 @@
                 'type'    : 'post',
                 'data'    : {
                     'name': name,
+                    'language': "{$result['POST_LANG']|default=$language}"
                 },
                 'success' : function (data) {
                     if (data.status || data.code == 100) {
@@ -352,7 +337,6 @@
                 'category_id'    : $('[name="category"]').val(),
                 'order'          : $('[name="order"]').val(),
                 'content'        : tinyMCE.activeEditor.getContent(),
-                'language'       : $('[name="language"]').val(),
                 'status'         : $('[name="status"]').val(),
                 'tags'           : tags,
                 'seo_title'      : $('[name="seo_title"]').val(),
@@ -365,6 +349,7 @@
                 data.id = $('[name="id"]').val()
             } else {
                 data['translate_id'] = $('[name="translate_id"]').val();
+                data['language'] = $('[name="language"]').val();
             }
             $.ajax({
                 'url'     : "{:U($action)}",
@@ -372,9 +357,10 @@
                 'data'    : data,
                 'success' : function (data) {
                     if (data.status || data.code == 103) {
-                        alertMessage('success', data.msg);
+                        alertSuccessMessage(data.msg, false);
+                        window.onbeforeunload = undefined;
                     } else {
-                        alertMessage('danger', data.msg, data.code);
+                        alertErrorMessage(data.msg, data.code, false);
                     }
                 },
                 'complete': function () {
@@ -394,15 +380,14 @@
                 'category_id'    : $('[name="category"]').val(),
                 'order'          : $('[name="order"]').val(),
                 'content'        : tinyMCE.activeEditor.getContent(),
-                'language'       : $('[name="language"]').val(),
                 'status'         : 0,
                 'tags'           : tags,
                 'seo_title'      : $('[name="seo_title"]').val(),
                 'seo_keyword'    : $('[name="seo_keyword"]').val(),
                 'seo_description': $('[name="seo_description"]').val(),
                 'published_time' : $('[name="published_time"]').val(),
-                'translate_id' : $('[name="translate_id"]').val()
-
+                'translate_id' : $('[name="translate_id"]').val(),
+                'language': $('[name="language"]').val()
             };
             if(data.title != '' || data.category_id == 0){
                 $.ajax({
