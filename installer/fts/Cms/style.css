@@ -3,8 +3,8 @@ body {
     background: #eff0f4;
 }
 
-a{
-    color:#000;
+a {
+    color: #000;
 }
 
 a.link {
@@ -78,7 +78,7 @@ table {
     display: none;
 }
 
-.alert.in{
+.alert.in {
     display: block;
 }
 
@@ -164,12 +164,12 @@ table {
     user-select: none;
 }
 
-.status-tools ul{
+.status-tools ul {
     list-style: none;
     padding: 0;
 }
 
-.status-tools ul li{
+.status-tools ul li {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -177,26 +177,27 @@ table {
     font-size: 12px;
 }
 
-.status-tools  ul li:after{
-    content:'|';
+.status-tools ul li:after {
+    content: '|';
 }
 
-.status-tools  ul li:last-child:after{
-    content:'';
+.status-tools ul li:last-child:after {
+    content: '';
 }
 
-.status-tools  ul li a{
+.status-tools ul li a {
     line-height: 2;
     padding: .2em;
-    color:#777;
+    color: #777;
 }
-.status-tools ul li a .count{
+
+.status-tools ul li a .count {
     color: #555d66;
     font-weight: 400;
     margin-left: 2px;
 }
 
-.status-tools  ul li a.current {
+.status-tools ul li a.current {
     color: #000;
 }
 
@@ -221,7 +222,7 @@ table {
     font-size: 25px;
 }
 
-.header .menu > span{
+.header .menu > span {
     font-weight: bolder;
     margin-left: 10px;
     font-size: 20px;
@@ -236,7 +237,7 @@ table {
     position: relative;
 }
 
-.header .right > ul > li > a:hover, .header .right li.open > a{
+.header .right > ul > li > a:hover, .header .right li.open > a {
     background: #424f63;
     color: #65cea7;
 }
@@ -260,11 +261,11 @@ table {
     left: auto;
 }
 
-.header .right .btn{
+.header .right .btn {
     line-height: 18px;
 }
 
-.header .right .language.btn span:nth-child(1){
+.header .right .language.btn span:nth-child(1) {
     margin-right: 5px;
 }
 
@@ -435,7 +436,7 @@ body > .container-fluid.full {
     float: left;
     margin-right: 10px;
     height: 125px;
-    position:relative;
+    position: relative;
 }
 
 .banner .sortable li img, .banner .modal-body img {
@@ -493,6 +494,7 @@ body > .container-fluid.full {
     height: 135px;
     float: left;
     margin-right: 10px;
+    margin-top: 45px;
 }
 
 /* posts */

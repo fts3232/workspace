@@ -49,6 +49,10 @@
                         <input type="text" class="form-control" id="edit-url" name="url" placeholder="" value="">
                     </div>
                     <div class="form-group">
+                        <label for="edit-title">小标题</label>
+                        <input type="text" class="form-control" id="edit-title" name="title" placeholder="" value="" maxlength="15">
+                    </div>
+                    <div class="form-group">
                         <label for="edit-status">状态</label>
                         <select class="form-control" name="status" id="edit-status">
                             <foreach name="statusMap" item="v" key="k">
@@ -76,10 +80,10 @@
      * @returns {jQuery|HTMLElement}
      */
     function create_item(index, data) {
-        var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="' + data.ITEM_URL + '" data-status="' + data.ITEM_STATUS + '" class="ui-sortable-handle"></li>');
+        var li = $('<li data-index="' + index + '" data-id="' + data.ITEM_ID + '" data-url="' + data.ITEM_URL + '" data-status="' + data.ITEM_STATUS + '" data-title="' + data.ITEM_TITLE + '" class="ui-sortable-handle"></li>');
         var img = $('<img src="' + data.ITEM_IMG + '" class="img-thumbnail"/>');
         var statusText = data.ITEM_STATUS == 0 ? '下架' : '上架';
-        var status = $('<span class="status">'+statusText+'</span>');
+        var status = $('<span class="status">' + statusText + '</span>');
         img.appendTo(li);
         status.appendTo(li);
         return li;
@@ -130,6 +134,7 @@
                         data = {
                             'ITEM_ID'    : data.id,
                             'ITEM_IMG'   : data.img,
+                            'ITEM_TITLE' : '',
                             'ITEM_URL'   : '',
                             'ITEM_STATUS': 0
                         };
@@ -152,6 +157,7 @@
             $('#img-modal .delete').attr('data-index', $(this).index());
             $('#img-modal img').attr('src', $(this).find('img').attr('src'));
             $('#img-modal [name="url"]').val($(this).attr('data-url'));
+            $('#img-modal [name="title"]').val($(this).attr('data-title'));
             $('#img-modal [name="status"]').val($(this).attr('data-status'));
         });
 
@@ -164,10 +170,12 @@
         });
         //修改
         $(document).on('click', 'button.edit', function () {
-            var url = $('#img-modal [name="url"]').val();
+            var url = $.trim($('#img-modal [name="url"]').val());
+            var title = $.trim($('#img-modal [name="title"]').val());
             var status = $('#img-modal [name="status"]').val();
             var index = $(this).attr('data-index');
             $('.sortable li').eq(index).attr('data-url', url);
+            $('.sortable li').eq(index).attr('data-title', title);
             $('.sortable li').eq(index).attr('data-status', status);
             var statusText = status == 0 ? '下架' : '上架';
             $('.sortable li').eq(index).find('span.status').html(statusText);
@@ -184,6 +192,7 @@
                     'ITEM_ID'    : $('.sortable li').eq(v).attr('data-id'),
                     'ITEM_IMG'   : $('.sortable li').eq(v).find('img').attr('src'),
                     'ITEM_URL'   : $('.sortable li').eq(v).attr('data-url'),
+                    'ITEM_TITLE' : $('.sortable li').eq(v).attr('data-title'),
                     'ITEM_STATUS': $('.sortable li').eq(v).attr('data-status'),
                     'ITEM_ORDER' : v
                 };

@@ -255,6 +255,7 @@
 * banner名称：1-10个中文字符
 * 排序方式为降序，数字越大优先级越高
 * banner项状态 0：下架 1：上架
+* banner项title 15个中文字符
 
 
     CREATE TABLE `banner` (
@@ -272,6 +273,7 @@
       `BANNER_ID` int(11) DEFAULT NULL COMMENT '所属banner id',
       `ITEM_IMG` varchar(255) DEFAULT NULL COMMENT 'banner 项图片',
       `ITEM_URL` varchar(255) DEFAULT NULL COMMENT 'banner 项url',
+      `ITEM_TITLE` varchar(45) DEFAULT NULL COMMENT 'banner项小标题',
       `ITEM_STATUS` tinyint(1) DEFAULT NULL COMMENT '项状态',
       `ITEM_ORDER` tinyint(3) DEFAULT NULL COMMENT '图片排序',
       `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -279,7 +281,7 @@
       PRIMARY KEY (`ITEM_ID`),
       KEY `BANNER_ID` (`BANNER_ID`) USING BTREE,
       KEY `ITEM_STATUS` (`ITEM_STATUS`) USING BTREE
-    ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
+    ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
 
 ### 栏目管理
 * 存放文章栏目信息

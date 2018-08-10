@@ -122,9 +122,8 @@ class MenuItemModel extends Model
             $where = array(
                 'MENU_ID' => $data['MENU_ID']
             );
-            $list = $this->field('ITEM_ID, ITEM_NAME, ITEM_URL, ITEM_PARENT, ITEM_ORDER')
+            $list = $this->field('ITEM_ID')
                 ->where($where)
-                ->order('ITEM_PARENT ASC, ITEM_ORDER ASC')
                 ->select();
             //获取项
             $temp = array();

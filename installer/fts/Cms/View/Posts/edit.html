@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <label for="inputTitle" class="col-sm-2 control-label">标题</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['POST_TITLE']|default=''}"/>
+                            <input type="text" class="form-control" id="inputTitle" name="title" value="{$result['POST_TITLE']|default=''}" maxlength="50"/>
                         </div>
                         <if condition="$action eq 'update'">
                             <div class="col-sm-10 col-sm-offset-2">
@@ -39,19 +39,19 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">SEO标题</label>
                         <div class="col-sm-10">
-                            <input type="text" name="seo_title" class="form-control" value="{$result['SEO_TITLE']|default=''}"/>
+                            <input type="text" name="seo_title" class="form-control" value="{$result['SEO_TITLE']|default=''}" maxlength="50"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label  class="col-sm-2 control-label">SEO关键词</label>
                         <div class="col-sm-10">
-                            <input type="text" name="seo_keyword" class="form-control" value="{$result['SEO_KEYWORD']|default=''}"/>
+                            <input type="text" name="seo_keyword" class="form-control" value="{$result['SEO_KEYWORD']|default=''}" maxlength="85"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">SEO描述</label>
                         <div class="col-sm-10">
-                            <textarea name="seo_description" rows="10" class="form-control">{$result['SEO_DESCRIPTION']|default=''}</textarea>
+                            <textarea name="seo_description" rows="10" class="form-control" maxlength="300">{$result['SEO_DESCRIPTION']|default=''}</textarea>
                         </div>
                     </div>
                 </form>
@@ -168,7 +168,7 @@
                     <div class="form-group">
                         <label for="tag" class="col-sm-4 control-label">标签</label>
                         <div class="col-sm-8">
-                            <input type="text" id="tag" class="form-control" name="tag-name"/>
+                            <input type="text" id="tag" class="form-control" name="tag-name" maxlength="10"/>
                             <button type="submit" class="btn btn-default right add-tag" data-loading-text="Loading...">添加</button>
                         </div>
                     </div>

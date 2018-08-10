@@ -240,7 +240,6 @@ class BannerController extends CommonController
                 //获取输入
                 $data = array(
                     'BANNER_ID' => I('post.banner_id', false, 'int'),
-                    'ADD_ITEMS' => I('post.add_items'),
                     'ITEMS' => I('post.items')
                 );
                 //验证输入格式

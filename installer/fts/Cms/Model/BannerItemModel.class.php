@@ -23,6 +23,7 @@ class BannerItemModel extends Model
         'BANNER_ID',
         'ITEM_IMG',
         'ITEM_URL',
+        'ITEM_TITLE',
         'ITEM_STATUS',
         'ITEM_ORDER'
     );
@@ -35,6 +36,7 @@ class BannerItemModel extends Model
     protected $updateFields = array(
         'ITEM_IMG',
         'ITEM_URL',
+        'ITEM_TITLE',
         'ITEM_ORDER',
         'ITEM_STATUS',
         'MODIFIED_TIME'
@@ -51,7 +53,7 @@ class BannerItemModel extends Model
         $where = array(
             'BANNER_ID' => $bannerID
         );
-        $list = $this->field('ITEM_ID, ITEM_IMG, ITEM_URL, ITEM_STATUS')
+        $list = $this->field('ITEM_ID, ITEM_IMG, ITEM_URL, ITEM_STATUS, ITEM_TITLE')
             ->where($where)
             ->order('ITEM_ORDER ASC')
             ->select();
@@ -90,7 +92,7 @@ class BannerItemModel extends Model
             $where = array(
                 'BANNER_ID' => $data['BANNER_ID']
             );
-            $list = $this->field('ITEM_ID, ITEM_URL, ITEM_IMG, ITEM_ORDER')
+            $list = $this->field('ITEM_ID')
                 ->where($where)
                 ->select();
             $list = $list ? $list : array();

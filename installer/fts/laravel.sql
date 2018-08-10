@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-08-09 18:10:40
+Date: 2018-08-10 09:39:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,6 +69,7 @@ CREATE TABLE `banner_item` (
   `BANNER_ID` int(11) DEFAULT NULL COMMENT '所属banner id',
   `ITEM_IMG` varchar(255) DEFAULT NULL COMMENT 'banner 项图片',
   `ITEM_URL` varchar(255) DEFAULT NULL COMMENT 'banner 项url',
+  `ITEM_TITLE` varchar(45) DEFAULT NULL COMMENT 'banner项小标题',
   `ITEM_STATUS` tinyint(1) DEFAULT NULL COMMENT '项状态',
   `ITEM_ORDER` tinyint(3) DEFAULT NULL COMMENT '图片排序',
   `CREATED_TIME` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -76,24 +77,26 @@ CREATE TABLE `banner_item` (
   PRIMARY KEY (`ITEM_ID`),
   KEY `BANNER_ID` (`BANNER_ID`) USING BTREE,
   KEY `ITEM_STATUS` (`ITEM_STATUS`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='保存banner图片项信息\r\n状态\r\n0：下架\r\n1：上架';
 
 -- ----------------------------
 -- Records of banner_item
 -- ----------------------------
-INSERT INTO `banner_item` VALUES ('2', '6', '/Uploads/cms_banner/2018-07-22/5b547c1988fa2.jpg', '234234', '1', '0', '2018-07-22 20:44:34', '2018-07-28 17:27:40');
-INSERT INTO `banner_item` VALUES ('5', '31', '/Uploads/cms_banner/2018-07-30/5b5eb68293a44.png', '', '0', '1', '2018-07-30 14:58:07', '2018-07-30 15:01:38');
-INSERT INTO `banner_item` VALUES ('7', '31', '/Uploads/cms_banner/2018-07-30/5b5eb708b4084.png', '', '0', '2', '2018-07-30 14:58:24', '2018-07-30 15:01:38');
-INSERT INTO `banner_item` VALUES ('8', '31', '/Uploads/cms_banner/2018-07-30/5b5eb70d9e20d.png', '312', '1', '0', '2018-07-30 14:58:24', '2018-07-30 15:01:38');
-INSERT INTO `banner_item` VALUES ('9', '27', '/Uploads/cms_banner/2018-08-06/5b680a1907b53.jpg', '', '0', '0', '2018-08-06 16:43:19', null);
-INSERT INTO `banner_item` VALUES ('10', '27', '/Uploads/cms_banner/2018-08-06/5b680a220acb8.jpg', '', '1', '1', '2018-08-06 16:43:19', null);
-INSERT INTO `banner_item` VALUES ('11', '29', '/Uploads/cms_banner/2018-08-06/5b68173a6972b.png', '', '0', '0', '2018-08-06 17:39:34', null);
-INSERT INTO `banner_item` VALUES ('15', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2150b413.png', '', '0', '1', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
-INSERT INTO `banner_item` VALUES ('16', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2344a30f.png', '', '0', '2', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
-INSERT INTO `banner_item` VALUES ('22', '32', '/Uploads/cms_banner/2018-08-09/5b6ba29d05574.png', '', '0', '3', '2018-08-09 10:12:34', '2018-08-09 10:33:30');
-INSERT INTO `banner_item` VALUES ('23', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5c2ce4a7.png', 'null', '0', '0', '2018-08-09 10:24:02', '2018-08-09 10:33:30');
-INSERT INTO `banner_item` VALUES ('24', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5dee42ad.png', '', '0', '4', '2018-08-09 10:24:30', '2018-08-09 10:33:30');
-INSERT INTO `banner_item` VALUES ('25', '32', '/Uploads/cms_banner/2018-08-09/5b6ba7f58ce81.png', '', '0', '5', '2018-08-09 10:33:25', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('2', '6', '/Uploads/cms_banner/2018-07-22/5b547c1988fa2.jpg', '234234', null, '1', '0', '2018-07-22 20:44:34', '2018-07-28 17:27:40');
+INSERT INTO `banner_item` VALUES ('5', '31', '/Uploads/cms_banner/2018-07-30/5b5eb68293a44.png', '', null, '0', '1', '2018-07-30 14:58:07', '2018-07-30 15:01:38');
+INSERT INTO `banner_item` VALUES ('7', '31', '/Uploads/cms_banner/2018-07-30/5b5eb708b4084.png', '', null, '0', '2', '2018-07-30 14:58:24', '2018-07-30 15:01:38');
+INSERT INTO `banner_item` VALUES ('8', '31', '/Uploads/cms_banner/2018-07-30/5b5eb70d9e20d.png', '312', null, '1', '0', '2018-07-30 14:58:24', '2018-07-30 15:01:38');
+INSERT INTO `banner_item` VALUES ('9', '27', '/Uploads/cms_banner/2018-08-06/5b680a1907b53.jpg', '', null, '0', '0', '2018-08-06 16:43:19', null);
+INSERT INTO `banner_item` VALUES ('10', '27', '/Uploads/cms_banner/2018-08-06/5b680a220acb8.jpg', '', null, '1', '1', '2018-08-06 16:43:19', null);
+INSERT INTO `banner_item` VALUES ('11', '29', '/Uploads/cms_banner/2018-08-06/5b68173a6972b.png', '', null, '0', '0', '2018-08-06 17:39:34', null);
+INSERT INTO `banner_item` VALUES ('15', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2150b413.png', '', null, '0', '1', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('16', '32', '/Uploads/cms_banner/2018-08-09/5b6ba2344a30f.png', '', null, '0', '2', '2018-08-09 10:09:23', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('22', '32', '/Uploads/cms_banner/2018-08-09/5b6ba29d05574.png', '', null, '0', '3', '2018-08-09 10:12:34', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('23', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5c2ce4a7.png', 'null', null, '0', '0', '2018-08-09 10:24:02', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('24', '32', '/Uploads/cms_banner/2018-08-09/5b6ba5dee42ad.png', '', null, '0', '4', '2018-08-09 10:24:30', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('25', '32', '/Uploads/cms_banner/2018-08-09/5b6ba7f58ce81.png', '', null, '0', '5', '2018-08-09 10:33:25', '2018-08-09 10:33:30');
+INSERT INTO `banner_item` VALUES ('29', '37', '/Uploads/cms_banner/2018-08-10/5b6cebf19cdbd.png', '2534', '53', '0', '0', '2018-08-10 09:35:45', '2018-08-10 09:36:11');
+INSERT INTO `banner_item` VALUES ('30', '37', '/Uploads/cms_banner/2018-08-10/5b6cec094ae9e.png', '', '', '0', '1', '2018-08-10 09:36:09', '2018-08-10 09:36:11');
 
 -- ----------------------------
 -- Table structure for category
@@ -180,7 +183,7 @@ CREATE TABLE `menu_item` (
   `MODIFIED_TIME` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`ITEM_ID`),
   KEY `MENU_ID` (`MENU_ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COMMENT='保存菜单项信息';
 
 -- ----------------------------
 -- Records of menu_item
@@ -200,6 +203,9 @@ INSERT INTO `menu_item` VALUES ('30', '1', '撒大声地撒奥所', '23424234', 
 INSERT INTO `menu_item` VALUES ('55', '28', '123', '123', '0', '0', '2018-08-09 10:00:52', null);
 INSERT INTO `menu_item` VALUES ('57', '28', '23424', '23424', '0', '1', '2018-08-09 10:01:55', null);
 INSERT INTO `menu_item` VALUES ('58', '28', '23424', '2342', '0', '0', '2018-08-09 10:02:54', '2018-08-09 10:02:55');
+INSERT INTO `menu_item` VALUES ('59', '31', 'sadadda', 'ad', '0', '0', '2018-08-10 09:33:51', '2018-08-10 09:34:06');
+INSERT INTO `menu_item` VALUES ('60', '31', 'sadadda', 'ad', '59', '0', '2018-08-10 09:33:52', '2018-08-10 09:34:06');
+INSERT INTO `menu_item` VALUES ('62', '31', 'sadadda1', 'ad', '0', '1', '2018-08-10 09:33:56', '2018-08-10 09:34:06');
 
 -- ----------------------------
 -- Table structure for pages
