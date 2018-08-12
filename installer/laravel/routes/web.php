@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Redis;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,7 +11,16 @@
 |
 */
 Route::group([/*'middleware' => 'page-cache'*/], function () {
-    //首页
+    Route::get('/',function(){
+        $manager = new \MongoDB\Driver\Manager("mongodb://root:root@192.168.99.100:27017/admin",['authMechanism'=>'SCRAM-SHA-1']);
+        var_dump($manager);
+        $command = new MongoDB\Driver\Command(['ping' => 1]);
+        $manager->executeCommand('asd', $command);
+
+        var_dump($manager->getServers());
+        echo 1;
+    });
+    /*//首页
     Route::get('/', 'HomeController@index')->name('首页');
     //内页
     $pages = App\Models\Pages::getAll();
@@ -29,7 +38,7 @@ Route::group([/*'middleware' => 'page-cache'*/], function () {
     //文章
     Route::get('/news/{date}/{id}', 'PostsController@news')
         ->where(['id' => '[0-9]+', 'date' => '[0-9]{4}\-[0-9]{2}-[0-9]{2}']);
-    Route::get('/college/{id}', 'PostsController@college')->where('id', '[0-9]+');
+    Route::get('/college/{id}', 'PostsController@college')->where('id', '[0-9]+');*/
 });
 
 /*Route::get('img', function () {

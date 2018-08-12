@@ -180,8 +180,8 @@ return [
         fts\Captcha\CaptchaServiceProvider::class,
         fts\CacheResponse\CacheResponseServiceProvider::class,
         fts\HttpClient\HttpClientServiceProvider::class,
-        fts\SiteMap\SiteMapServiceProvider::class,
-        fts\MongoDBLog\LogServiceProvider::class,
+        //fts\SiteMap\SiteMapServiceProvider::class,
+        //fts\MongoDBLog\LogServiceProvider::class,
         //fts\UploadImage\UploadImageServiceProvider::class
     ],
 

@@ -40,3 +40,25 @@ services:
         - /docker/php-fpm/php5.6.ini:/usr/local/etc/php/php.ini
         - /www:/usr/share/nginx/html:rw
       privileged: true
+    mysql:
+      image: 'mysql'
+      container_name: 'mysql'
+      environment:
+        MYSQL_ROOT_PASSWORD: 'admin'
+        MYSQL_USER: 'test'
+        MYSQL_PASSWORD: 'test'
+      ports:
+        - "3306:3306"
+    redis:
+      image: 'redis'
+      container_name: 'redis'
+      ports:
+        - "6379:6379"
+    mongodb:
+      image: 'mongo'
+      container_name: 'mongodb'
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: root
+        MONGO_INITDB_ROOT_PASSWORD: root
+      ports:
+        - "27017:27017"

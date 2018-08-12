@@ -1,2 +1,8 @@
 ARG MYSQL_VERSION=latest
 FROM mysql:${MYSQL_VERSION}
+
+ENV MYSQL_ROOT_PASSWORD 'root'
+
+RUN mysql\
+    && GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+    && exit;
