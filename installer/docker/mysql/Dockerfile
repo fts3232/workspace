@@ -1,8 +1,8 @@
-ARG MYSQL_VERSION=latest
+ARG MYSQL_VERSION=5.6
 FROM mysql:${MYSQL_VERSION}
 
-ENV MYSQL_ROOT_PASSWORD 'root'
+COPY my.cnf /etc/mysql/my.cnf
 
-RUN mysql\
-    && GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-    && exit;
+CMD ["mysqld"]
+
+EXPOSE 3306

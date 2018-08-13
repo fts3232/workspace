@@ -9,8 +9,6 @@
         "fts/cache-response": "*",
         "fts/captcha": "*",
         "fts/http-client":"*",
-        "fts/mongodb-log":"*",
-        "fts/site-map":"*",
         "laravel/framework": "5.4.*",
         "laravel/passport": "4.0.3",
         "laravel/tinker": "~1.0",
@@ -56,14 +54,6 @@
         "optimize-autoloader": true
     },
     "repositories": {
-        "fts/mongodb-log":{
-            "type":"path",
-            "url":"../fts/mongodb-log"
-        },
-        "fts/site-map":{
-            "type":"path",
-            "url":"../fts/site-map"
-        },
         "packagist": {
             "type": "composer",
             "url": "https://packagist.phpcomposer.com"

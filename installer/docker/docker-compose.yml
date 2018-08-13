@@ -39,19 +39,26 @@ services:
       volumes:
         - /docker/php-fpm/php5.6.ini:/usr/local/etc/php/php.ini
         - /www:/usr/share/nginx/html:rw
+        - /docker/php-fpm/log:/var/log/php
+        - /docker/php-fpm/php-fpm.d:/etc/php-fpm.d
       privileged: true
     mysql:
-      image: 'mysql'
+      image: 'mysql:5.6'
       container_name: 'mysql'
       environment:
-        MYSQL_ROOT_PASSWORD: 'admin'
-        MYSQL_USER: 'test'
-        MYSQL_PASSWORD: 'test'
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      volumes:
+        - /docker/mysql/my.cnf:/etc/mysql/my.cnf
+        - /docker/mysql/data:/var/lib/mysql
+        - /docker/mysql/log:/var/log/mysql
       ports:
         - "3306:3306"
     redis:
       image: 'redis'
       container_name: 'redis'
+      volumes:
+        - /docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+        - /docker/redis/log:/var/log/redis
       ports:
         - "6379:6379"
     mongodb:
@@ -60,5 +67,9 @@ services:
       environment:
         MONGO_INITDB_ROOT_USERNAME: root
         MONGO_INITDB_ROOT_PASSWORD: root
+      command: --logpath /var/log/mongodb/mongo.log
+      volumes:
+        - /docker/mongo/data:/data/db
+        - /docker/mongo/log:/var/log/mongodb
       ports:
         - "27017:27017"

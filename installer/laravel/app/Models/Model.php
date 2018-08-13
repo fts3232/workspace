@@ -29,7 +29,8 @@ class Model
             }
             return call_user_func_array(array(self::$instance[$className], $funcName), $arguments);
         } catch (\Exception $e) {
-            Log::error($e);
+            var_dump($e->getMessage());
+            //Log::error($e);
             return false;
         }
     }
