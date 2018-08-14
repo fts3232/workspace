@@ -64,15 +64,18 @@ class BannerItemModel extends Model
     /**
      * 添加banner项
      *
-     * @param $bannerID
-     * @param $img
+     * @param $data
      * @return mixed
      */
-    public function addItem($bannerID, $img)
+    public function addItem($data)
     {
         $data = array(
-            'BANNER_ID' => $bannerID,
-            'ITEM_IMG' => $img
+            'BANNER_ID' => $data['BANNER_ID'],
+            'ITEM_ORDER' => $data['ITEM_ORDER'],
+            'ITEM_STATUS' => 1,
+            'ITEM_URL' => '',
+            'ITEM_TITLE' => '',
+            'ITEM_IMG' => $data['ITEM_IMG']
         );
         $result = $this->add($data);
         return $result;

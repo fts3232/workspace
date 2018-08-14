@@ -9,15 +9,20 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group([/*'middleware' => 'page-cache'*/], function () {
+Route::group(['middleware' => 'page-cache'], function () {
     //首页
     Route::get('/', 'HomeController@index')->name('首页');
     //内页
     $pages = App\Models\Pages::getAll();
     foreach ($pages as $page) {
-        foreach ($page->CHILD as $child) {
-            $uri = "/{$page->PAGE_SLUG}/{$child->PAGE_SLUG}";
-            Route::get($uri, $child->PAGE_DIRECTING)->name($child->PAGE_NAME);
+        if (!empty($page->CHILD)) {
+            $uri = "/{$page->PAGE_SLUG}";
+            Route::get($uri, $page->PAGE_DIRECTING)->name($page->PAGE_NAME);
+        } else {
+            foreach ($page->CHILD as $child) {
+                $uri = "/{$page->PAGE_SLUG}/{$child->PAGE_SLUG}";
+                Route::get($uri, $child->PAGE_DIRECTING)->name($child->PAGE_NAME);
+            }
         }
     }
     //错误页面
@@ -26,9 +31,11 @@ Route::group([/*'middleware' => 'page-cache'*/], function () {
         Route::get('/404', 'ErrorController@notFound')->name('404错误页面');
     });
     //文章
-    Route::get('/news/{date}/{id}', 'PostsController@news')
+    Route::get('/news/{date}-{id}', 'PostsController@news')
         ->where(['id' => '[0-9]+', 'date' => '[0-9]{4}\-[0-9]{2}-[0-9]{2}']);
     Route::get('/college/{id}', 'PostsController@college')->where('id', '[0-9]+');
+    //标签
+    Route::get('/tags/{name}', 'TagsController@tag')->where('name', '[A-Za-z0-9][A-Za-z0-9_]{0,9}');
 });
 
 /*Route::get('img', function () {

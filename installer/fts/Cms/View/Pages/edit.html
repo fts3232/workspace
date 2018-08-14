@@ -28,6 +28,11 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="input-slug" name="slug" value="{$result['PAGE_SLUG']|default=''}" maxlength="30"/>
                         </div>
+                        <if condition="$action eq 'update'">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <a class="link" target="_blank" href="{$result.PAGE_URL}">{$result.PAGE_URL}</a>
+                            </div>
+                        </if>
                     </div>
                     <div class="form-group">
                         <label for="parent" class="col-sm-2 control-label">上级页面</label>

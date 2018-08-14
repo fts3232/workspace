@@ -704,7 +704,7 @@ class Validator
      */
     private function itemSlug($val)
     {
-        $regex = '/^[0-9A-Za-z]{1,30}$/u';
+        $regex = '/^[A-Za-z0-9][A-Za-z0-9_]{0,9}$/u';
         return self::regex($val, $regex);
     }
 

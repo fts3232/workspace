@@ -7,6 +7,45 @@ return array(
     ),
     'defaultLanguage' => 'zh_CN',
     'pageSize' => 20,
+    'www' => [
+        'domain'=>'xxxx.com',
+        'protocol' => 'https'
+    ],
+    'menuMap' => array(
+        'menu' => array(
+            'controller' => 'Cms/Menu/index',
+            'title' => '菜单管理'
+        ),
+        'banner' => array(
+            'controller'=>'Cms/Banner/index',
+            'title' => 'Banner管理'
+        ),
+        'category' => array(
+            'controller' => 'Cms/Category/index',
+            'title' => '栏目管理'
+        ),
+        'posts' => array(
+            'title' => '文章管理',
+            'child' => array(
+                array(
+                    'controller'=>'Cms/Posts/index',
+                    'title'=>'文章列表'
+                ),
+                array(
+                    'controller'=>'Cms/Posts/recycle',
+                    'title'=>'回收站'
+                )
+            )
+        ),
+        'tags' => array(
+            'controller' => 'Cms/Tags/index',
+            'title' => '标签管理'
+        ),
+        'pages' => array(
+            'controller' => 'Cms/Pages/index',
+            'title' => '页面管理'
+        )
+    ),
     'post' => array(
         'statusMap' => array(
             '0' => '草稿',

@@ -81,9 +81,26 @@ class PagesModel extends Model
             ->select();
         if ($list) {
             $list = $this->getTree($list);
-            $list = array_slice($list, $offset, $size);
+            //获取别名列表
+            $slugList = array_reduce($list, function ($carry, $item) {
+                $carry[$item['PAGE_ID']] = $item['PAGE_SLUG'];
+                return $carry;
+            });
+            //切割列表
+            $list2 = array_slice($list, $offset, $size);
+            //获取第一项的父别名
+            $parentSlug = $list2[0]['PAGE_PARENT'] == 0 ? '' : $slugList[$list2[0]['PAGE_PARENT']];
+            foreach ($list2 as $key => $page) {
+                if ($page['PAGE_PARENT'] != 0) {
+                    $paths = [$parentSlug];
+                } else {
+                    $parentSlug = $page['PAGE_SLUG'];
+                }
+                $paths[] = $page['PAGE_SLUG'];
+                $list2[$key]['PAGE_URL'] = $this->getUrl($paths);
+            }
         }
-        return $list;
+        return $list2;
     }
 
     /**
@@ -121,9 +138,21 @@ class PagesModel extends Model
      */
     public function get($id)
     {
-        return $this->field('PAGE_ID, PAGE_NAME, PAGE_SLUG, PAGE_PARENT, PAGE_DIRECTING, PAGE_LANG, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+        $result = $this->field('PAGE_ID, PAGE_NAME, PAGE_SLUG, PAGE_PARENT, PAGE_DIRECTING, PAGE_LANG, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
             ->where(array('PAGE_ID' => $id))
             ->find();
+        if ($result) {
+            $paths = [];
+            if ($result['PAGE_PARENT'] != 0) {
+                $parentSLug = $this->field('PAGE_SLUG')
+                    ->where(array('PAGE_ID' => $result['PAGE_PARENT']))
+                    ->getField('PAGE_SLUG');
+                $paths[] = $parentSLug;
+            }
+            $paths[] = $result['PAGE_SLUG'];
+            $result['PAGE_URL'] = $this->getUrl($paths);
+        }
+        return $result;
     }
 
     /**
@@ -281,5 +310,20 @@ class PagesModel extends Model
             );
         }
         return $return;
+    }
+
+    /**
+     * 获取页面url
+     *
+     * @param $paths
+     * @return string
+     */
+    protected function getUrl($paths)
+    {
+        $path = implode('/', $paths);
+        $protocol = C('www.protocol');
+        $domain = C('www.domain');
+        $uri = "{$protocol}://{$domain}/{$path}";
+        return $uri;
     }
 }

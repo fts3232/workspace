@@ -186,37 +186,40 @@ function setCookie(name, value, expire) {
 
 $(document).ready(function () {
     //判断哪些菜单处于激活状态
-    var scores = [];
-    $('body>.nav').find('a').map(function (i) {
-        var pathName = location.pathname.substring(1).split('/');
-        var href = $('body>.nav').find('a').eq(i).attr('href').substring(1).split('/');
-        var score = 0;
-        href.map(function (v, k) {
-            if (v == pathName[k]) {
-                score += 25;
-            }
+    if($('body>.nav').find('a').length > 0){
+        var scores = [];
+        $('body>.nav').find('a').map(function (i) {
+            var pathName = location.pathname.substring(1).split('/');
+            var href = $('body>.nav').find('a').eq(i).attr('href').substring(1).split('/');
+            var score = 0;
+            href.map(function (v, k) {
+                if (v == pathName[k]) {
+                    score += 25;
+                }
+            });
+            scores.push({'index': i, 'score': score});
         });
-        scores.push({'index': i, 'score': score});
-    });
 
-    var compare = function (obj1, obj2) {
-        var val1 = obj1.score;
-        var val2 = obj2.score;
-        if (val1 > val2) {
-            return -1;
-        } else if (val1 < val2) {
-            return 1;
-        } else {
-            return 0;
+        var compare = function (obj1, obj2) {
+            var val1 = obj1.score;
+            var val2 = obj2.score;
+            if (val1 > val2) {
+                return -1;
+            } else if (val1 < val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        scores.sort(compare);
+
+        var li = $('body>.nav').find('a').eq(scores[0]['index']).parents('li');
+        li.addClass('active');
+        if (li.length > 1) {
+            li.eq(li.length - 1).find('span.glyphicon').addClass('glyphicon-minus').removeClass('glyphicon-plus');
         }
     }
-    scores.sort(compare);
 
-    var li = $('body>.nav').find('a').eq(scores[0]['index']).parents('li');
-    li.addClass('active');
-    if (li.length > 1) {
-        li.eq(li.length - 1).find('span.glyphicon').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-    }
 
     //警告框-关闭按钮
     $('.alert .close').on('click', function () {

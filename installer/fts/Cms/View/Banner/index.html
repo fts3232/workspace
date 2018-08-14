@@ -4,22 +4,24 @@
         <li><a href="{:U('index')}">banner管理</a></li>
         <li class="active">列表页</li>
     </ol>
-    <div class="text-right auto tool-area">
-        <form class="form-inline add">
-            <div class="form-group">
-                <label for="add-name">名称</label>
-                <input type="text" class="form-control" id="add-name" name="name" placeholder="" maxlength="10">
-            </div>
-            <button class="btn btn-primary add">添加</button>
-        </form>
-    </div>
+    <if condition="authcheck('Cms/Banner/addBanner')">
+        <div class="text-right auto tool-area">
+            <form class="form-inline add">
+                <div class="form-group">
+                    <label for="add-name">名称</label>
+                    <input type="text" class="form-control" id="add-name" name="name" placeholder="" maxlength="10">
+                </div>
+                <button class="btn btn-primary add">添加</button>
+            </form>
+        </div>
+    </if>
     <div class="data auto">
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>名称</th>
-                    <th nowrap width="170">操作</th>
+                    <th nowrap width="180">操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,10 +29,16 @@
                     <tr>
                         <td>{$v.BANNER_ID}</td>
                         <td>{$v.BANNER_NAME}</td>
-                        <td>
-                            <a href="{:U('showItem', array('id' => $v['BANNER_ID']))}" class="btn btn-sm btn-default" role="button"><b>查看</b></a>
-                            <button class="btn btn-primary btn-sm edit" data-id="{$v['BANNER_ID']}"><b>修改</b></button>
-                            <button class="btn btn-danger btn-sm delete" data-id="{$v['BANNER_ID']}"><b>删除</b></button>
+                        <td class="font-size-0">
+                            <if condition="authcheck('Cms/Banner/showItem')">
+                                <a href="{:U('showItem', array('id' => $v['BANNER_ID']))}" class="btn btn-sm btn-default" role="button"><b>查看</b></a>
+                            </if>
+                            <if condition="authcheck('Cms/Banner/editBanner')">
+                                <button class="btn btn-primary btn-sm edit" data-id="{$v['BANNER_ID']}"><b>修改</b></button>
+                            </if>
+                            <if condition="authcheck('Cms/Banner/deleteBanner')">
+                                <button class="btn btn-danger btn-sm delete" data-id="{$v['BANNER_ID']}"><b>删除</b></button>
+                            </if>
                         </td>
                     </tr>
                 </foreach>
@@ -81,6 +89,9 @@
 </div>
 <script>
     $(document).ready(function () {
+        var canShowItem = <if condition="authcheck('Cms/Banner/showItem')">true<else/>false</if>;
+        var canEdit = <if condition="authcheck('Cms/Banner/editBanner')">true<else/>false</if>;
+        var canDelete = <if condition="authcheck('Cms/Banner/deleteBanner')">true<else/>false</if>;
         //添加菜单
         $('button.add').on('click', function () {
             var name = $.trim($('form.add').find('[name="name"]').val());
@@ -99,8 +110,23 @@
                     if (data.status) {
                         var url = data.url;
                         var tr = $('<tr></tr>');
-                        var td = $('<td>' + data.id + '</td><td>' + name + '</td><td><a href="' + url + '"><button class="btn btn-sm btn-default"><b>查看</b></button></a>  <button class="btn btn-sm btn-primary edit" data-id="' + data.id + '"><b>修改</b></button> <button class="btn btn-sm btn-danger delete" data-id="' + data.id + '"><b>删除</b></button></td>');
+                        var td = $('<td>' + data.id + '</td><td>' + name + '</td>');
                         td.appendTo(tr);
+                        var action = $('<td class="font-size-0"></td>');
+                        if(canShowItem){
+                            var showItem = $('<a href="' + url + '"  class="btn btn-sm btn-default" role="button"><b>查看</b></a>');
+                            showItem.appendTo(action);
+                        }
+                        if(canEdit){
+                            var editButton = $('<button class="btn btn-sm btn-primary edit" data-id="' + data.id + '"><b>修改</b></button>');
+                            editButton.appendTo(action);
+                        }
+                        if(canDelete){
+                            var deleteButton = $('<button class="btn btn-sm btn-danger delete" data-id="' + data.id + '"><b>删除</b></button>');
+                            deleteButton.appendTo(action);
+                        }
+                        action.appendTo(tr);
+
                         tr.prependTo($('tbody'));
                         alertSuccessMessage(data.msg);
                     } else {

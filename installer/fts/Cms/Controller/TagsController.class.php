@@ -142,45 +142,6 @@ class TagsController extends CommonController
     }
 
     /**
-     * 来自文章模块的创建操作
-     */
-    public function createFromPost()
-    {
-        if (IS_AJAX) {
-            $return = array('status' => true, 'msg' => '添加成功');
-            try {
-                //验证输入格式
-                $name = I('post.name');
-                $language = I('post.language');
-                $data = array(
-                    'TAG_NAME' => $name,
-                    'TAG_SLUG' => $name,
-                    'TAG_LANG' => $language
-                );
-                $this->validate($data);
-                $model = D('Tags');
-                //判断tag 名称是否存在
-                $tagID = $model->isSlugExists($data['TAG_LANG'], $data['TAG_SLUG']);
-                if (!$tagID) {
-                    //添加tag操作
-                    $tagID = $model->add($data);
-                    if (!$tagID) {
-                        throw new \Exception('添加失败', 101);
-                    }
-                }
-                $return['id'] = $tagID;
-            } catch (\Exception $e) {
-                $return = array(
-                    'status' => false,
-                    'msg' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                );
-            }
-            $this->ajaxReturn($return);
-        }
-    }
-
-    /**
      * 添加tag
      */
     public function create()
@@ -188,24 +149,47 @@ class TagsController extends CommonController
         if (IS_AJAX) {
             $return = array('status' => true, 'msg' => '添加成功');
             try {
-                //验证输入格式
-                $data = array(
-                    'TAG_NAME' => I('post.name'),
-                    'TAG_SLUG' => I('post.slug'),
-                    'TAG_DESCRIPTION' => I('post.description'),
-                    'TAG_LANG' => $this->currentLanguage,
-                    'SEO_TITLE' => I('post.seo_title'),
-                    'SEO_DESCRIPTION' => I('post.seo_description'),
-                    'SEO_KEYWORD' => I('post.seo_keyword')
-                );
-                $this->validate($data);
-                $model = D('Tags');
-                //添加tag操作
-                $result = $model->addTag($data);
-                if (!$result['status']) {
-                    throw new \Exception($result['msg'], $result['code']);
+                if (stripos($_SERVER['HTTP_REFERER'], 'cms/posts') !== false) {
+                    //验证输入格式
+                    $name = I('post.name');
+                    $language = I('post.language');
+                    $data = array(
+                        'TAG_NAME' => $name,
+                        'TAG_SLUG' => $name,
+                        'TAG_LANG' => $language
+                    );
+                    $this->validate($data);
+                    $model = D('Tags');
+                    //判断tag 名称是否存在
+                    $tagID = $model->isSlugExists($data['TAG_LANG'], $data['TAG_SLUG']);
+                    if (!$tagID) {
+                        //添加tag操作
+                        $tagID = $model->add($data);
+                        if (!$tagID) {
+                            throw new \Exception('添加失败', 101);
+                        }
+                    }
+                    $return['id'] = $tagID;
+                } else {
+                    //验证输入格式
+                    $data = array(
+                        'TAG_NAME' => I('post.name'),
+                        'TAG_SLUG' => I('post.slug'),
+                        'TAG_DESCRIPTION' => I('post.description'),
+                        'TAG_LANG' => $this->currentLanguage,
+                        'SEO_TITLE' => I('post.seo_title'),
+                        'SEO_DESCRIPTION' => I('post.seo_description'),
+                        'SEO_KEYWORD' => I('post.seo_keyword')
+                    );
+                    $this->validate($data);
+                    $model = D('Tags');
+                    //添加tag操作
+                    $result = $model->addTag($data);
+                    if (!$result['status']) {
+                        throw new \Exception($result['msg'], $result['code']);
+                    }
+                    $return['id'] = $result['id'];
                 }
-                $return['id'] = $result['id'];
             } catch (\Exception  $e) {
                 $return = array(
                     'status' => false,

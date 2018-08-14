@@ -5,7 +5,9 @@
     <li class="active">列表页</li>
 </ol>
     <div class="text-right auto tool-area">
-        <a class="btn btn-primary left" role="button" href="{:U('add')}">添加</a>
+        <if condition="authcheck('Cms/Tags/add')">
+            <a class="btn btn-primary left" role="button" href="{:U('add')}">添加</a>
+        </if>
         <form class="form-inline">
             <div class="form-group">
                 <label for="search-name">名称</label>
@@ -29,12 +31,18 @@
             <foreach name="list" item="v" key="k">
                 <tr>
                     <td>{$v.TAG_ID}</td>
-                    <td>{$v.TAG_NAME}</td>
+                    <td>
+                        <a class="link" href="{$v.TAG_URL}" target="_blank">{$v.TAG_NAME}</a>
+                    </td>
                     <td>{$v.TAG_SLUG}</td>
                     <td>{$v.TAG_DESCRIPTION}</td>
                     <td>
+                        <if condition="authcheck('Cms/Tags/edit')">
                         <a class="btn btn-primary btn-sm " role="button" href="{:U('edit', array('id' => $v['TAG_ID']))}"><b>修改</b></a>
+                        </if>
+                        <if condition="authcheck('Cms/Tags/delete')">
                         <button class="btn btn-danger delete btn-sm " data-id="{$v['TAG_ID']}"><b>删除</b></button>
+                        </if>
                     </td>
                 </tr>
             </foreach>

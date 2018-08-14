@@ -190,7 +190,8 @@ class BannerController extends CommonController
                 $return = array('status' => true, 'msg' => '上传成功');
                 //获取输入
                 $data = array(
-                    'BANNER_ID' => I('post.banner_id', false, 'int')
+                    'BANNER_ID' => I('post.banner_id', false, 'int'),
+                    'ITEM_ORDER' => I('post.order', false, 'int')
                 );
                 //验证输入格式
                 $this->validate($data);
@@ -210,10 +211,10 @@ class BannerController extends CommonController
                 if (!$info) {// 上传错误提示错误信息
                     throw new \Exception($upload->getError(), 102);
                 }
-                $return['img'] = '/Uploads/' . $info['savepath'] . $info['savename'];
+                $data['ITEM_IMG'] = $return['img'] = '/Uploads/' . $info['savepath'] . $info['savename'];
                 //添加菜单项
                 $model = D('BannerItem');
-                $result = $model->addItem($data['BANNER_ID'], $return['img']);
+                $result = $model->addItem($data);
                 if (!$result) {
                     throw new \Exception('添加失败', 103);
                 }

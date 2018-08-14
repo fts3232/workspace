@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
     {
         $e = $this->prepareException($e);
         if ($e instanceof NotFoundHttpException) {
-            return '404';
+            return $this->prepareResponse($request, $e);
             //return redirect('error/404');
         } elseif ($e instanceof HttpResponseException) {
             return $e->getResponse();

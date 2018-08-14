@@ -26,7 +26,7 @@
                         </div>
                         <if condition="$action eq 'update'">
                             <div class="col-sm-10 col-sm-offset-2">
-                                <a class="link" href="{$result.POST_URL}">{$result.POST_URL}</a>
+                                <a class="link" href="{$result.POST_URL}" target="_blank">{$result.POST_URL}</a>
                             </div>
                         </if>
                     </div>
@@ -165,13 +165,15 @@
                             <button type="submit" class="btn btn-default right btn-xs cancel">取消</button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="tag" class="col-sm-4 control-label">标签</label>
-                        <div class="col-sm-8">
-                            <input type="text" id="tag" class="form-control" name="tag-name" maxlength="10"/>
-                            <button type="submit" class="btn btn-default right add-tag" data-loading-text="Loading...">添加</button>
+                    <if condition="authcheck('Cms/Tags/add')">
+                        <div class="form-group">
+                            <label for="tag" class="col-sm-4 control-label">标签</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="tag" class="form-control" name="tag-name" maxlength="10"/>
+                                <button type="submit" class="btn btn-default right add-tag" data-loading-text="Loading...">添加</button>
+                            </div>
                         </div>
-                    </div>
+                    </if>
                     <div class="tags">
                         <if condition="isset($tags)">
                             <foreach name="tags" item="v">
@@ -185,9 +187,7 @@
                 <a href="{:U('index')}">
                     <button type="submit" class="btn btn-default right">返回</button>
                 </a>
-                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..."
-                        style="margin-right: 10px">发布
-                </button>
+                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">发布</button>
             </div>
         </div>
         <if condition="$action eq 'update'">
@@ -245,14 +245,14 @@
             }
             var $btn = $(this).button('loading');
             $.ajax({
-                'url'     : "{:U('tags/createFromPost')}",
+                'url'     : "{:U('tags/create')}",
                 'type'    : 'post',
                 'data'    : {
                     'name': name,
                     'language': "{$result['POST_LANG']|default=$language}"
                 },
                 'success' : function (data) {
-                    if (data.status || data.code == 100) {
+                    if (data.status) {
                         alertMessage('success', '添加成功');
                         tagsName.push(name);
                         $('<span class="label label-default" data-id="' + data.id + '" data-name="' + name + '"><span aria-hidden="true">×</span>' + name + '</span>').appendTo($('.tags'));

@@ -229,7 +229,7 @@ class PostsController extends CommonController
             $this->assign('tags', $tags);
             //获取对照文章信息
             $translate = $model->getTranslate($result['POST_TRANSLATE_ID'], $data['POST_ID']);
-            $this->assign('translateID', $result['POST_TRANSLATE_ID'] == 0 ? $data['POST_ID'] : $result['TRANSLATE_ID']);
+            $this->assign('translateID', $result['POST_TRANSLATE_ID'] == 0 ? $data['POST_ID'] : $result['POST_TRANSLATE_ID']);
             $this->assign('translate', $translate);
             //获取历史修改记录
             $revisionHistory = D('PostsRevisionHistory')->getHistory($data['POST_ID']);

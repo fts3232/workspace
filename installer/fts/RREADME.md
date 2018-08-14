@@ -124,7 +124,13 @@
     }
 
     # 如果是新闻旗下文章，允许访问
-    location ~* ^/news/([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/([0-9]+)/?$ {
+    location ~* ^/news/([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])-([0-9]+)/?$ {
+        # 判断静态文件是否存在，存在返回html，不存在走php
+        try_files $uri $uri/ /static/$uri.html /index.php?$query_string;
+    }
+    
+    # 标签
+    location ~* ^/tags/([A-Za-z0-9][A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?[A-Za-z0-9_]?)/?$ {
         # 判断静态文件是否存在，存在返回html，不存在走php
         try_files $uri $uri/ /static/$uri.html /index.php?$query_string;
     }
@@ -455,3 +461,614 @@
 调用方式
 
     php curl发送请求,不暴露api接口
+
+### 权限
+
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/index',
+            '列表页',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/addMenu',
+            '添加菜单组',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/editMenu',
+            '修改菜单组',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/deleteMenu',
+            '删除菜单组',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/showItem',
+            '查看菜单项',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/addItem',
+            '添加菜单项',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Menu/updateItem',
+            '更新菜单项',
+            'Cms/Menu',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/index',
+            '列表页',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/addBanner',
+            '添加banner组',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+        
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/editBanner',
+            '修改banner组',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/deleteBanner',
+            '删除banner组',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+        
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/showItem',
+            '查看banner项',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/updateItem',
+            '更新banner项',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Banner/uploadImage',
+            '上传banner',
+            'Cms/Banner',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Category/index',
+            '列表页',
+            'Cms/Category',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Category/add',
+            '添加',
+            'Cms/Category',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+        (
+            'Cms/Category/edit',
+            '修改',
+            'Cms/Category',
+            '1',
+            '1',
+            ''
+        );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Category/delete',
+        '删除',
+        'Cms/Category',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Pages/index',
+        '列表页',
+        'Cms/Pages',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Pages/add',
+        '添加',
+        'Cms/Pages',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Pages/edit',
+        '修改',
+        'Cms/Pages',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Pages/delete',
+        '删除',
+        'Cms/Pages',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/index',
+        '列表页',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/recycle',
+        '回收站',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/add',
+        '添加',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/edit',
+        '修改',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/softDelete',
+        '软删除',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/uploadImage',
+        '上传图片',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/delete',
+        '硬删除',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Posts/restore',
+        '还原',
+        'Cms/Posts',
+        '1',
+        '1',
+        ''
+    );
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Tags/index',
+        '列表页',
+        'Cms/Tags',
+        '1',
+        '1',
+        ''
+    );
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Tags/add',
+        '添加',
+        'Cms/Tags',
+        '1',
+        '1',
+        ''
+    );
+    
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Tags/edit',
+        '修改',
+        'Cms/Tags',
+        '1',
+        '1',
+        ''
+    );
+    INSERT INTO `auth_rule` (
+        `name`,
+        `title`,
+        `controller`,
+        `type`,
+        `status`,
+        `condition`
+    )
+    VALUES
+    (
+        'Cms/Tags/delete',
+        '删除',
+        'Cms/Tags',
+        '1',
+        '1',
+        ''
+    );

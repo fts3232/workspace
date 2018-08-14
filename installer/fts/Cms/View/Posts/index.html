@@ -5,7 +5,9 @@
         <li class="active">列表页</li>
     </ol>
     <div class="text-right auto tool-area">
-        <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
+        <if condition="authcheck('Cms/Posts/add')">
+            <a href="{:U('add')}" class="btn btn-primary left" role="button">添加</a>
+        </if>
         <form class="form-inline">
             <div class="form-group">
                 <select id="search-category" name="category" class="form-control category">
@@ -54,11 +56,10 @@
                     <th>标题</th>
                     <th><nobr>栏目</nobr></th>
                     <th>作者</th>
-                    <th>文章排序</th>
                     <th>文章状态</th>
                     <th>标签</th>
                     <th>发布时间</th>
-                    <th>更新时间</th>
+                    <th>文章排序</th>
                     <th nowrap width="120">操作</th>
                 </tr>
             </thead>
@@ -66,10 +67,9 @@
                 <foreach name="list" item="v" key="k">
                     <tr>
                         <td>{$v.POST_ID}</td>
-                        <td><a class="link" href="{$v.POST_URL}">{$v.POST_TITLE}</a></td>
+                        <td><a class="link" href="{$v.POST_URL}" target="_blank">{$v.POST_TITLE}</a></td>
                         <td><nobr>{$v.CATEGORY_NAME}</nobr></td>
                         <td>{$v.POST_AUTHOR}</td>
-                        <td>{$v.POST_ORDER}</td>
                         <td>{$statusMap[$v['POST_STATUS']]}</td>
                         <td>
                             <if condition="isset($tagsList[$v['POST_ID']])">
@@ -79,14 +79,22 @@
                             </if>
                         </td>
                         <td>{$v.PUBLISHED_TIME}</td>
-                        <td>{$v.MODIFIED_TIME}</td>
+                        <td>{$v.POST_ORDER}</td>
                         <td>
                             <if condition="ACTION_NAME eq 'index'">
-                                <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
-                                <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                                <if condition="authcheck('Cms/Posts/edit')">
+                                    <a href="{:U('edit',array('id'=>$v['POST_ID']))}" class="btn btn-primary btn-sm edit" role="button"><b>修改</b></a>
+                                </if>
+                                <if condition="authcheck('Cms/Posts/softDelete')">
+                                    <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                                </if>
                             <else />
-                                <button class="btn btn-info btn-sm restore" data-id="{$v['POST_ID']}"><b>还原</b></button>
-                                <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                                <if condition="authcheck('Cms/Posts/restore')">
+                                    <button class="btn btn-info btn-sm restore" data-id="{$v['POST_ID']}"><b>还原</b></button>
+                                </if>
+                                <if condition="authcheck('Cms/Posts/delete')">
+                                    <button class="btn btn-danger btn-sm delete" data-id="{$v['POST_ID']}"><b>删除</b></button>
+                                </if>
                             </if>
                         </td>
                     </tr>

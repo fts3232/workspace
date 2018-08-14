@@ -11,12 +11,14 @@
                 <h3 class="panel-title">Banner</h3>
             </div>
             <div class="panel-body">
-                <div class="file-upload">
-                    <form method="post" id="file" action="" enctype="multipart/form-data">
-                        <input name="input-image" type="file" accept="image/*">
-                        <button class="btn btn-primary">点击上传</button>
-                    </form>
-                </div>
+                <if condition="authcheck('Cms/Banner/uploadImage')">
+                    <div class="file-upload">
+                        <form method="post" id="file" action="" enctype="multipart/form-data">
+                            <input name="input-image" type="file" accept="image/*">
+                            <button class="btn btn-primary">点击上传</button>
+                        </form>
+                    </div>
+                </if>
                 <div class="well">
                     <ul class="sortable">
                     </ul>
@@ -27,7 +29,9 @@
                 <a href="{:U('index')}">
                     <button type="submit" class="btn btn-default right">返回</button>
                 </a>
-                <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">保存</button>
+                <if condition="authcheck('Cms/Banner/updateItem')">
+                    <button type="submit" class="btn btn-primary right save-menu" data-loading-text="Loading..." style="margin-right: 10px">保存</button>
+                </if>
             </div>
         </div>
     </div>
@@ -118,6 +122,7 @@
             var formData = new FormData();
             formData.append('file', $(this)[0].files[0]);
             formData.append('banner_id', '{$bannerID}');
+            formData.append('order', $('.sortable li').length);
             var _this = $(this);
             $.ajax({
                 url        : '{:U("uploadImage")}',
@@ -136,7 +141,7 @@
                             'ITEM_IMG'   : data.img,
                             'ITEM_TITLE' : '',
                             'ITEM_URL'   : '',
-                            'ITEM_STATUS': 0
+                            'ITEM_STATUS': 1
                         };
                         var item = create_item(index, data);
                         item.appendTo('.sortable');

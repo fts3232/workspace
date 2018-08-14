@@ -288,11 +288,11 @@ class CategoryModel extends Model
             $return = array('status'=>true);
             $data['MODIFIED_TIME'] = array('exp', 'NOW()');
             //判断id是否存在
-            if (!$this->isExists($data['CATEGORY_ID'])) {
+            if (!$result = $this->get($data['CATEGORY_ID'])) {
                 throw new \Exception('该栏目id不存在', 200);
             }
             //判断别名是否存在
-            if ($this->isSlugExists($data['CATEGORY_SLUG'], $data["CATEGORY_LANG"], $data['CATEGORY_ID'])) {
+            if ($this->isSlugExists($data['CATEGORY_SLUG'], $result["CATEGORY_LANG"], $data['CATEGORY_ID'])) {
                 throw new \Exception('该栏目别名已存在！', 201);
             }
             //判断是否存在子栏目

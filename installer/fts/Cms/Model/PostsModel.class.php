@@ -81,7 +81,7 @@ class PostsModel extends Model
             });
             foreach ($result as $k => $v) {
                 $parentSlug = isset($parentList[$v['CATEGORY_PARENT']]) ? $parentList[$v['CATEGORY_PARENT']] : '';
-                $result[$k]['POST_URL'] = $this->getPostUrl($parentSlug, $v['POST_ID'], $v['PUBLISHED_TIME']);
+                $result[$k]['POST_URL'] = $this->getUrl($parentSlug, $v['POST_ID'], $v['PUBLISHED_TIME']);
             }
         }
         return $result ? $result : array();
@@ -95,13 +95,15 @@ class PostsModel extends Model
      * @param $publishedTime
      * @return string
      */
-    private function getPostUrl($slug, $id, $publishedTime)
+    private function getUrl($slug, $id, $publishedTime)
     {
+        $protocol = C('www.protocol');
+        $domain = C('www.domain');
         if ($slug == 'news') {
             $date = date('Y-m-d', strtotime($publishedTime));
-            $url = "http://xxxx.com/{$slug}/{$date}/{$id}";
+            $url = "{$protocol}://{$domain}/{$slug}/{$date}-{$id}";
         } else {
-            $url = "http://xxxx.com/{$slug}/{$id}";
+            $url = "{$protocol}://{$domain}/{$slug}/{$id}";
         }
         return $url;
     }
@@ -351,7 +353,7 @@ class PostsModel extends Model
         if ($post) {
             //父栏目
             $slug = D('Category')->getParentSlug($post['POST_CATEGORY_ID']);
-            $post['POST_URL'] = $this->getPostUrl($slug, $post['POST_ID'], $post['PUBLISHED_TIME']);
+            $post['POST_URL'] = $this->getUrl($slug, $post['POST_ID'], $post['PUBLISHED_TIME']);
         }
         return $post;
     }

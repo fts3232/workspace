@@ -28,6 +28,14 @@ table {
     display: inline;
 }
 
+.font-size-0 {
+    font-size: 0;
+}
+
+.font-size-0 .btn{
+    margin-right: 5px;
+}
+
 .form-group.time {
     position: relative;
 }
@@ -387,13 +395,13 @@ body > .container-fluid.full {
 }
 
 /* menu */
-.menu .panel:nth-child(2) {
+.menu .panel.add {
     width: 30%;
     float: left;
     padding: 0px 15px 0px 0px;
 }
 
-.menu .panel:nth-child(3) {
+.menu .panel.list {
     width: 70%;
     float: left;
 }

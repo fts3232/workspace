@@ -54,6 +54,11 @@ class TagsModel extends Model
             ->order('TAG_ID DESC')
             ->limit($offset, $size)
             ->select();
+        if ($result) {
+            foreach ($result as $k => $v) {
+                $result[$k]['TAG_URL'] = $this->getUrl($v['TAG_SLUG']);
+            }
+        }
         return $result ? $result : array();
     }
 
@@ -91,9 +96,13 @@ class TagsModel extends Model
      */
     public function get($id)
     {
-        return $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
+        $result = $this->field('TAG_ID, TAG_NAME, TAG_SLUG, TAG_DESCRIPTION, SEO_TITLE, SEO_KEYWORD, SEO_DESCRIPTION')
             ->where(array('TAG_ID' => $id))
             ->find();
+        if ($result) {
+            $result['TAG_URL'] = $this->getUrl($result['TAG_SLUG']);
+        }
+        return $result;
     }
 
     /**
@@ -205,5 +214,19 @@ class TagsModel extends Model
     {
         $where = array('TAG_SLUG' => $slug, 'TAG_LANG' => $language);
         return $this->field('TAG_ID')->where($where)->getField('TAG_ID');
+    }
+
+    /**
+     * 获取标签url
+     *
+     * @param $slug
+     * @return string
+     */
+    protected function getUrl($slug)
+    {
+        $protocol = C('www.protocol');
+        $domain = C('www.domain');
+        $uri = "{$protocol}://{$domain}/tags/{$slug}";
+        return $uri;
     }
 }
