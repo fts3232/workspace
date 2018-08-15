@@ -6,7 +6,9 @@ use Think\Model;
 
 class TagsModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_tags';
 
     /**
      * 可以插入数据的字段

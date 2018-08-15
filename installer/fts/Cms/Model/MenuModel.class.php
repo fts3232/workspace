@@ -12,7 +12,9 @@ use Think\Model;
  */
 class MenuModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_menu';
 
     /**
      * 可以插入数据的字段
@@ -177,7 +179,7 @@ class MenuModel extends Model
                 throw new \Exception('删除菜单失败', 201);
             }
             //删除菜单内容
-            $result = $this->table('menu_item')->where(array('MENU_ID' => $id))->delete();
+            $result = D('MenuItem')->where(array('MENU_ID' => $id))->delete();
             if ($result === false) {
                 throw new \Exception('清空菜单项失败', 202);
             }

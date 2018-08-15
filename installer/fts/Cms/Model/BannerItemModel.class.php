@@ -12,7 +12,9 @@ use Think\Model;
  */
 class BannerItemModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_banner_item';
 
     /**
      * 可以插入数据的字段

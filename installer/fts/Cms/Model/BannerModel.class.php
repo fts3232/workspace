@@ -12,7 +12,9 @@ use Think\Model;
  */
 class BannerModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_banner';
 
     /**
      * 可以插入数据的字段
@@ -177,7 +179,7 @@ class BannerModel extends Model
                 throw new \Exception('删除banner失败', 201);
             }
             //删除菜单内容
-            $result = $this->table('banner_item')->where(array('BANNER_ID' => $id))->delete();
+            $result = D('BannerItem')->where(array('BANNER_ID' => $id))->delete();
             if ($result === false) {
                 throw new \Exception('清空banner项失败', 202);
             }

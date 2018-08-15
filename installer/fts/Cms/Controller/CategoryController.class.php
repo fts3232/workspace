@@ -194,7 +194,7 @@ class CategoryController extends CommonController
                     'CATEGORY_SLUG' => I('post.slug'),
                     'CATEGORY_PARENT' => I('post.parent_id', false, 'int'),
                     'CATEGORY_DESCRIPTION' => I('post.description'),
-                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description')
                 );

@@ -123,7 +123,7 @@ class PagesController extends CommonController
                     'PAGE_PARENT' => I('post.parent_id', false, 'int'),
                     'PAGE_DIRECTING' => I('post.directing'),
                     'PAGE_LANG' => $this->currentLanguage,
-                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description')
                 );

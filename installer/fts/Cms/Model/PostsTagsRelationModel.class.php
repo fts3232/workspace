@@ -12,7 +12,9 @@ use Think\Model;
  */
 class PostsTagsRelationModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_posts_tags_relation';
 
     /**
      * 可以插入数据的字段
@@ -67,7 +69,7 @@ class PostsTagsRelationModel extends Model
     public function getTags($postID)
     {
         return $this->alias('a')->field('b.TAG_NAME, b.TAG_ID')
-            ->join('tags b ON a.TAG_ID = b.TAG_ID')
+            ->join('cms_tags b ON a.TAG_ID = b.TAG_ID')
             ->where(array('a.POST_ID' => $postID))
             ->select();
     }

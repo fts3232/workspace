@@ -232,7 +232,7 @@
 * 排序方式为降序，数字越大优先级越高
 
 
-    CREATE TABLE `menu` (
+    CREATE TABLE `cms_menu` (
       `MENU_ID` int(11) NOT NULL AUTO_INCREMENT,
       `MENU_NAME` varchar(30) DEFAULT NULL COMMENT '菜单名',
       `MENU_LANG` varchar(10) DEFAULT NULL COMMENT '菜单所属语言',
@@ -242,7 +242,7 @@
       KEY `NAME` (`MENU_NAME`) USING BTREE
     ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='保存菜单信息';
         
-    CREATE TABLE `menu_item` (
+    CREATE TABLE `cms_menu_item` (
       `ITEM_ID` int(11) NOT NULL AUTO_INCREMENT,
       `MENU_ID` int(11) DEFAULT NULL COMMENT '所属菜单id',
       `ITEM_NAME` varchar(30) DEFAULT NULL COMMENT '菜单项名字',
@@ -263,7 +263,7 @@
 * banner项title 15个中文字符
 
 
-    CREATE TABLE `banner` (
+    CREATE TABLE `cms_banner` (
       `BANNER_ID` int(11) NOT NULL AUTO_INCREMENT,
       `BANNER_NAME` varchar(30) DEFAULT NULL COMMENT 'banner名称',
       `BANNER_LANG` varchar(10) DEFAULT NULL COMMENT 'bannner所属语言',
@@ -273,7 +273,7 @@
       KEY `BANNER_NAME` (`BANNER_NAME`) USING BTREE
     ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='存放banner信息';
     
-    CREATE TABLE `banner_item` (
+    CREATE TABLE `cms_banner_item` (
       `ITEM_ID` int(11) NOT NULL AUTO_INCREMENT,
       `BANNER_ID` int(11) DEFAULT NULL COMMENT '所属banner id',
       `ITEM_IMG` varchar(255) DEFAULT NULL COMMENT 'banner 项图片',
@@ -298,7 +298,7 @@
 * Seo描述：1-300个中文字符和特殊符号
 
 
-    CREATE TABLE `category` (
+    CREATE TABLE `cms_category` (
       `CATEGORY_ID` int(11) NOT NULL AUTO_INCREMENT,
       `CATEGORY_NAME` varchar(30) DEFAULT NULL COMMENT '栏目名称',
       `CATEGORY_SLUG` varchar(30) DEFAULT NULL COMMENT '栏目别名',
@@ -327,7 +327,7 @@
 * 和tag的关系保存在posts_tags_relation表内
 
 
-    CREATE TABLE `posts` (
+    CREATE TABLE `cms_posts` (
       `POST_ID` int(11) NOT NULL AUTO_INCREMENT,
       `POST_TRANSLATE_ID` int(11) DEFAULT '0' COMMENT '翻译的文章ID',
       `POST_CATEGORY_ID` int(11) DEFAULT NULL COMMENT '文章所属栏目',
@@ -356,7 +356,7 @@
 * 记录用户什么时候修改过哪编文章
 
     
-    CREATE TABLE `posts_revision_history` (
+    CREATE TABLE `cms_posts_revision_history` (
       `ROW_ID` int(11) NOT NULL AUTO_INCREMENT,
       `POST_ID` int(11) DEFAULT NULL COMMENT '文章id',
       `POST_AUTHOR_ID` int(11) DEFAULT NULL COMMENT '修改作者',
@@ -375,7 +375,7 @@
 * 和post的关系保存在posts_tags_relation表内
 
 
-    CREATE TABLE `tags` (
+    CREATE TABLE `cms_tags` (
       `TAG_ID` int(11) NOT NULL AUTO_INCREMENT,
       `TAG_NAME` varchar(30) DEFAULT NULL COMMENT '标签名称',
       `TAG_SLUG` varchar(30) DEFAULT NULL COMMENT '标签别名',
@@ -394,7 +394,7 @@
 
 ### 文章和标签对应关系
 
-    CREATE TABLE `posts_tags_relation` (
+    CREATE TABLE `cms_posts_tags_relation` (
       `ROW_ID` int(11) NOT NULL AUTO_INCREMENT,
       `POST_ID` int(11) DEFAULT NULL COMMENT '文章id',
       `TAG_ID` int(11) DEFAULT NULL COMMENT '标签id',
@@ -412,7 +412,7 @@
 * Seo描述：1-300个中文字符和特殊符号
 
 
-    CREATE TABLE `pages` (
+    CREATE TABLE `cms_pages` (
       `PAGE_ID` int(11) NOT NULL AUTO_INCREMENT,
       `PAGE_NAME` varchar(30) DEFAULT NULL COMMENT '页面名称',
       `PAGE_SLUG` varchar(30) DEFAULT NULL COMMENT '页面别名',

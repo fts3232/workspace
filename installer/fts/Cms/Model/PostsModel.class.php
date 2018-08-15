@@ -12,7 +12,9 @@ use Think\Model;
  */
 class PostsModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_posts';
 
     /**
      * 可以插入数据的字段
@@ -68,8 +70,9 @@ class PostsModel extends Model
         $result = $this
             ->alias('a')
             ->where($where)
-            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, a.POST_AUTHOR_ID AS POST_AUTHOR, POST_STATUS, a.PUBLISHED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME, b.CATEGORY_PARENT')
-            ->join('category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
+            ->field('a.POST_ID, a.POST_TITLE, a.POST_LANG, c.username AS POST_AUTHOR, POST_STATUS, a.PUBLISHED_TIME, a.MODIFIED_TIME, a.POST_ORDER, b.CATEGORY_NAME, b.CATEGORY_PARENT')
+            ->join('cms_category b ON b.CATEGORY_ID = a.POST_CATEGORY_ID', 'LEFT')
+            ->join('acct_admin_user c ON c.id = a.POST_AUTHOR_ID', 'LEFT')
             ->order('a.PUBLISHED_TIME DESC')
             ->limit($offset, $size)
             ->select();
@@ -119,8 +122,8 @@ class PostsModel extends Model
         $tagList = array();
         $tags = $this->alias('a')
             ->field('c.TAG_NAME,b.POST_ID')
-            ->join('posts_tags_relation b on b.POST_ID = a.POST_ID')
-            ->join('tags c on c.TAG_ID = b.TAG_ID')
+            ->join('cms_posts_tags_relation b on b.POST_ID = a.POST_ID')
+            ->join('cms_tags c on c.TAG_ID = b.TAG_ID')
             ->where(array('b.POST_ID' => array('in', $ids)))
             ->select();
         if ($tags) {

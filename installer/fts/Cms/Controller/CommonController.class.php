@@ -20,9 +20,11 @@ class CommonController extends Controller
     /**
      * 全局赋值
      */
-    public function __construct()
+    public function _initialize()
     {
-        parent::__construct();
+        if (!isset($_SESSION['uid'])) {
+            $this->redirect('Home/Index/index');
+        }
         //检查权限
         if (!$this->checkPermissions()) {
             if (IS_POST) {
@@ -81,9 +83,9 @@ class CommonController extends Controller
     {
         $defaultLanguage = C('defaultLanguage');
         $currentLanguage = cookie('language');
-        $currentLanguage = $currentLanguage ? $currentLanguage :  $defaultLanguage;
+        $currentLanguage = $currentLanguage ? $currentLanguage : $defaultLanguage;
         if (!isset($this->languageMap[$currentLanguage])) {
-            $currentLanguage =  $defaultLanguage;
+            $currentLanguage = $defaultLanguage;
         }
         return $currentLanguage;
     }

@@ -12,7 +12,9 @@ use Think\Model;
  */
 class PagesModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_pages';
 
     /**
      * 可以插入数据的字段

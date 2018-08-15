@@ -12,7 +12,9 @@ use Think\Model;
  */
 class PostsRevisionHistoryModel extends Model
 {
-    protected $connection = 'DB_CONFIG_TEST';
+    protected $connection = 'DB_CONFIG1';
+
+    protected $trueTableName = 'cms_posts_revision_history';
 
     /**
      * 可以插入数据的字段
@@ -55,8 +57,10 @@ class PostsRevisionHistoryModel extends Model
      */
     public function getHistory($postID)
     {
-        return $this->field('POST_AUTHOR_ID AS AUTHOR_NAME, CREATED_TIME')
-            ->where(array('POST_ID' => $postID))
+        return $this->alias('a')
+            ->field('b.username AS AUTHOR_NAME, a.CREATED_TIME')
+            ->join('acct_admin_user b ON b.id = a.POST_AUTHOR_ID', 'LEFT')
+            ->where(array('a.POST_ID' => $postID))
             ->select();
     }
 

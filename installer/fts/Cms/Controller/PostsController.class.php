@@ -174,7 +174,7 @@ class PostsController extends CommonController
                     'POST_TAGS_ID' => I('post.tags'),
                     'POST_AUTHOR_ID' => I('session.uid'),
                     'POST_ORDER' => I('post.order', false, 'int'),
-                    'SEO_TITLE' => I('post.seo_keyword'),
+                    'SEO_TITLE' => I('post.seo_title'),
                     'SEO_KEYWORD' => I('post.seo_keyword'),
                     'SEO_DESCRIPTION' => I('post.seo_description'),
                     'PUBLISHED_TIME' => I('post.published_time')
