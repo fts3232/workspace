@@ -29,7 +29,7 @@ module.exports = {
         // 禁止console
         'no-console'                       : 'off',
         // 禁止未声明的变量 typeof例外
-        'no-undef'                         : ['error', { "typeof": false }],
+        'no-undef'                         : ['error', {"typeof": false}],
         // 需要使用箭头函数进行回调
         'prefer-arrow-callback'            : 'warn',
         // 禁止var定义
@@ -61,6 +61,22 @@ module.exports = {
         // 禁止使用尾随逗号 例：{bar: "baz",bar: "baz",bar: "baz"}
         'comma-dangle'                     : ["error", "never"],
         // 在大括号内强制一致的间距 例：{ a:1,b:2 }
-        'object-curly-spacing'             : ['error', 'always']
+        'object-curly-spacing'             : ['error', 'always'],
+        //验证JSX开始和结束括号内和周围的空格
+        'react/jsx-tag-spacing'            : ['error', {'beforeSelfClosing': 'never'}],
+        //不强制函数式组件
+        'react/prefer-stateless-function'  : 0,
+        //prop参数缩进
+        'react/jsx-indent-props'           : ['error', 4],
+        //防止在数组中遍历中使用数组key做索引
+        "react/no-array-index-key"         : 0,
+        //在模板字符串中强制使用间距 例：${ i }
+        "template-curly-spacing"           : ['error', 'always'],
+        //允许++
+        "no-plusplus"                      : 0,
+        //强制label必须设置for
+        'jsx-a11y/label-has-for'           : 0,
+        "react/button-has-type"            : 0,
+        'class-methods-use-this'            : 0
     },
 };

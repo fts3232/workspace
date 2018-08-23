@@ -1,0 +1,50 @@
+*{padding:0;margin:0}
+a{
+	text-decoration: none;
+    color: inherit;
+}
+.comic-list-page{
+    width: 90%;
+    margin: 80px auto;
+    overflow: hidden;
+    text-align: center;
+	& .item{
+		width: 167px;
+		display: inline-block;
+		margin: 0 15px;
+		margin-bottom: 10px;
+		cursor: pointer;
+		text-align:center;
+	    background: #fff;
+	    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+		& .cover{
+		    width: 100%;
+		    height:200px;
+		    background-size: cover;
+		}
+		& .info-box{
+			text-align:left;
+			padding:10px;
+		    & .title{
+		    	color: #252525;
+	    	    font-size: 14px;
+			    font-weight: 700;
+			    margin-top: 8px;
+			    margin-bottom: 8px;
+			    white-space: nowrap;
+			    overflow: hidden;
+			    text-overflow: ellipsis;
+		    }
+		    & .episodes{
+		    	color: #fd113a;
+	    	    font-size: 12px;
+    			line-height: 18px;
+		        white-space: nowrap;
+			    overflow: hidden;
+			    text-overflow: ellipsis;
+		        display: inline-block;
+    			width: 100%;
+		    }
+		}
+	}
+}

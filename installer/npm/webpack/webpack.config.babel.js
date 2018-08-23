@@ -38,7 +38,7 @@ let getBaseConfig = options => {
             'react-router': 'ReactRouter',
             'react-router-dom': 'ReactRouterDOM',
             'react-redux': 'ReactRedux',
-            'history/createBrowserHistory': 'history', //history插件
+            'history': 'History', //history插件
             'moment/moment.js': 'moment', //时间插件
             'pubsub-js': 'PubSub', //pubSub插件
             'react-quill': 'ReactQuill', //富文本编辑器

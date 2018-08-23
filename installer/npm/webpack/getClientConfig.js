@@ -18,7 +18,7 @@ let getClientConfig = function(options) {
         //项目的文件夹 可以直接用文件夹名称 默认会找index.js 也可以确定是哪个文件名字
         //入口文件
         entry: {
-            app: options.srcPath + '/js/entry-client.js',
+            app: options.srcPath + '/entry-client.js',
             /* 'vendor': [
                  APP_PATH + '/components/Component.vue',
                  APP_PATH + '/views/Common/View.vue',
