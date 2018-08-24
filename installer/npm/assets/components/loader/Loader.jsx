@@ -14,7 +14,8 @@ class Loader extends Component {
         this.loadPage();
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(props) {
+        this.props = props;
         this.loadPage();
     }
 

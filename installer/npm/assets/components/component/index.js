@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 class Component extends React.Component {
-    getParams(key) {
+    getParams(key, defaultValue = null) {
         const { router } = this.context;
         let { search } = router.route.location;
         if (search !== '') {
@@ -15,7 +15,7 @@ class Component extends React.Component {
                 }
             }
         }
-        return null;
+        return defaultValue;
     }
 
     classNames(...args) {

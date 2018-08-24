@@ -1,14 +1,14 @@
 import React from 'react';
 import Component from '../../../components/component';
 import style from './style/main.scss';
-import IconButton from '../../../components/icon-button';
+import Icon from '../../../components/icon';
 
 class Header extends Component {
     render() {
         return (
             <div className={style.header}>
                 <div className={style.left}>
-                    <IconButton name="menu"/>
+                    <Icon name="menu"/>
                 </div>
             </div>
         );

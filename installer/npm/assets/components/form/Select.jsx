@@ -6,19 +6,15 @@ import style from './style/main.scss';
 class Select extends Component {
     render() {
         const { label, data, value } = this.props;
-        const options = Object.entries(data).map((v) => {
-            if (value === v[0]) {
-                return (<option value={v[0]} selected="selected">{v[1]}</option>);
-            } 
-            return (<option value={v[0]}>{v[1]}</option>);
-            
-        });
+        const options = Object.entries(data).map((v, i) => (<option value={v[0]} key={i} selected={value === v[0] ? 'selected' : null}>{v[1]}</option>));
         return (
             <div className={style['form-group']}>
                 <label className={this.classNames(style['label-control'], 'col-2')}>{label}</label>
-                <select className={this.classNames(style['form-control'], 'col-10')}>
-                    {options}
-                </select>
+                <div className='col-10'>
+                    <select className={style['form-control']}>
+                        {options}
+                    </select>
+                </div>
             </div>
         );
     }

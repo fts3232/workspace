@@ -20,7 +20,7 @@ class Pagination extends Component {
             start = end - maxShowPage <= 0 ? 1 : end - maxShowPage;
         }
         for (let i = start; i <= end; i++) {
-            li.push(<li className={i === currentPage ? style.active : null}><Link to={`?page=${ i }`}>{i}</Link></li>);
+            li.push(<li className={i === currentPage ? style.active : null} key={i}><Link to={`?page=${ i }`}>{i}</Link></li>);
         }
         return (
             <div className={style.pagination}>

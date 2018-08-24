@@ -1,8 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import Component from '../component';
+import themeReducer from './reducer.js';
 
 class Form extends Component {
+    constructor(props) {
+        super(props);
+        this.onSubmit = this.onSubmit.bind(this);
+
+        this.store = createStore(themeReducer);
+        console.log(this.store);
+    }
     /* validate() {
         try {
             const { validateRule } = this.props;
@@ -48,7 +58,7 @@ class Form extends Component {
         }
     } */
 
-    static onSubmit(e) {
+    onSubmit(e) {
         e.preventDefault();
         /* const { children } = this.prop;
         console.log(children);
@@ -57,6 +67,7 @@ class Form extends Component {
             console.log(this.refs[i]);
         } */
         const { onSubmit } = this.props;
+        console.log(this.store.getState());
         onSubmit();
         return false;
     }
@@ -64,11 +75,14 @@ class Form extends Component {
     render() {
         const { children, action } = this.props;
         return (
-            <form type={action} onSubmit={this.onSubmit}>
-                {React.Children.map(children, (child, i) => React.cloneElement(child, {
-                    ref: i
-                }))}
-            </form>
+            <Provider store={this.store}>
+                <form type={action} onSubmit={this.onSubmit} ref={(form)=>{ this.form = form; }}>
+                    {React.Children.map(children, (child)=>{
+                        console.log(child);
+                        return child;
+                    })}
+                </form>
+            </Provider>
         );
     }
 }
@@ -76,7 +90,7 @@ class Form extends Component {
 Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
     action  : PropTypes.string,
     onSubmit: PropTypes.func,
-    children: PropTypes.object
+    children: PropTypes.any
 };
 Form.defaultProps = {
     action  : 'post',

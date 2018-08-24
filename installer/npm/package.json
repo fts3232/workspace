@@ -88,6 +88,7 @@
     "prop-types": "^15.6.1",
     "qs": "6.5.2",
     "react": "^16.4.0",
+    "react-click-outside": "^3.0.1",
     "react-dom": "^16.4.0",
     "react-loadable": "^5.4.0",
     "react-redux": "^5.0.7",

@@ -1,36 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import Component from '../../../components/component';
 import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
 import { Form, Input, Select, Textarea } from '../../../components/form';
+import DatePicker from '../../../components/date-picker';
 
 class Add extends Component {
-    submit() {
+    constructor(props) {
+        super(props);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onSubmit() {
         console.log(1);
-        const { children } = this.props;
-        React.Children.map(children, (child) => {
-            console.log(child.validate());
-        });
     }
 
     render() {
-        const breadcrumb = [{ 'name': '账簿', 'path': '/cashBook' }, { 'name': '添加', 'path': '/cashBook/add' }];
+        const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }, { 'name': '添加', 'path': '/cash-book/add' }];
+        const validateRule = {
+            'tag'   : 'required',
+            'amount': 'required|int'
+        };
+        const validateMsg = {
+            'tag'   : 'tag错误',
+            'amount': 'amount错误'
+        };
         return (
             <div>
                 <Breadcrumb data={breadcrumb}/>
                 <Panel>
-                    <Form onSubmit={this.submit}>
-                        <Input label="日期" validateRule="required|date"/>
-                        <Input label="标签" validateRule="required"/>
-                        <Select label="类型" data={{ '1': '收入', '2': '支出' }}/>
-                        <Input label="金额" validateRule="required|num"/>
-                        <Textarea label="描述"/>
+                    <Form onSubmit={this.onSubmit} validateRule={validateRule} validateMsg={validateMsg}>
+                        <DatePicker/>
+                        <Input name="tag" label="标签" placeholder="请输入标签"/>
+                        <Select name="type" label="类型" data={{ '1': '收入', '2': '支出' }}/>
+                        <Input name="amount" label="金额" placeholder="请输入金额"/>
+                        <Textarea name="description" label="描述" placeholder="请输入描述"/>
                         <div className="text-right">
-                            <Button type="info">添加</Button>
-                            <Link to="/cashBook">
+                            <Button category="info" type="submit">添加</Button>
+                            <Link to="/cash-book">
                                 <Button>返回</Button>
                             </Link>
                         </div>
@@ -41,9 +50,7 @@ class Add extends Component {
     }
 }
 
-Add.propTypes = {
-    children: PropTypes.object.isRequired
-};
+Add.propTypes = {};
 
 Add.defaultProps = {};
 

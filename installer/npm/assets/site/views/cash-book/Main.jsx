@@ -27,15 +27,15 @@ class Main extends Component {
             '描述': 'description'
         };
         const total = 500;
-        const breadcrumb = [{ 'name': '账簿', 'path': '/cashBook' }];
-        const currentPage = parseInt(this.getParams('page'), 0);
+        const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }];
+        const currentPage = parseInt(this.getParams('page', 1), 0);
         return (
             <div>
                 <Breadcrumb data={breadcrumb}/>
                 <Panel>
                     <div className="margin-bottom-10">
-                        <Link to="/cashBook/add">
-                            <Button type="info">添加</Button>
+                        <Link to="/cash-book/add">
+                            <Button type="button" category="info">添加</Button>
                         </Link>
                     </div>
                     <Table data={data} colunm={colunm} total={total}/>
