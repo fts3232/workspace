@@ -86,6 +86,7 @@ module.exports = {
         "jsx-a11y/click-events-have-key-events": 0,
         //必须支持tab交互
         "jsx-a11y/interactive-supports-focus"  : 0,
-        "no-class-assign":0
+        //export 单一对象时使用default
+        'import/prefer-default-export':0
     },
 };

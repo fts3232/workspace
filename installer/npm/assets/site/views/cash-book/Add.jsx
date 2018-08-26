@@ -24,16 +24,21 @@ class Add extends Component {
             'amount': 'required|int'
         };
         const validateMsg = {
-            'tag'   : 'tag错误',
-            'amount': 'amount错误'
+            'tag': {
+                'required': '标签不能为空'
+            },
+            'amount': {
+                'required': '金额不能为空',
+                'int'     : '金额格式不正确'
+            }
         };
         return (
             <div>
                 <Breadcrumb data={breadcrumb}/>
                 <Panel>
                     <Form onSubmit={this.onSubmit} validateRule={validateRule} validateMsg={validateMsg}>
-                        <DatePicker/>
-                        <Input name="tag" label="标签" placeholder="请输入标签"/>
+                        <DatePicker name="date" value="2018-07-10"/>
+                        <Input name="tag" label="标签" placeholder="请输入标签" value="22"/>
                         <Select name="type" label="类型" data={{ '1': '收入', '2': '支出' }}/>
                         <Input name="amount" label="金额" placeholder="请输入金额"/>
                         <Textarea name="description" label="描述" placeholder="请输入描述"/>
