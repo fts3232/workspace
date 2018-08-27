@@ -27,8 +27,8 @@ class DatePicker extends Component {
     }
 
     handleClickOutside() {
-        const { setVisible } = this.props;
-        setVisible(false);
+        const { name, setVisible } = this.props;
+        setVisible(name, false);
         /* const { visible } = this.state;
         if (visible) {
             this.setState({ visible: false });
@@ -68,16 +68,13 @@ DatePicker.defaultProps = {
 // 导出组件
 const mapStateToProps = (state, ownProps) => {
     const { name } = ownProps;
-    let { visible } = ownProps;
-    if (typeof state.dataPicker[name] !== 'undefined') {
-        visible = state.dataPicker[name].visible;
-    }
+    const { visible } = typeof state.dataPicker[name] !== 'undefined' ? state.dataPicker[name] : ownProps;
     return { visible };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     setVisible: (name, visible) => {
-        dispatch({ type: 'SET_VISIBLE', visible, name });
+        dispatch({ type: 'SET_DATE_PICKER_VISIBLE', visible, name });
     }
 });
 

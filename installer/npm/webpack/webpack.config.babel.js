@@ -20,7 +20,8 @@ let getBaseConfig = options => {
         devServer   : {
             compress: true,
             watchContentBase: true,
-            historyApiFallback: true
+            historyApiFallback: true,
+            open: true
         },
         module      : getLoader(options),
         externals   : {

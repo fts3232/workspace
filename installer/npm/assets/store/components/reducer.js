@@ -1,35 +1,30 @@
-const formData = (state = { error: {  }, value: { }, visible: {} }, action) => {
+const formData = (state = {}, action) => {
     switch (action.type) {
-        case 'SET_ERROR':
-            return { ...state, error: action.error };
-        case 'SET_VALUE':
-            return { ...state, value: Object.assign(state.value, action.value) };
-        case 'GET_VALUE':
-            return state.value;
+        case 'SET_FORM_DATA':
+            const obj = {};
+            obj[action.name] = action.value;
+            return { ...state, ...obj };
         default:
             return state;
     }
 };
 
-const formErrorMsg = (state = { error: {  }, value: { }, visible: {} }, action) => {
+const formErrorMsg = (state = {}, action) => {
     switch (action.type) {
-        case 'SET_ERROR':
-            return { ...state, error: action.error };
-        case 'SET_VALUE':
-            return { ...state, value: Object.assign(state.value, action.value) };
-        case 'GET_VALUE':
-            return state.value;
+        case 'SET_FORM_ERROR':
+            return { ...state, ...action.error };
         default:
             return state;
     }
 };
 
-const dataPicker = (state = { }, action) => {
+const dataPicker = (state = {}, action) => {
     switch (action.type) {
-        case 'SET_VISIBLE':
-            state[action.name].visible = action.visible;
-            console.log(state);
-            return { ...state };
+        case 'SET_DATE_PICKER_VISIBLE':
+            const obj = {};
+            obj[action.name] = typeof state[action.name] === 'undefined' ? {} : state[action.name];
+            obj[action.name].visible = action.visible;
+            return { ...state, ...obj };
         default:
             return state;
     }

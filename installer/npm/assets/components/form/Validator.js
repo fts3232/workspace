@@ -29,7 +29,6 @@ class Validator {
     }
 
     getError() {
-        console.log(this.error);
         return this.error;
     }
 

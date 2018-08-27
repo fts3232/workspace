@@ -35,6 +35,7 @@ class Form extends Component {
 
 Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
     action      : PropTypes.string,
+    name        : PropTypes.string,
     onSubmit    : PropTypes.func,
     children    : PropTypes.any,
     validateRule: PropTypes.object,
@@ -44,6 +45,7 @@ Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报�
 };
 Form.defaultProps = {
     action  : 'post',
+    name    : '',
     children: {},
     onSubmit: () => {
     },
@@ -55,13 +57,13 @@ Form.defaultProps = {
 
 // 导出组件
 const mapStateToProps = (state) => {
-    const { value } = state.formData;
-    return { value };
+    const { formData } = state;
+    return { value: formData };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     setError: (error) => {
-        dispatch({ type: 'SET_VALUE', error });
+        dispatch({ type: 'SET_FORM_ERROR', error });
     }
 });
 

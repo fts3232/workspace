@@ -52,20 +52,18 @@ Select.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
     const { name } = ownProps;
     let { value, error } = ownProps;
-    if (typeof state.formData.value[name] !== 'undefined') {
-        value = state.formData.value[name];
+    if (typeof state.formData[name] !== 'undefined') {
+        value = state.formData[name];
     }
-    if (typeof state.formData.error[name]) {
-        error = state.formData.error[name];
+    if (typeof state.formErrorMsg[name] !== 'undefined') {
+        error = state.formErrorMsg[name];
     }
     return { error, value };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     setValue: (name, value) => {
-        const changeValue = {};
-        changeValue[name] = value;
-        dispatch({ type: 'SET_VALUE', changeValue });
+        dispatch({ type: 'SET_FORM_DATA', value, name });
     }
 });
 

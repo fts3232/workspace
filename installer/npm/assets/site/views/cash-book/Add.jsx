@@ -4,8 +4,9 @@ import Component from '../../../components/component';
 import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
-import { Form, Input, Select, Textarea } from '../../../components/form';
+import { Form, Input, Select, Textarea, Label } from '../../../components/form';
 import DatePicker from '../../../components/date-picker';
+import { Col, Row } from '../../../components/grid';
 
 class Add extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class Add extends Component {
                 <Panel>
                     <Form onSubmit={this.onSubmit} validateRule={validateRule} validateMsg={validateMsg}>
                         <DatePicker name="date" value="2018-07-10"/>
+                        <Row className="test">1231</Row>
                         <Input name="tag" label="标签" placeholder="请输入标签" value="22"/>
                         <Select name="type" label="类型" data={{ '1': '收入', '2': '支出' }}/>
                         <Input name="amount" label="金额" placeholder="请输入金额"/>

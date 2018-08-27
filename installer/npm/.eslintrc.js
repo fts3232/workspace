@@ -87,6 +87,8 @@ module.exports = {
         //必须支持tab交互
         "jsx-a11y/interactive-supports-focus"  : 0,
         //export 单一对象时使用default
-        'import/prefer-default-export':0
+        'import/prefer-default-export'         : 0,
+        //禁止重新赋值参数
+        'no-param-reassign'                    : 0,
     },
 };
