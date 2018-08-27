@@ -19,7 +19,8 @@ class Component extends React.Component {
     }
 
     classNames(...args) {
-        return classnames(...args);
+        const { className } = this.props;
+        return classnames(...args, className);
     }
 
     style(args) {
@@ -29,11 +30,13 @@ class Component extends React.Component {
 }
 
 Component.propTypes = {
-    style: PropTypes.object
+    style    : PropTypes.object,
+    className: PropTypes.string
 };
 
 Component.defaultProps = {
-    style: {}
+    style    : {},
+    className: ''
 };// 设置默认属性
 
 Component.contextTypes = {

@@ -21,19 +21,16 @@ class Input extends Component {
         const { label, type, value, readonly, placeholder, error, name } = this.props;
         return (
             <div className={this.classNames(style['form-group'], { 'has-error': error })}>
-                <label className={this.classNames(style['label-control'], 'col-2')}>{label}</label>
-                <div className='col-10'>
-                    <input
-                        className={this.classNames(style['form-control'])}
-                        name={name}
-                        type={type}
-                        placeholder={placeholder}
-                        readOnly={readonly}
-                        defaultValue={value}
-                        onChange={this.onChange}
-                    />
-                    {error ? (<p className="help-block">{error}</p>) : null}
-                </div>
+                <input
+                    className={this.classNames(style['form-control'])}
+                    name={name}
+                    type={type}
+                    placeholder={placeholder}
+                    readOnly={readonly}
+                    defaultValue={value}
+                    onChange={this.onChange}
+                />
+                {error ? (<p className="help-block">{error}</p>) : null}
             </div>
         );
     }
