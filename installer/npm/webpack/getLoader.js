@@ -50,8 +50,8 @@ let getLoader = otpions => {
             {
                 loader: 'css-loader',
                 options: {
-                    modules: true,
-                    localIdentName: '[local]',
+                    //modules: true,
+                    //localIdentName: '[local]',
                     // some options
                     minimize: otpions.mode == 'production', //生产模式开启压缩
                 },
