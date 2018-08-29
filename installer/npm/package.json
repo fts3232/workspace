@@ -87,6 +87,7 @@
     "lru-cache": "^4.1.3",
     "prop-types": "^15.6.2",
     "qs": "6.5.2",
+    "rc-menu": "^7.3.0",
     "react": "^16.4.2",
     "react-click-outside": "^3.0.1",
     "react-dom": "^16.4.2",

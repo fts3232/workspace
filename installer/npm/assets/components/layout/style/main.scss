@@ -1,66 +1,74 @@
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-ul {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-body {
-    background: #EEEEEB;
-    font-family: "Helvetica Neue", Helvetica, Arial, STHeiti-Light, STHeiti-Medium, "Microsoft YaHei", "Microsoft JhengHei", STHeiti, MingLiu;
-}
-
-.content-container {
-    margin-left: 240px;
-    padding: 10px;
-}
-
-@each $i in 5, 10, 15 {
-    .margin-top-#{$i} {
-        margin-top: #{$i}px;
-    }
-    .margin-left-#{$i} {
-        margin-left: #{$i}px;
-    }
-    .margin-right-#{$i} {
-        margin-right: #{$i}px;
-    }
-    .margin-bottom-#{$i} {
-        margin-bottom: #{$i}px;
-    }
-}
-
-@each $i in left, right, center {
-    .text-#{$i} {
-        text-align: #{$i};
-    }
-}
-
-.layout-header {
-    background: #001529;
-    padding: 0 50px;
-    height: 64px;
-    line-height: 64px;
-}
-
-.layout-footer {
-    background: #f0f2f5;
-    padding: 24px 50px;
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-}
-
-.layout-content {
+.layout{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
     -webkit-box-flex: 1;
     -webkit-flex: auto;
     -ms-flex: auto;
     flex: auto;
+    background: #f0f2f5;
+    &.layout-has-sider{
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+
+    & .layout-sider{
+        -webkit-transition: all .2s;
+        transition: all .2s;
+        position: relative;
+        background: #001529;
+        min-width: 0;
+        & .layout-sider-children{
+            height: 100%;
+            padding-top: 0.1px;
+            margin-top: -0.1px;
+        }
+        & .layout-sider-trigger {
+            position: fixed;
+            text-align: center;
+            bottom: 0;
+            cursor: pointer;
+            height: 48px;
+            line-height: 48px;
+            color: #fff;
+            background: #002140;
+            z-index: 1;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+            & .icon {
+                width: 14px;
+                height: 48px;
+            }
+        }
+    }
+
+    & .layout-header {
+        background: #001529;
+        padding: 0 50px;
+        height: 64px;
+        line-height: 64px;
+    }
+
+    & .layout-footer {
+        background: #f0f2f5;
+        padding: 24px 50px;
+        color: rgba(0, 0, 0, 0.65);
+        font-size: 14px;
+    }
+
+    & .layout-content {
+        -webkit-box-flex: 1;
+        -webkit-flex: auto;
+        -ms-flex: auto;
+        flex: auto;
+    }
 }

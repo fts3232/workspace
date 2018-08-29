@@ -90,5 +90,9 @@ module.exports = {
         'import/prefer-default-export'         : 0,
         //禁止重新赋值参数
         'no-param-reassign'                    : 0,
+        //禁止一个文件内出现多个component
+        'react/no-multi-comp'                  : 0,
+        //禁止全局变量
+        'no-restricted-globals'                : 0
     },
 };

@@ -1,41 +1,58 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Redirect, Route, Router, Switch } from 'react-router-dom';
+import { Redirect, Route, Router, Switch, Link } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
-import { Provider } from 'react-redux';
-/* import Loader from './components/loader'; */
-
-/* import Header from './site/views/header';
-import Footer from './site/views/footer';
-import NavBar from './site/views/nav-bar';
+import Loader from './components/loader';
 import NotFound from './site/views/not-found';
-import nav from './site/config/nav.js'; */
+
+import nav from './site/config/nav.js';
 import Layout from './components/layout';
+import Menu from './components/menu';
+import Icon from './components/icon';
 
 import store from './store';
 
 const { Header, Footer, Sider, Content } = Layout;
+const { Item, ItemGroup, SubMenu } = Menu;
 const history = createBrowserHistory();
 
 // 加载style
-const req = require.context('./components', true, /^\.\/[^_][\w-]+\/style\/main\.scss?$/);
+require.context('./components', true, /^\.\/[^_][\w-]+\/style\/main\.scss?$/);
+require.context('./site/style', true, /^\.\/[\w-]+\.scss?$/);
 
 // react-router
 ReactDOM.render((
     <Router history={history}>
-        <Provider store={store}>
-
+        <Layout className='app'>
+            <Header>header</Header>
             <Layout>
-                <Header>header</Header>
+                <Sider collapsible>
+                    <Menu selectedKeys={1}>
+                        <Item>
+                            <Link to="/cash-book">
+                                <Icon name='desktop'/><span>账簿</span>
+                            </Link>
+                        </Item>
+                    </Menu>
+                </Sider>
                 <Layout>
-                    <Sider>left sidebar</Sider>
-                    <Content>main content</Content>
-                    <Sider>right sidebar</Sider>
+                    <Content>
+                        <Switch>
+                            <Route
+                                path="/"
+                                exact
+                                render={() => (
+                                    <Redirect to="/cash-book"/>
+                                )}
+                            />
+                            <Route exact strict path="/:controller/:action?" component={Loader}/>
+                            <Route component={NotFound}/>
+                        </Switch>
+                    </Content>
+                    <Footer>footer</Footer>
                 </Layout>
-                <Footer>footer</Footer>
             </Layout>
-
-        </Provider>
+        </Layout>
     </Router>
 ), document.getElementsByTagName('section')[0]);

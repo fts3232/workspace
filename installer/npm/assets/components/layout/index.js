@@ -1,4 +1,4 @@
-import Layout from './layout';
+import Layout from './Layout';
 import Sider from './Sider';
 
 Layout.Sider = Sider;

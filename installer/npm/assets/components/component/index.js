@@ -30,13 +30,15 @@ class Component extends React.Component {
 }
 
 Component.propTypes = {
+    children : PropTypes.any,
     style    : PropTypes.object,
     className: PropTypes.string
 };
 
 Component.defaultProps = {
     style    : {},
-    className: ''
+    className: '',
+    children : {}
 };// 设置默认属性
 
 Component.contextTypes = {

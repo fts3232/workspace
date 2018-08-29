@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import Component from '../component';
 
 const propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
-    children: PropTypes.any,
     hasSider: PropTypes.bool
 };
 const defaultProps = {
-    children : {},
-    hasSlider: false
+    hasSider: false
 };// 设置默认属性
 
 class BasicLayout extends Component {
@@ -19,14 +17,31 @@ class BasicLayout extends Component {
         };
     }
 
+    getChildContext() {
+        return {
+            siderHook: {
+                addSider: (id) => {
+                    this.setState({
+                        siders: [...this.state.siders, id]
+                    });
+                },
+                removeSider: (id) => {
+                    this.setState({
+                        siders: this.state.siders.filter(currentId => currentId !== id)
+                    });
+                }
+            }
+        };
+    }
+
     render() {
-        const { children, hasSider, prefixCls,  ...other } = this.props;
+        const { children, hasSider, prefixCls, ...other } = this.props;
         return (
             <div
+                {...other}
                 className={this.classNames(prefixCls, {
                     [`${ prefixCls }-has-sider`]: hasSider || this.state.siders.length > 0
                 })}
-                {...other}
             >
                 {children}
             </div>
@@ -36,12 +51,15 @@ class BasicLayout extends Component {
 
 BasicLayout.propTypes = propTypes;
 BasicLayout.defaultProps = defaultProps;
+BasicLayout.childContextTypes = {
+    siderHook: PropTypes.object
+};
 
 class Basic extends Component {
     render() {
-        const { prefixCls, children, ...other } = this.props;
+        const { prefixCls, children, hasSider, ...other } = this.props;
         return (
-            <div className={this.classNames(prefixCls)} {...other}>
+            <div {...other} className={this.classNames(prefixCls)}>
                 {children}
             </div>
         );
@@ -55,14 +73,14 @@ function generator(baiscProps) {
     return (BasicComponent) => {
         const Adapter = class Adapter extends Component {
             constructor(props) {
-                props = Object.assign(props, baiscProps);
+
                 super(props);
             }
 
             render() {
-                console.log(this);
+                const props = Object.assign({}, this.props, baiscProps);
                 return (
-                    <BasicComponent {...this.props}/>
+                    <BasicComponent {...props}/>
                 );
             }
         };

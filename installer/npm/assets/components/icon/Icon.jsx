@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Component from '../component';
-import style from './style/main.scss';
 
 require('./font.js');
 
@@ -14,7 +13,7 @@ class Icon extends Component {
     render() {
         const { name } = this.props;
         return (
-            <svg className={this.classNames(style.icon)} aria-hidden="true" onClick={this.onClick}>
+            <svg className={this.classNames('icon')} aria-hidden="true" onClick={this.onClick}>
                 <use xlinkHref={`#icon-${ name }`}/>
             </svg>
         );
