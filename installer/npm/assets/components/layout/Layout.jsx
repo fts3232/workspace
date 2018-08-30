@@ -72,11 +72,6 @@ Basic.defaultProps = defaultProps;
 function generator(baiscProps) {
     return (BasicComponent) => {
         const Adapter = class Adapter extends Component {
-            constructor(props) {
-
-                super(props);
-            }
-
             render() {
                 const props = Object.assign({}, this.props, baiscProps);
                 return (

@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import Component from '../component';
 
 class Menu extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const { children } = this.props;
         const { siderCollapsed } = this.context;

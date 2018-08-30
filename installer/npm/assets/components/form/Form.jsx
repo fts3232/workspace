@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Component from '../component';
 import Validator from './Validator.js';
 
@@ -8,13 +7,24 @@ class Form extends Component {
     constructor(props) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
+        this.state = {
+            'data': {}
+        };
+    }
+
+
+    getChildContext() {
+        return {
+            setData: this.setData.bind(this)
+        };
     }
 
     onSubmit(e) {
         e.preventDefault();
-        const { onSubmit, validateRule, validateMsg, value, setError } = this.props;
-        console.log(value);
-        const validator = new Validator(value, validateRule, validateMsg);
+        const { onSubmit, validateRule, validateMsg, setError } = this.props;
+        const { data } = this.state;
+        console.log(data);
+        const validator = new Validator(data, validateRule, validateMsg);
         if (!validator.isFail()) {
             onSubmit();
         } else {
@@ -23,10 +33,22 @@ class Form extends Component {
         return false;
     }
 
+    setData(name, value) {
+        const { data } = this.state;
+        const obj = {};
+        console.log(data);
+        obj[name] = value;
+        console.log({ ...data, ...obj });
+        this.setState({ data: { ...data, ...obj } }, ()=>{
+            console.log(1);
+            console.log(this.state);
+        });
+    }
+
     render() {
         const { children, action } = this.props;
         return (
-            <form type={action} onSubmit={this.onSubmit}>
+            <form type={action} className={this.classNames('form')} onSubmit={this.onSubmit}>
                 {children}
             </form>
         );
@@ -37,7 +59,6 @@ Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报�
     action      : PropTypes.string,
     name        : PropTypes.string,
     onSubmit    : PropTypes.func,
-    children    : PropTypes.any,
     validateRule: PropTypes.object,
     validateMsg : PropTypes.object,
     value       : PropTypes.object,
@@ -46,25 +67,18 @@ Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报�
 Form.defaultProps = {
     action  : 'post',
     name    : '',
-    children: {},
     onSubmit: () => {
     },
     validateRule: {},
     validateMsg : {},
     value       : {},
-    setError    : ()=>{}
+    setError    : () => {
+    }
 };// 设置默认属性
 
-// 导出组件
-const mapStateToProps = (state) => {
-    const { formData } = state;
-    return { value: formData };
+Form.childContextTypes = {
+    setData: PropTypes.func
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    setError: (error) => {
-        dispatch({ type: 'SET_FORM_ERROR', error });
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form);
+// 导出组件
+export default Form;

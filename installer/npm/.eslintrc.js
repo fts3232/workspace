@@ -93,6 +93,10 @@ module.exports = {
         //禁止一个文件内出现多个component
         'react/no-multi-comp'                  : 0,
         //禁止全局变量
-        'no-restricted-globals'                : 0
+        'no-restricted-globals'                : 0,
+        'react/no-unused-prop-types'           : 0,
+        'react/prop-types'                     : 0,
+        'react/destructuring-assignment'       : 0,
+        'react/no-access-state-in-setstate'    : 0
     },
 };

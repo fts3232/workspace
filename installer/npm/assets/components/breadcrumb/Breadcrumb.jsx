@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Component from '../component';
-import style from './style/main.scss';
 
 class Breadcrumb extends Component {
     render() {
@@ -10,9 +9,9 @@ class Breadcrumb extends Component {
         const { router } = this.context;
         const { location } = router.route;
         return (
-            <ul className={style.breadcrumb}>
+            <ul className={this.classNames('breadcrumb')}>
                 {data.map((v, i) => (
-                    <li className={location.pathname.toLowerCase() === v.path.toLowerCase() ? style.active : null} key={i}>
+                    <li className={location.pathname.toLowerCase() === v.path.toLowerCase() ? this.classNames('active') : null} key={i}>
                         {location.pathname.toLowerCase() !== v.path.toLowerCase() ? (<Link to={v.path}>{v.name}</Link>) : v.name}
                     </li>
                 ))}

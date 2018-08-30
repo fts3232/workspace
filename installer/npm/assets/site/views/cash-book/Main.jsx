@@ -6,6 +6,7 @@ import Pagination from '../../../components/pagination';
 import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
+import { Row, Col } from '../../../components/grid';
 
 class Main extends Component {
     constructor(props) {
@@ -30,18 +31,22 @@ class Main extends Component {
         const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }];
         const currentPage = parseInt(this.getParams('page', 1), 0);
         return (
-            <div>
-                <Breadcrumb data={breadcrumb}/>
-                <Panel>
-                    <div className="margin-bottom-10">
-                        <Link to="/cash-book/add">
-                            <Button type="button" category="info">添加</Button>
-                        </Link>
-                    </div>
-                    <Table data={data} colunm={colunm} total={total}/>
-                    <Pagination total={total} currentPage={currentPage}/>
-                </Panel>
-            </div>
+            <Row>
+                <Col span={12}>
+                    <Breadcrumb data={breadcrumb}/>
+                </Col>
+                <Col span={12}>
+                    <Panel>
+                        <div className="margin-bottom-10">
+                            <Link to="/cash-book/add">
+                                <Button type="button" category="info">添加</Button>
+                            </Link>
+                        </div>
+                        <Table data={data} colunm={colunm} total={total}/>
+                        <Pagination total={total} currentPage={currentPage}/>
+                    </Panel>
+                </Col>
+            </Row>
         );
     }
 }

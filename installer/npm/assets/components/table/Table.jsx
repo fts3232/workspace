@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Component from '../component';
-import style from './style/main.scss';
 
 class Table extends Component {
     render() {
         const { data, colunm, total } = this.props;
         return (
-            <div className={style['data-table']}>
+            <div className={this.classNames('data-table')}>
                 <table>
                     <thead>
                         <tr>
@@ -22,7 +21,7 @@ class Table extends Component {
                         ))}
                     </tbody>
                 </table>
-                <div className={style['data-info']}>
+                <div className="data-info">
                     总共{total}条记录
                 </div>
             </div>

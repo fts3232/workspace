@@ -1,9 +1,7 @@
 import React from 'react';
 import ClickOutside from 'react-click-outside';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Component from '../component';
-import style from './style/main.scss';
 import { formatDate } from './parseTime';
 import Panel from './panel/DatePickerPanel';
 import { Input } from '../form';
@@ -12,38 +10,36 @@ class DatePicker extends Component {
     constructor(props) {
         super(props);
         this.onFocus = this.onFocus.bind(this);
-        const { visible, setVisible, name } = props;
-        setVisible(name, visible);
+        this.state = {
+            visible: false
+        };
     }
 
     onFocus() {
-        const { name, setVisible } = this.props;
-        setVisible(name, true);
-        // this.setState({ visible: true });
+        this.setState({ visible: true });
     }
 
     handleItemClick() {
-        // this.setState({ visible: false });
+        this.setState({ visible: false });
     }
 
     handleClickOutside() {
-        const { name, setVisible } = this.props;
-        setVisible(name, false);
-        /* const { visible } = this.state;
+        const { visible } = this.state;
         if (visible) {
             this.setState({ visible: false });
-        } */
+        }
     }
 
     handleClear() {
-        // this.setState({ visible: false });
+        this.setState({ visible: false });
     }
 
     render() {
-        const { placeholder, name, visible, value } = this.props;
+        const { visible } = this.state;
+        const { placeholder, name, value, id } = this.props;
         return (
-            <div className={style['date-picker']} onFocus={this.onFocus}>
-                <Input label="日期" name={name} readonly value={formatDate(value)} placeholder={placeholder}/>
+            <div className={this.classNames('date-picker')} onFocus={this.onFocus}>
+                <Input name={name} id={id} readonly value={formatDate(value)} placeholder={placeholder}/>
                 {visible && (<Panel value={formatDate(value)}/>)}
             </div>
         );
@@ -54,28 +50,14 @@ DatePicker.propTypes = {
     value      : PropTypes.any,
     placeholder: PropTypes.string,
     name       : PropTypes.string.isRequired,
-    visible    : PropTypes.bool,
-    setVisible : PropTypes.func
+    visible    : PropTypes.bool
 };
 
 DatePicker.defaultProps = {
     value      : '',
     placeholder: '请选择日期',
-    visible    : false,
-    setVisible : ()=>{}
+    visible    : false
 };
 
 // 导出组件
-const mapStateToProps = (state, ownProps) => {
-    const { name } = ownProps;
-    const { visible } = typeof state.dataPicker[name] !== 'undefined' ? state.dataPicker[name] : ownProps;
-    return { visible };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-    setVisible: (name, visible) => {
-        dispatch({ type: 'SET_DATE_PICKER_VISIBLE', visible, name });
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClickOutside(DatePicker));
+export default ClickOutside(DatePicker);

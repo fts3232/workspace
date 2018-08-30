@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Component from '../component';
-import style from './style/main.scss';
 
 class Col extends Component {
     render() {
-        const { children, span, align } = this.props;
+        const { children, span } = this.props;
         return (
-            <div className={style[`col-${ span }`]}>
+            <div className={this.classNames(`col-${ span }`)}>
                 {children}
             </div>
         );
@@ -16,12 +15,10 @@ class Col extends Component {
 
 Col.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
     children: PropTypes.any,
-    span    : PropTypes.oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).isRequired,
-    align   : PropTypes.oneOf(['left', 'right', 'center'])
+    span    : PropTypes.oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).isRequired
 };
 Col.defaultProps = {
-    children: {},
-    align   : 'left'
+    children: {}
 };// 设置默认属性
 
 // 导出组件

@@ -6,15 +6,15 @@ import { createBrowserHistory } from 'history';
 import Loader from './components/loader';
 import NotFound from './site/views/not-found';
 
-import nav from './site/config/nav.js';
+/* import nav from './site/config/nav.js'; */
 import Layout from './components/layout';
 import Menu from './components/menu';
 import Icon from './components/icon';
 
-import store from './store';
+/* import store from './store'; */
 
 const { Header, Footer, Sider, Content } = Layout;
-const { Item, ItemGroup, SubMenu } = Menu;
+const { Item } = Menu;
 const history = createBrowserHistory();
 
 // 加载style

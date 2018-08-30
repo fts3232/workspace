@@ -22,6 +22,13 @@ class Sider extends Component {
         this.toggle = this.toggle.bind(this);
     }
 
+    getChildContext() {
+        return {
+            siderCollapsed: this.state.collapsed,
+            collapsedWidth: this.props.collapsedWidth
+        };
+    }
+
     componentDidMount() {
         if (this.context.siderHook) {
             this.context.siderHook.addSider(this.uniqueId);
@@ -32,13 +39,6 @@ class Sider extends Component {
         if (this.context.siderHook) {
             this.context.siderHook.removeSider(this.uniqueId);
         }
-    }
-
-    getChildContext() {
-        return {
-            siderCollapsed: this.state.collapsed,
-            collapsedWidth: this.props.collapsedWidth
-        };
     }
 
     setCollapsed(collapsed, type) {
@@ -73,7 +73,7 @@ class Sider extends Component {
                     {children}
                 </div>
                 {collapsible ? (
-                    <div className={`${ prefixCls }-trigger`} onClick={this.toggle} style={{ width: siderWidth }}>
+                    <div className={`${ prefixCls }-trigger`} role="button" onClick={this.toggle} style={{ width: siderWidth }}>
                         {this.state.collapsed ? (<Icon name="left"/>) : (<Icon name="right"/>)}
                     </div>
                 ) : null}
