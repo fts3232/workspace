@@ -1,17 +1,37 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import superagent from 'superagent';
 import Component from '../../../components/component';
 import Table from '../../../components/table';
 import Pagination from '../../../components/pagination';
 import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
-import { Row, Col } from '../../../components/grid';
+import { Col, Row } from '../../../components/grid';
+import Message from '../../../components/message';
 
 class Main extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    componentDidMount() {
+        new Promise((resolve, reject) => {
+            const url = 'http://localhost:8000/api/cashBook/get';
+            const data = { page: 1 };
+            superagent.get(url)
+                .send(data)
+                .end((err, res) => {
+                    if (typeof res !== 'undefined' && res.ok) {
+                        resolve(JSON.parse(res.text));
+                    } else {
+                        reject(err);
+                    }
+                });
+        }).then((data) => {
+            console.log(data);
+        });
     }
 
     render() {
@@ -32,6 +52,11 @@ class Main extends Component {
         const currentPage = parseInt(this.getParams('page', 1), 0);
         return (
             <Row>
+                <Message type="info" content="test"/>
+                <Message type="info" content="test"/>
+                <Message type="info" content="test"/>
+                <Message type="info" content="test"/>
+
                 <Col span={12}>
                     <Breadcrumb data={breadcrumb}/>
                 </Col>
@@ -39,7 +64,7 @@ class Main extends Component {
                     <Panel>
                         <div className="margin-bottom-10">
                             <Link to="/cash-book/add">
-                                <Button type="button" category="info">添加</Button>
+                                <Button type="info">添加</Button>
                             </Link>
                         </div>
                         <Table data={data} colunm={colunm} total={total}/>

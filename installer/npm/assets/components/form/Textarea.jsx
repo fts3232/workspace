@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Component from '../component';
 
 class Textarea extends Component {
@@ -9,22 +10,20 @@ class Textarea extends Component {
     }
 
     componentDidMount() {
-        const { value, name } = this.props;
-        const { setData } = this.context;
-        setData(name, value);
+        const { value, setData } = this.props;
+        setData(value);
     }
 
     onChange(e) {
-        const { name } = this.props;
-        const { setData } = this.context;
-        setData(name, e.target.value);
+        const { setData } = this.props;
+        setData(e.target.value);
     }
 
     render() {
         const { value, rows, placeholder, id, error } = this.props;
         return (
             <div className={this.classNames('form-group', { 'has-error': error })}>
-                <textarea rows={rows} className="form-control" defaultValue={value} placeholder={placeholder} onChange={this.onChange} id={id}/>
+                <textarea rows={rows} className="form-control" value={value} placeholder={placeholder} onChange={this.onChange} id={id}/>
                 {error ? (<p className="help-block">{error}</p>) : null}
             </div>
         );
@@ -45,9 +44,15 @@ Textarea.defaultProps = {
     error      : ''
 };// 设置默认属性
 
-Textarea.contextTypes = {
-    setData: PropTypes.func
-};
+const mapState = (state, ownProps) => ({
+    value: typeof state.data[ownProps.name] !== 'undefined' ? state.data[ownProps.name] : ownProps.value,
+    error: typeof state.error[ownProps.name] !== 'undefined' ? state.error[ownProps.name] : ''
+});
+const mapDispatch = (dispatch, ownProps) => ({
+    setData: (value) => {
+        dispatch({ 'type': 'SET_DATA', value, name: ownProps.name });
+    }
+});
 
 // 导出组件
-export default Textarea;
+export default connect(mapState, mapDispatch)(Textarea);

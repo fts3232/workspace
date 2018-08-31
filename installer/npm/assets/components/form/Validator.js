@@ -19,6 +19,7 @@ class Validator {
             for (let j = 0, len = rule.length; j < len; j++) {
                 if (typeof this[rule[j]] !== 'undefined' && !this[rule[j]](name)) {
                     this.error[name] = typeof msg[name][rule[j]] === 'undefined' ? msg[name] : msg[name][rule[j]];
+                    break;
                 }
             }
         };
@@ -42,7 +43,15 @@ class Validator {
 
     int(name) {
         const { value } = this;
-        if (typeof value[name] !== 'undefined' && !Number.isInteger(value[name])) {
+        if (typeof value[name] !== 'undefined' && !Number.isInteger(parseInt(value[name], 0))) {
+            return false;
+        }
+        return true;
+    }
+
+    number(name) {
+        const { value } = this;
+        if (typeof value[name] !== 'undefined' && !isNaN(parseFloat(value[name]))) {
             return false;
         }
         return true;

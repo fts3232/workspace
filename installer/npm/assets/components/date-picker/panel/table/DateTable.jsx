@@ -81,7 +81,7 @@ class DateTable extends Component {
                         <tr key={index}>
                             {row.map((v, key) => (
                                 <td className={this.classNames(v.type, v.isToday && 'is-today')} key={key}>
-                                    <div role="button" onClick={this.onClick.bind(this, v.value)}>{v.isToday ? '今天' : v.day}</div>
+                                    <div role="button" onClick={this.onClick.bind(this, v.value)}>{v.day}</div>
                                 </td>
                             ))}
                         </tr>

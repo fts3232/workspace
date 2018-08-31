@@ -5,10 +5,15 @@ import Component from '../component';
 
 class FormItem extends Component {
 
-    getId() {
+    getChild() {
         const { children } = this.props;
         const childrenArray = React.Children.toArray(children);
-        return childrenArray[0].props.id;
+        return childrenArray[0];
+    }
+
+    getChildProps(key) {
+        const child = this.getChild();
+        return child.props[key];
     }
 
     render() {
@@ -17,7 +22,7 @@ class FormItem extends Component {
             <Row className="form-group">
                 {label !== '' ? (
                     <Col {...labelCol} className="label-control">
-                        <label htmlFor={this.getId()}>{label}</label>
+                        <label htmlFor={this.getChildProps('id')}>{label}</label>
                     </Col>
                 ) : null}
                 <Col {...wrapperCol} className={className}>

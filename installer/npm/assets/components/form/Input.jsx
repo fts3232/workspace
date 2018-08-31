@@ -1,25 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Component from '../component';
 
 class Input extends Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
-
-
     }
 
     componentDidMount() {
-        const { value, name } = this.props;
-        const { setData } = this.context;
-        setData(name, value);
+        const { value, setData } = this.props;
+        setData(value);
     }
 
     onChange(e) {
-        const { name } = this.props;
-        const { setData } = this.context;
-        setData(name, e.target.value);
+        const { setData } = this.props;
+        setData(e.target.value);
     }
 
     render() {
@@ -33,7 +30,7 @@ class Input extends Component {
                     type={type}
                     placeholder={placeholder}
                     readOnly={readonly}
-                    defaultValue={value}
+                    value={value}
                     onChange={this.onChange}
                 />
                 {error ? (<p className="help-block">{error}</p>) : null}
@@ -62,5 +59,15 @@ Input.contextTypes = {
     setData: PropTypes.func
 };
 
+const mapState = (state, ownProps) => ({
+    value: typeof state.data[ownProps.name] !== 'undefined' ? state.data[ownProps.name] : ownProps.value,
+    error: typeof state.error[ownProps.name] !== 'undefined' ? state.error[ownProps.name] : ''
+});
+const mapDispatch = (dispatch, ownProps) => ({
+    setData: (value) => {
+        dispatch({ 'type': 'SET_DATA', value, name: ownProps.name });
+    }
+});
+
 // 导出组件
-export default Input;
+export default connect(mapState, mapDispatch)(Input);

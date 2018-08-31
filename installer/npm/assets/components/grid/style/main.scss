@@ -7,9 +7,13 @@
         padding-left: 15px;
         display: inline-block;
     }
+
+    .col-offset-#{$i} {
+        margin-left: 100% * $i / 12;
+    }
 }
 
-.row{
+.row {
     position: relative;
     margin-left: 0;
     margin-right: 0;

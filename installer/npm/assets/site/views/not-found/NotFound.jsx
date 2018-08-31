@@ -1,17 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import style from './style/main.scss';
 import img from './images/404-error.png';
 import Component from '../../../components/component';
 
 class NotFound extends Component {
     render() {
         return (
-            <div className={style['not-found']}>
+            <div className="not-found">
                 <img src={img} alt="404"/>
                 <h2>PAGE NOT FOUND</h2>
                 <h3>WE COULDN’T FIND THIS PAGE</h3>
-                <Link to="/" className={style.back}>Back To Home</Link>
+                <Link to="/" className="back">Back To Home</Link>
             </div>
         );
     }

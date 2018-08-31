@@ -115,17 +115,17 @@ class DatePickerPanel extends Component {
         return (
             <div className="picker-panel date-picker" ref={(root)=>{ this.root = root; }}>
                 <div className="date-picker-header">
-                    <Icon name="angle-double-left" className="prev-btn" onClick={this.prevYear.bind(this)}/>
+                    <Icon name="doubleleft" className="prev-btn" onClick={this.prevYear.bind(this)}/>
                     {currentView === 'date' && (
-                        <Icon name="angle-left" className="prev-btn" onClick={this.prevMonth.bind(this)}/>
+                        <Icon name="left" className="prev-btn" onClick={this.prevMonth.bind(this)}/>
                     )}
                     <span className="date-picker-header-label" role="button" onClick={this.changeView.bind(this, 'year')}>{this.getYearLabel()}</span>
                     {currentView === 'date' && (
                         <span className="date-picker-header-label" role="button" onClick={this.changeView.bind(this, 'month')}>{month}月</span>
                     )}
-                    <Icon name="angle-double-right" className="next-btn" onClick={this.nextYear.bind(this)}/>
+                    <Icon name="doubleright" className="next-btn" onClick={this.nextYear.bind(this)}/>
                     {currentView === 'date' && (
-                        <Icon name="angle-right" className="next-btn" onClick={this.nextMonth.bind(this)}/>
+                        <Icon name="right" className="next-btn" onClick={this.nextMonth.bind(this)}/>
                     )}
                 </div>
                 <div className="date-picker-body">

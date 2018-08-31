@@ -97,6 +97,7 @@ module.exports = {
         'react/no-unused-prop-types'           : 0,
         'react/prop-types'                     : 0,
         'react/destructuring-assignment'       : 0,
-        'react/no-access-state-in-setstate'    : 0
+        'react/no-access-state-in-setstate'    : 0,
+        'no-case-declarations'                 : 0
     },
 };

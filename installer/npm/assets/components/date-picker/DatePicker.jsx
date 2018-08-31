@@ -1,6 +1,7 @@
 import React from 'react';
 import ClickOutside from 'react-click-outside';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Component from '../component';
 import { formatDate } from './parseTime';
 import Panel from './panel/DatePickerPanel';
@@ -15,11 +16,19 @@ class DatePicker extends Component {
         };
     }
 
+    getChildContext() {
+        return {
+            component: this
+        };
+    }
+
     onFocus() {
         this.setState({ visible: true });
     }
 
-    handleItemClick() {
+    handleItemClick(value) {
+        const { setData } = this.props;
+        setData(formatDate(value));
         this.setState({ visible: false });
     }
 
@@ -39,8 +48,8 @@ class DatePicker extends Component {
         const { placeholder, name, value, id } = this.props;
         return (
             <div className={this.classNames('date-picker')} onFocus={this.onFocus}>
-                <Input name={name} id={id} readonly value={formatDate(value)} placeholder={placeholder}/>
-                {visible && (<Panel value={formatDate(value)}/>)}
+                <Input name={name} id={id} readonly value={value} placeholder={placeholder}/>
+                {visible && (<Panel value={value}/>)}
             </div>
         );
     }
@@ -59,5 +68,20 @@ DatePicker.defaultProps = {
     visible    : false
 };
 
+DatePicker.childContextTypes = {
+    component: PropTypes.any
+};
+
+const mapState = (state, ownProps) => ({
+    value: typeof state.data[ownProps.name] !== 'undefined' ? state.data[ownProps.name] : ownProps.value,
+    error: typeof state.error[ownProps.name] !== 'undefined' ? state.error[ownProps.name] : ''
+});
+const mapDispatch = (dispatch, ownProps) => ({
+    setData: (value) => {
+        dispatch({ 'type': 'SET_DATA', value, name: ownProps.name });
+    }
+});
+
+
 // 导出组件
-export default ClickOutside(DatePicker);
+export default connect(mapState, mapDispatch)(ClickOutside(DatePicker));
