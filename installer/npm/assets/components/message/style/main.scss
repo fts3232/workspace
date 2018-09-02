@@ -17,6 +17,20 @@
     & .message-notice{
         padding: 8px;
         text-align: center;
+        &.move-up-leave{
+            -webkit-animation-name: MessageMoveOut;
+            animation-name: MessageMoveOut;
+            overflow: hidden;
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+        }
+        &.move-in-leave{
+            -webkit-animation-name: MessageMoveIn;
+            animation-name: MessageMoveIn;
+            overflow: hidden;
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+        }
         & .message-notice-content{
             padding: 10px 16px;
             border-radius: 4px;
@@ -52,5 +66,55 @@
             }
 
         }
+    }
+}
+
+@-webkit-keyframes MessageMoveOut {
+    0% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+}
+@keyframes MessageMoveOut {
+    0% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+}
+
+@-webkit-keyframes MessageMoveIn {
+    0% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+    100% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
+    }
+}
+@keyframes MessageMoveIn {
+    0% {
+        opacity: 0;
+        max-height: 0;
+        padding: 0;
+    }
+    100% {
+        opacity: 1;
+        max-height: 150px;
+        padding: 8px;
     }
 }

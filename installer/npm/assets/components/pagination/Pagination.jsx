@@ -4,9 +4,26 @@ import PropTypes from 'prop-types';
 import Component from '../component';
 
 class Pagination extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentPage: props.currentPage
+        };
+    }
+
+    changePage(page) {
+        const { onChange } = this.props;
+        this.setState({
+            currentPage: page
+        }, ()=>{
+            onChange(page);
+        });
+    }
+
     render() {
         const { total, size } = this.props;
-        let { maxShowPage, currentPage } = this.props;
+        let { maxShowPage } = this.props;
+        let { currentPage } = this.state;
         maxShowPage -= 1;
         const totalPage = Math.ceil(total / size);
         if (currentPage > totalPage) {
@@ -19,14 +36,22 @@ class Pagination extends Component {
             start = end - maxShowPage <= 0 ? 1 : end - maxShowPage;
         }
         for (let i = start; i <= end; i++) {
-            li.push(<li className={i === currentPage ? 'active' : null} key={i}><Link to={`?page=${ i }`}>{i}</Link></li>);
+            li.push(
+                <li role="menuitem" className={i === currentPage ? 'active' : null} key={i}>
+                    <Link to={`?page=${ i }`} onClick={()=>{ this.changePage(i); }}>{i}</Link>
+                </li>
+            );
         }
         return (
             <div className={this.classNames('pagination')}>
                 <ul>
-                    <li className={currentPage === 1 ? 'disabled' : null}><Link to={`?page=${ currentPage - 1 }`}>上一页</Link></li>
+                    <li role="menuitem" className={currentPage === 1 ? 'disabled' : null} onClick={()=>{ const i = currentPage - 1;this.changePage(i); }}>
+                        <Link to={`?page=${ currentPage - 1 }`}>上一页</Link>
+                    </li>
                     {li}
-                    <li className={currentPage === totalPage ? 'disabled' : null}><Link to={`?page=${ currentPage + 1 }`}>下一页</Link></li>
+                    <li role="menuitem" className={currentPage === totalPage ? 'disabled' : null} onClick={()=>{ const i = currentPage + 1; this.changePage(i); }}>
+                        <Link to={`?page=${ currentPage + 1 }`}>下一页</Link>
+                    </li>
                 </ul>
             </div>
         );

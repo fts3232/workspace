@@ -8,6 +8,7 @@ import Button from '../../../components/button';
 import { Form, Input, Select, Textarea, FormItem } from '../../../components/form';
 import DatePicker from '../../../components/date-picker';
 import { Col, Row } from '../../../components/grid';
+import Message from '../../../components/message';
 
 class Add extends Component {
     constructor(props) {
@@ -23,12 +24,11 @@ class Add extends Component {
     }
 
     onSubmit(formData) {
-        console.log(1);
         console.log(formData);
         new Promise((resolve, reject) => {
             const url = 'http://localhost:8000/api/cashBook/add';
-            superagent.post(url)
-                .send(formData)
+            superagent.get(url)
+                .query(formData)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {
                         resolve(JSON.parse(res.text));
@@ -37,6 +37,11 @@ class Add extends Component {
                     }
                 });
         }).then((data) => {
+            if (data.status) {
+                Message.success('添加成功', 3000);
+            } else {
+                Message.error('添加失败', 3000);
+            }
             console.log(data);
         });
     }

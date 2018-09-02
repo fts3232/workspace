@@ -8,20 +8,29 @@ import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
-import Message from '../../../components/message';
 
 class Main extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            page : parseInt(this.getParams('page', 1), 0),
+            data : [],
+            total: 0
+        };
+        this.size = 10;
+        this.pageChange = this.pageChange.bind(this);
     }
 
     componentDidMount() {
+        this.queryData();
+    }
+
+    queryData() {
         new Promise((resolve, reject) => {
-            const url = 'http://localhost:8000/api/cashBook/get';
-            const data = { page: 1 };
+            const url = 'http://localhost:8000/cashBook/get';
+            const data = { page: this.state.page, size: this.size };
             superagent.get(url)
-                .send(data)
+                .query(data)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {
                         resolve(JSON.parse(res.text));
@@ -30,33 +39,31 @@ class Main extends Component {
                     }
                 });
         }).then((data) => {
+            if (data.status) {
+                this.setState({ data: data.ret, total: data.total });
+            }
             console.log(data);
         });
     }
 
+    pageChange(page) {
+        this.setState({ 'page': page }, () => {
+            this.queryData();
+        });
+    }
+
     render() {
-        const data = [
-            { 'id': 1, 'date': '2018-09-20', 'type': '收入', 'amount': '200', 'description': '工资' },
-            { 'id': 2, 'date': '2018-09-20', 'type': '收入', 'amount': '200', 'description': '工资' },
-            { 'id': 3, 'date': '2018-09-20', 'type': '收入', 'amount': '200', 'description': '工资' }
-        ];
         const colunm = {
-            'ID': 'id',
-            '日期': 'date',
-            '类型': 'type',
-            '金额': 'amount',
-            '描述': 'description'
+            'ID': 'ROW_ID',
+            '日期': 'CREATED_AT',
+            '类型': 'TYPE',
+            '金额': 'AMOUNT',
+            '描述': 'DESCRIPTION'
         };
-        const total = 500;
         const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }];
-        const currentPage = parseInt(this.getParams('page', 1), 0);
+        const { page, data, total } = this.state;
         return (
             <Row>
-                <Message type="info" content="test"/>
-                <Message type="info" content="test"/>
-                <Message type="info" content="test"/>
-                <Message type="info" content="test"/>
-
                 <Col span={12}>
                     <Breadcrumb data={breadcrumb}/>
                 </Col>
@@ -68,7 +75,7 @@ class Main extends Component {
                             </Link>
                         </div>
                         <Table data={data} colunm={colunm} total={total}/>
-                        <Pagination total={total} currentPage={currentPage}/>
+                        <Pagination total={total} currentPage={page} size={this.size} onChange={this.pageChange}/>
                     </Panel>
                 </Col>
             </Row>

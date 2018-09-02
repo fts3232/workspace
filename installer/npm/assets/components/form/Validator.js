@@ -26,7 +26,7 @@ class Validator {
     }
 
     isFail() {
-        return this.error !== {} ;
+        return Object.keys(this.error).length > 0 ;
     }
 
     getError() {

@@ -4,8 +4,8 @@ import React from 'react';
 
 class Component extends React.Component {
     getParams(key, defaultValue = null) {
-        const { router } = this.context;
-        let { search } = router.route.location;
+        const { location } = this.props;
+        let { search } = location;
         if (search !== '') {
             search = search.substring(1);
             search = search.split('=');

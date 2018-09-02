@@ -1,17 +1,19 @@
 import React from 'react';
-import superagent from 'superagent';
 import Component from '../../../components/component';
 import Breadcrumb from '../../../components/breadcrumb';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
+import Message from '../../../components/message';
+
+const request = require('superagent');
 
 class Setting extends Component {
     createDB(type) {
         new Promise((resolve, reject) => {
             const url = 'http://localhost:8000/api/createDB';
             const data = { type };
-            superagent.post(url)
-                .send(data)
+            request.get(url)
+                .query(data)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {
                         resolve(JSON.parse(res.text));
@@ -20,6 +22,11 @@ class Setting extends Component {
                     }
                 });
         }).then((data) => {
+            if (data.status) {
+                Message.success('创建成功', 3000);
+            } else {
+                Message.error('创建失败', 3000);
+            }
             console.log(data);
         });
     }

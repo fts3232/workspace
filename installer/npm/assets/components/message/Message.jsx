@@ -4,9 +4,29 @@ import Component from '../component';
 import Icon from '../icon';
 
 class Message extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            leave: false
+        };
+    }
+
+    componentDidMount() {
+        const { duration, willUnmount } = this.props;
+        if (duration !== 0) {
+            setTimeout(()=>{
+                this.setState({ leave: true }, ()=>{
+                    setTimeout(()=>{
+                        willUnmount();
+                    }, 300);
+                });
+            }, duration);
+        }
+    }
 
     render() {
         const { type, content } = this.props;
+        const { leave } = this.state;
         let iconName;
         switch (type) {
             case 'success':
@@ -21,28 +41,30 @@ class Message extends Component {
             case 'error':
                 iconName = 'close-circle-fill';
                 break;
+            default:
+                break;
         }
         return (
-            <div className={this.classNames('message')}>
-                <span>
-                    <div className="message-notice">
-                        <div className="message-notice-content">
-                            <div className={this.classNames('message-custom-content', `message-${ type }`)}>
-                                <Icon name={iconName}/><span>{content}</span>
-                            </div>
-                        </div>
+            <div className={this.classNames('message-notice', { 'move-up-leave': leave, 'move-in-leave': !leave })}>
+                <div className="message-notice-content">
+                    <div className={this.classNames('message-custom-content', `message-${ type }`)}>
+                        <Icon name={iconName}/><span>{content}</span>
                     </div>
-                </span>
+                </div>
             </div>
         );
     }
 }
 
 Message.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
-    type   : PropTypes.oneOf(['warning', 'success', 'error', 'info']).isRequired,
-    content: PropTypes.string.isRequired
+    type       : PropTypes.oneOf(['warning', 'success', 'error', 'info']).isRequired,
+    content    : PropTypes.string.isRequired,
+    willUnmount: PropTypes.func.isRequired,
+    duration   : PropTypes.number
 };
-Message.defaultProps = {};// 设置默认属性
+Message.defaultProps = {
+    duration: 0
+};// 设置默认属性
 
 // 导出组件
 export default Message;
