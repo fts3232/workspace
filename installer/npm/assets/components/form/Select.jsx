@@ -16,6 +16,7 @@ class Select extends Component {
         }
         this.state = {
             'dropDown': false,
+            'data'    : props.data,
             'value'   : value
         };
     }
@@ -25,6 +26,10 @@ class Select extends Component {
         const { value } = this.state;
         const { setData } = this.context;
         setData(name, value);
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({ 'data': props.data });
     }
 
     onClick(val) {
@@ -71,8 +76,8 @@ class Select extends Component {
     }
 
     render() {
-        const { data, name, id, placeholder, multiple } = this.props;
-        const { dropDown, value } = this.state;
+        const {  name, id, placeholder, multiple } = this.props;
+        const { data, dropDown, value } = this.state;
         return (
             <div className={this.classNames('select', { 'multiple': multiple })}>
                 <div className="select-selection-render">

@@ -45,12 +45,13 @@ class DatePicker extends Component {
     }
 
     render() {
-        const { visible } = this.state;
         const { placeholder, name, id } = this.props;
-        const { value } = this.state;
+        const { visible, value } = this.state;
         return (
-            <div className={this.classNames('date-picker')} onFocus={this.onFocus}>
-                <Input name={name} id={id} readonly value={value} placeholder={placeholder}/>
+            <div className={this.classNames('date-picker')} >
+                <div role="button" className="form-control date-picker-placeholder" id={id} name={name} onClick={this.onFocus}>
+                    {value !== '' ? value : placeholder}
+                </div>
                 {visible && (<Panel value={value}/>)}
             </div>
         );

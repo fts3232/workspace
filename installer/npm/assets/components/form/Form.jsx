@@ -28,10 +28,6 @@ class Form extends Component {
         };
     }
 
-    shouldComponentUpdate() {
-        return false;
-    }
-
     onSubmit(e) {
         e.preventDefault();
         const { onSubmit, validateRule, validateMsg } = this.props;

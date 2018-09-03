@@ -17,16 +17,16 @@ class Input extends Component {
         setData(name, value);
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({
-            'value': props.value
-        });
-    }
-
     onChange(e) {
         const { name } = this.props;
         const { setData } = this.context;
         const { value } = e.target;
+        this.setState({ 'value': value }, ()=>{
+            setData(name, value);
+        });
+    }
+
+    setValue(value) {
         this.setState({ 'value': value }, ()=>{
             setData(name, value);
         });
