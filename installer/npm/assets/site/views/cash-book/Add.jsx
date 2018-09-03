@@ -20,7 +20,7 @@ class Add extends Component {
     }
 
     componentDidMount() {
-        this.setState({ 'tag': { 1: '车费', 2: '饭钱' } });
+        this.setState({ 'tag': { 1: '车费', 2: '饭钱', 3: '游戏', 4: '魔兽世界' } });
     }
 
     onSubmit(formData) {
@@ -81,10 +81,10 @@ class Add extends Component {
                                     <DatePicker name="date" id="form-date"/>
                                 </FormItem>
                                 <FormItem label="标签" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Select data={tag} name="tag" id="form-tag"/>
+                                    <Select data={tag} placeholder="请输入标签" name="tag" id="form-tag" multiple/>
                                 </FormItem>
                                 <FormItem label="类型" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Select data={{ 1: '支出', 2: '收入' }} name="type" id="form-type"/>
+                                    <Select data={{ 1: '支出', 2: '收入' }} placeholder="请输入类型" name="type" id="form-type"/>
                                 </FormItem>
                                 <FormItem label="金额" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
                                     <Input name="amount" placeholder="请输入金额" id="form-amount"/>

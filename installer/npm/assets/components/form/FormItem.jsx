@@ -5,6 +5,28 @@ import Component from '../component';
 
 class FormItem extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: false
+        };
+    }
+
+    componentDidMount() {
+        if (this.context.addItem) {
+            const name = this.getChildProps('name');
+            if (typeof name !== 'undefined') {
+                this.context.addItem(this.getChildProps('name'), this);
+            }
+        }
+    }
+
+    setError(error) {
+        this.setState({
+            'error': error
+        });
+    }
+
     getChild() {
         const { children } = this.props;
         const childrenArray = React.Children.toArray(children);
@@ -18,8 +40,9 @@ class FormItem extends Component {
 
     render() {
         const { children, label, labelCol, wrapperCol, className } = this.props;
+        const { error } = this.state;
         return (
-            <Row className="form-group">
+            <Row className={this.classNames('form-group', { 'has-error': error })}>
                 {label !== '' ? (
                     <Col {...labelCol} className="label-control">
                         <label htmlFor={this.getChildProps('id')}>{label}</label>
@@ -27,6 +50,7 @@ class FormItem extends Component {
                 ) : null}
                 <Col {...wrapperCol} className={className}>
                     {children}
+                    {error ? (<p className="help-block">{error}</p>) : null}
                 </Col>
             </Row>
         );
@@ -42,6 +66,10 @@ FormItem.defaultProps = {
     label   : '',
     labelCol: {}
 };// 设置默认属性
+
+FormItem.contextTypes = {
+    addItem: PropTypes.func
+};
 
 
 export default FormItem;

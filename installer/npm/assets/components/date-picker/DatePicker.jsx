@@ -1,7 +1,6 @@
 import React from 'react';
 import ClickOutside from 'react-click-outside';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Component from '../component';
 import { formatDate } from './parseTime';
 import Panel from './panel/DatePickerPanel';
@@ -12,7 +11,8 @@ class DatePicker extends Component {
         super(props);
         this.onFocus = this.onFocus.bind(this);
         this.state = {
-            visible: false
+            visible: false,
+            value  : props.value
         };
     }
 
@@ -27,9 +27,10 @@ class DatePicker extends Component {
     }
 
     handleItemClick(value) {
-        const { setData } = this.props;
-        setData(formatDate(value));
-        this.setState({ visible: false });
+        const { setData } = this.context;
+        const { name } = this.props;
+        setData(name, formatDate(value));
+        this.setState({ visible: false, value: formatDate(value) });
     }
 
     handleClickOutside() {
@@ -45,7 +46,8 @@ class DatePicker extends Component {
 
     render() {
         const { visible } = this.state;
-        const { placeholder, name, value, id } = this.props;
+        const { placeholder, name, id } = this.props;
+        const { value } = this.state;
         return (
             <div className={this.classNames('date-picker')} onFocus={this.onFocus}>
                 <Input name={name} id={id} readonly value={value} placeholder={placeholder}/>
@@ -72,16 +74,9 @@ DatePicker.childContextTypes = {
     component: PropTypes.any
 };
 
-const mapState = (state, ownProps) => ({
-    value: typeof state.data[ownProps.name] !== 'undefined' ? state.data[ownProps.name] : ownProps.value,
-    error: typeof state.error[ownProps.name] !== 'undefined' ? state.error[ownProps.name] : ''
-});
-const mapDispatch = (dispatch, ownProps) => ({
-    setData: (value) => {
-        dispatch({ 'type': 'SET_DATA', value, name: ownProps.name });
-    }
-});
-
+DatePicker.contextTypes = {
+    setData: PropTypes.func
+};
 
 // 导出组件
-export default connect(mapState, mapDispatch)(ClickOutside(DatePicker));
+export default ClickOutside(DatePicker);

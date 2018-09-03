@@ -1,9 +1,8 @@
-import css from './Scss/Main.scss';
 import Dialog from './Dialog.jsx';
 import Header from './Header.jsx';
 import Log from './Log.jsx';
 import Tag from './Tag.jsx';
-import Component from '../../Components/Component';
+import Component from '../../../components/component';
 
 class List extends Component {
     constructor(props) {
@@ -27,15 +26,15 @@ class List extends Component {
         if (_this.state.getData == false) {
             this.setState({ 'getData': true }, ()=>{
                 new Promise((resolve, reject)=>{
-                    let url = `http://localhost:8000/getData/av?p=${page}&size=24`;
+                    let url = `http://localhost:8000/getData/av?p=${ page }&size=24`;
                     if (_this.state.canPlay == true)
                         url += '&canPlay=1';
                     if (_this.state.title != false)
-                        url += `&title=${  _this.state.title}`;
+                        url += `&title=${  _this.state.title }`;
                     else if (_this.state.star != false)
-                        url += `&star=${  _this.state.star}`;
+                        url += `&star=${  _this.state.star }`;
                     else if (_this.state.tag != false)
-                        url += `&tag=${  _this.state.tag}`;
+                        url += `&tag=${  _this.state.tag }`;
 
                     request.get(url)
                         .end((err, res) => {
@@ -196,11 +195,11 @@ class List extends Component {
     render() {
         return (
             <div ref="app" className="list-page">
-                <Header />
+                <Header/>
                 <div className="waterfall" ref='waterfall'>
                     {this.state.data.map((val)=>(
                         <div className="item" onClick={this.onClick.bind(this, val)}>
-                            <img src={val.IMAGE ? `http://localhost:8000/static/Movie/${  val.IDENTIFIER  }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} title={val.IMAGE ? val.TITLE : '暂无图片'} />
+                            <img src={val.IMAGE ? `http://localhost:8000/static/Movie/${  val.IDENTIFIER  }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} title={val.IMAGE ? val.TITLE : '暂无图片'}/>
                             <div className="box">
                                 <p className="title">
                                     {val.TITLE}
@@ -221,9 +220,9 @@ class List extends Component {
                         </div>
                     ))}
                 </div>
-                <Dialog ref='dialog' />
-                <Log ref='log' />
-                <Tag ref='tag' />
+                <Dialog ref='dialog'/>
+                <Log ref='log'/>
+                <Tag ref='tag'/>
                 <div className="top" onClick={this.top.bind(this)}>Top</div>
             </div>
         );

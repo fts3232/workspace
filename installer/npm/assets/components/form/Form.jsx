@@ -1,27 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
 import Component from '../component';
 import Validator from './Validator.js';
-import reducer from './reducer.js';
 
 class Form extends Component {
     constructor(props) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
-        this.store = createStore(reducer);
+        this.state = {
+            data : {},
+            items: {}
+        };
+    }
+
+    getChildContext() {
+        return {
+            setData: (name, value)=>{
+                const { data } = this.state;
+                this.setState({ data: Object.assign(data, { [`${ name }`]: value }) });
+            },
+            addItem: (name, component)=>{
+                const { items } = this.state;
+                this.setState({
+                    items: Object.assign(items, { [`${ name }`]: component })
+                });
+            }
+        };
+    }
+
+    shouldComponentUpdate() {
+        return false;
     }
 
     onSubmit(e) {
         e.preventDefault();
         const { onSubmit, validateRule, validateMsg } = this.props;
-        const { data }  = this.store.getState();
+        const { data } = this.state;
         const validator = new Validator(data, validateRule, validateMsg);
+        const { items } = this.state;
         if (!validator.isFail()) {
+            Object.entries(items).map((v) => (
+                v[1].setError('')
+            ));
             onSubmit(data);
         } else {
-            this.store.dispatch({ 'type': 'SET_ERROR', error: validator.getError() });
+            const error = validator.getError();
+            Object.entries(items).map((v) => (
+                v[1].setError(error[v[0]])
+            ));
         }
         return false;
     }
@@ -29,11 +55,9 @@ class Form extends Component {
     render() {
         const { children, action } = this.props;
         return (
-            <Provider store={this.store}>
-                <form type={action} className={this.classNames('form')} onSubmit={this.onSubmit}>
-                    {children}
-                </form>
-            </Provider>
+            <form type={action} className={this.classNames('form')} onSubmit={this.onSubmit}>
+                {children}
+            </form>
         );
     }
 }
@@ -55,6 +79,11 @@ Form.defaultProps = {
     validateMsg : {},
     value       : {}
 };// 设置默认属性
+
+Form.childContextTypes = {
+    setData: PropTypes.func,
+    addItem: PropTypes.func
+};
 
 // 导出组件
 export default Form;

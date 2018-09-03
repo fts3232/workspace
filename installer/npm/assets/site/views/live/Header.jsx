@@ -1,13 +1,14 @@
-import css from './Scss/Header.scss';
-import Component from '../../Components/Component';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Component from '../../../components/component';
 
 class Header extends Component {
-  	constructor(props) {
-  		super(props);
+    constructor(props) {
+        super(props);
         this.state = {
             'loading': false
         };
-  	}
+    }
 
     parent() {
         return this.context.component;
@@ -30,16 +31,12 @@ class Header extends Component {
 }
 
 Header.contextTypes = {
-    component: React.PropTypes.any
+    component: PropTypes.any
 };
 
-Header.PropTypes = {
-    
-};
+Header.propTypes = {};
 
-Header.defaultProps = {
-    
-};
+Header.defaultProps = {};
 
 // 导出组件
 export default Header;

@@ -1,5 +1,4 @@
-import css from './Scss/Header.scss';
-import Component from '../../Components/Component';
+import Component from '../../../components/component';
 
 class Header extends Component {
   	constructor(props) {
@@ -46,7 +45,7 @@ class Header extends Component {
     render() {
         return (
             <div className="header">
-                <input ref='input' />
+                <input ref='input'/>
                 <button onClick={this.search.bind(this)}>搜索</button>
                 <button onClick={this.scan.bind(this)}>扫描</button>
                 <button onClick={this.spider.bind(this)}>爬取</button>

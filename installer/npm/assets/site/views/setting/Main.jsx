@@ -1,18 +1,17 @@
 import React from 'react';
+import superagent from 'superagent';
 import Component from '../../../components/component';
 import Breadcrumb from '../../../components/breadcrumb';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
 import Message from '../../../components/message';
 
-const request = require('superagent');
-
 class Setting extends Component {
     createDB(type) {
         new Promise((resolve, reject) => {
             const url = 'http://localhost:8000/api/createDB';
             const data = { type };
-            request.get(url)
+            superagent.get(url)
                 .query(data)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {

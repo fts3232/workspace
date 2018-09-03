@@ -1,5 +1,4 @@
-import css from './Scss/Dialog.scss';
-import Component from '../../Components/Component';
+import Component from '../../../components/component';
 
 class Dialog extends Component {
     constructor(props) {
@@ -109,7 +108,7 @@ class Dialog extends Component {
             data.STAR.map((v)=>{
                 star.push(
                     <div className="star-item" onClick={this.searchStar.bind(this, v.STAR_ID)}>
-                        <img src={`http://localhost:8000/static/Star/${  v.STAR_NAME  }.jpg`} />
+                        <img src={`http://localhost:8000/static/Star/${  v.STAR_NAME  }.jpg`}/>
                         <span className="tag">{v.STAR_NAME}</span>
                     </div>
                 );
@@ -124,7 +123,7 @@ class Dialog extends Component {
                     <h3>{data.TITLE}</h3>
                     <div className="box">
                         <div className="image">
-                            <img src={data.IMAGE ? `http://localhost:8000/static/Movie/${  data.IDENTIFIER  }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} onClick={this.enlargeImage.bind(this, data.IMAGE)} />
+                            <img src={data.IMAGE ? `http://localhost:8000/static/Movie/${  data.IDENTIFIER  }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} onClick={this.enlargeImage.bind(this, data.IMAGE)}/>
                         </div>
                         <div className="info">
                             <p>番号：{data.IDENTIFIER}</p>
@@ -152,7 +151,7 @@ class Dialog extends Component {
                     <div className="thumb">
                         <ul>
                             {typeof data.SAMPLE !== 'undefined' && data.SAMPLE.map((v, k)=>(
-                                <li onClick={this.enlargeImage.bind(this, v.URL, k)}><img src={v.URL} /></li>
+                                <li onClick={this.enlargeImage.bind(this, v.URL, k)}><img src={v.URL}/></li>
                             ))}
                         </ul>
                     </div>
@@ -160,7 +159,7 @@ class Dialog extends Component {
                 <div className="big-image" ref="big_image">
                     <div className="image-wrapper" onClick={this.bigImageClose.bind(this)}>
                         <div>
-                            <img />
+                            <img/>
                             <span onClick={this.thumbPrev.bind(this)} className="prev-btn">&lt;</span>
                             <span onClick={this.thumbNext.bind(this)} className="next-btn">&gt;</span>
                         </div>

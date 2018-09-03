@@ -1,5 +1,4 @@
-import css from './Scss/Tag.scss';
-import Component from '../../Components/Component';
+import Component from '../../../components/component';
 
 class Tag extends Component {
     constructor(props) {

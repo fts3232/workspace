@@ -1,5 +1,4 @@
-import css from './Scss/Log.scss';
-import Component from '../../Components/Component';
+import Component from '../../../components/component';
 
 class Log extends Component {
     constructor(props) {
