@@ -29,7 +29,7 @@ class CashBook extends Model
     {
         $sql = "SELECT
                     ROW_ID,
-                    TYPE,
+                    IF(TYPE = 1,'支出','收入') AS TYPE,
                     AMOUNT,
                     TAGS,
                     DATE,
