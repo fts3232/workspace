@@ -8,6 +8,7 @@ import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
+import getApiUrl from '../../config/api.js';
 
 class Main extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class Main extends Component {
 
     queryData() {
         new Promise((resolve, reject) => {
-            const url = 'http://localhost:8000/cashBook/get';
+            const url = getApiUrl('/api/cashBook/get');
             const data = { page: this.state.page, size: this.size };
             superagent.get(url)
                 .query(data)
@@ -40,7 +41,7 @@ class Main extends Component {
                 });
         }).then((data) => {
             if (data.status) {
-                this.setState({ data: data.ret, total: data.total });
+                this.setState({ data: data.list, total: data.count });
             }
             console.log(data);
         });
@@ -55,9 +56,10 @@ class Main extends Component {
     render() {
         const colunm = {
             'ID': 'ROW_ID',
-            '日期': 'CREATED_AT',
+            '日期': 'DATE',
             '类型': 'TYPE',
             '金额': 'AMOUNT',
+            '标签': 'TAGS',
             '描述': 'DESCRIPTION'
         };
         const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }];

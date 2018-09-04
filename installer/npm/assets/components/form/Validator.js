@@ -35,7 +35,7 @@ class Validator {
 
     required(name) {
         const { value } = this;
-        if (typeof value[name] === 'undefined' || value[name] === '' || value[name] === null) {
+        if (typeof value[name] === 'undefined' || value[name] === '' || value[name] === null || value[name].length === 0) {
             return false;
         }
         return true;

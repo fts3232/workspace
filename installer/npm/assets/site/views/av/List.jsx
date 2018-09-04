@@ -1,8 +1,12 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import superagent from 'superagent';
 import Dialog from './Dialog.jsx';
 import Header from './Header.jsx';
 import Log from './Log.jsx';
 import Tag from './Tag.jsx';
 import Component from '../../../components/component';
+import getApiUrl from '../../config/api.js';
 
 class List extends Component {
     constructor(props) {
@@ -20,60 +24,6 @@ class List extends Component {
         };
     }
 
-    getData() {
-        const _this = this;
-        const page = _this.state.page;
-        if (_this.state.getData == false) {
-            this.setState({ 'getData': true }, ()=>{
-                new Promise((resolve, reject)=>{
-                    let url = `http://localhost:8000/getData/av?p=${ page }&size=24`;
-                    if (_this.state.canPlay == true)
-                        url += '&canPlay=1';
-                    if (_this.state.title != false)
-                        url += `&title=${  _this.state.title }`;
-                    else if (_this.state.star != false)
-                        url += `&star=${  _this.state.star }`;
-                    else if (_this.state.tag != false)
-                        url += `&tag=${  _this.state.tag }`;
-
-                    request.get(url)
-                        .end((err, res) => {
-                            if (typeof res !== 'undefined' && res.ok) {
-                                resolve(JSON.parse(res.text));
-                            } else {
-                                reject(err);
-                            }
-                        });
-                }).then((data)=>{
-                    if (data != '') {
-                        data = _this.state.data.concat(data);
-                        _this.setState({ 'data': data, page: page + 1 }, ()=>{
-                            const _this = this;
-                            const length = $('.waterfall .item:not(.active) img').length;
-                            let i = 0;
-                            $('.waterfall .item:not(.active) img').on('load error', () => {
-                                i += 1;
-                                if (i == length) {
-                                    const items = $(_this.refs.waterfall).find('.item:not(.active)');
-                                    page == 1 ? _this.waterfall(items) : _this.updateWaterfall(items);
-                                }
-                            });
-                        });
-                        if (_this.state.canPlay == true && _this.state.title != false || _this.state.star != false || _this.state.tag != false) {
-                            _this.setState({ 'end': true, 'getData': false });
-                        } else {
-                            _this.setState({ 'getData': false });
-                        }
-                    } else {
-                        _this.setState({ 'end': true, 'getData': false });
-                    }
-                }).catch((err)=>{
-                    _this.setState({ 'end': true, 'getData': false });
-                });
-            });
-        }
-    }
-
     componentDidMount() {
         const _this = this;
         const socket = new WebSocket('ws://localhost:8000/socket');
@@ -83,11 +33,11 @@ class List extends Component {
             // 监听消息
             socket.onmessage = function(event) { 
                 const data = JSON.parse(event.data);
-                if (data.event == 'scan' || data.event == 'spider') {
+                if (data.event === 'scan' || data.event === 'spider') {
                     _this.refs.log.appendData(data.msg);
-                } else if (data.event == 'play' && data.msg == '播放失败') {
+                } else if (data.event === 'play' && data.msg === '播放失败') {
                     alert(data.msg);
-                } else if (data.event == 'openDir' && data.msg == '打开失败') {
+                } else if (data.event === 'openDir' && data.msg === '打开失败') {
                     alert(data.msg);
                 }
             }; 
@@ -118,6 +68,73 @@ class List extends Component {
         });
     }
 
+    getChildContext() {
+        return {
+            component: this
+        };
+    }
+
+    onClick(val) {
+        const obj = this.refs.dialog;
+        obj.show();
+        obj.setState({ data: val });
+    }
+
+    getData() {
+        const _this = this;
+        const { title, star, tag, page, canPlay } = this.state;
+        let { data } = this.state;
+        if (_this.state.getData === false) {
+            this.setState({ 'getData': true }, ()=>{
+                new Promise((resolve, reject)=>{
+                    let url = getApiUrl(`/getData/av?p=${ page }&size=24`);
+                    if (canPlay === true)
+                        url += '&canPlay=1';
+                    if (title !== false)
+                        url += `&title=${  title }`;
+                    else if (star !== false)
+                        url += `&star=${  star }`;
+                    else if (tag !== false)
+                        url += `&tag=${  tag }`;
+
+                    superagent.get(url)
+                        .end((err, res) => {
+                            if (typeof res !== 'undefined' && res.ok) {
+                                resolve(JSON.parse(res.text));
+                            } else {
+                                reject(err);
+                            }
+                        });
+                }).then((returnData)=>{
+                    if (returnData !== '') {
+                        data = data.concat(returnData);
+                        _this.setState({ 'data': data, page: page + 1 }, ()=>{
+                            const _this = this;
+                            const length = $('.waterfall .item:not(.active) img').length;
+                            let i = 0;
+                            $('.waterfall .item:not(.active) img').on('load error', () => {
+                                i += 1;
+                                if (i === length) {
+                                    const items = $(_this.refs.waterfall).find('.item:not(.active)');
+                                    page === 1 ? _this.waterfall(items) : _this.updateWaterfall(items);
+                                }
+                            });
+                        });
+                        if (canPlay === true && title !== false || star !== false || tag !== false) {
+                            _this.setState({ 'end': true, 'getData': false });
+                        } else {
+                            _this.setState({ 'getData': false });
+                        }
+                    } else {
+                        _this.setState({ 'end': true, 'getData': false });
+                    }
+                }).catch((err)=>{
+                    _this.setState({ 'end': true, 'getData': false });
+                });
+            });
+        }
+    }
+
     socketSend(event, msg = '') {
         const data = JSON.stringify({ 'event': event, 'msg': msg });
         this.socket.send(data);
@@ -145,7 +162,7 @@ class List extends Component {
         for (let i = 0;i < length;i++) {
             const row_height_min = Math.min.apply(this, rows_height);
             for (let i = 0;i < cols;i++) {
-                if (rows_height[i] == row_height_min) {
+                if (rows_height[i] === row_height_min) {
                     col = i;
                     break;
                 }
@@ -157,12 +174,6 @@ class List extends Component {
         this.setState({ rows_height });
         items.addClass('active');
 
-    }
-
-    onClick(val) {
-        const obj = this.refs.dialog;
-        obj.show();
-        obj.setState({ data: val });
     }
 
     search(data) {
@@ -183,23 +194,17 @@ class List extends Component {
     }
 
     top() {
-        $('html').animate({ 'scrollTop': 0 });
-    }
-
-    getChildContext() {
-        return {
-            component: this
-        };
+        document.querySelector('html').scrollTop = 0;
     }
 
     render() {
         return (
-            <div ref="app" className="list-page">
+            <div className="list-page">
                 <Header/>
-                <div className="waterfall" ref='waterfall'>
+                <div className="waterfall">
                     {this.state.data.map((val)=>(
-                        <div className="item" onClick={this.onClick.bind(this, val)}>
-                            <img src={val.IMAGE ? `http://localhost:8000/static/Movie/${  val.IDENTIFIER  }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} title={val.IMAGE ? val.TITLE : '暂无图片'}/>
+                        <div className="item" role="button" onClick={this.onClick.bind(this, val)}>
+                            <img src={val.IMAGE ? `http://localhost:8000/static/Movie/${ val.IDENTIFIER }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} title={val.IMAGE ? val.TITLE : '暂无图片'} alt={val.IDENTIFIER}/>
                             <div className="box">
                                 <p className="title">
                                     {val.TITLE}
@@ -220,21 +225,21 @@ class List extends Component {
                         </div>
                     ))}
                 </div>
-                <Dialog ref='dialog'/>
-                <Log ref='log'/>
-                <Tag ref='tag'/>
-                <div className="top" onClick={this.top.bind(this)}>Top</div>
+                <Dialog/>
+                <Log/>
+                <Tag/>
+                <div className="top" role="button" onClick={this.top.bind(this)}>Top</div>
             </div>
         );
     }
 }
 
 List.childContextTypes = {
-    component: React.PropTypes.any
+    component: PropTypes.any
 };
 
-List.PropTypes = {
-    space: React.PropTypes.number
+List.propTypes = {
+    space: PropTypes.number
 };
 
 List.defaultProps = {

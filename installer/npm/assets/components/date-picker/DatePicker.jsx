@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Component from '../component';
 import { formatDate } from './parseTime';
 import Panel from './panel/DatePickerPanel';
-import { Input } from '../form';
 
 class DatePicker extends Component {
     constructor(props) {

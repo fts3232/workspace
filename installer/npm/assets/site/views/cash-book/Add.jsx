@@ -9,6 +9,7 @@ import { Form, Input, Select, Textarea, FormItem } from '../../../components/for
 import DatePicker from '../../../components/date-picker';
 import { Col, Row } from '../../../components/grid';
 import Message from '../../../components/message';
+import getApiUrl from '../../config/api.js';
 
 class Add extends Component {
     constructor(props) {
@@ -26,9 +27,10 @@ class Add extends Component {
     onSubmit(formData) {
         console.log(formData);
         new Promise((resolve, reject) => {
-            const url = 'http://localhost:8000/api/cashBook/add';
-            superagent.get(url)
-                .query(formData)
+            const url = getApiUrl('/api/cashBook/add');
+            superagent.post(url)
+                .type('form')
+                .send(formData)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {
                         resolve(JSON.parse(res.text));
@@ -50,14 +52,14 @@ class Add extends Component {
         const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }, { 'name': '添加', 'path': '/cash-book/add' }];
         const validateRule = {
             'date'  : 'required',
-            'tag'   : 'required',
+            'tags'  : 'required',
             'amount': 'required|int'
         };
         const validateMsg = {
             'date': {
                 'required': '日期不能为空'
             },
-            'tag': {
+            'tags': {
                 'required': '标签不能为空'
             },
             'amount': {
@@ -81,7 +83,7 @@ class Add extends Component {
                                     <DatePicker name="date" id="form-date"/>
                                 </FormItem>
                                 <FormItem label="标签" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Select data={tag} placeholder="请输入标签" name="tag" id="form-tag" multiple/>
+                                    <Select data={tag} placeholder="请输入标签" name="tags" id="form-tag" multiple/>
                                 </FormItem>
                                 <FormItem label="类型" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
                                     <Select data={{ 1: '支出', 2: '收入' }} placeholder="请输入类型" name="type" id="form-type"/>

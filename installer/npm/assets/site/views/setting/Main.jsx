@@ -5,14 +5,16 @@ import Breadcrumb from '../../../components/breadcrumb';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
 import Message from '../../../components/message';
+import getApiUrl from '../../config/api.js';
 
 class Setting extends Component {
     createDB(type) {
         new Promise((resolve, reject) => {
-            const url = 'http://localhost:8000/api/createDB';
+            const url = getApiUrl('/api/setting/createDB');
             const data = { type };
-            superagent.get(url)
-                .query(data)
+            superagent.post(url)
+                .type('form')
+                .send(data)
                 .end((err, res) => {
                     if (typeof res !== 'undefined' && res.ok) {
                         resolve(JSON.parse(res.text));
@@ -45,7 +47,7 @@ class Setting extends Component {
                         <Button
                             type='info'
                             onClick={() => {
-                                this.createDB('javbus');
+                                this.createDB('javBus');
                             }}
                         >创建数据库
                         </Button>
@@ -57,7 +59,7 @@ class Setting extends Component {
                         <Button
                             type='info'
                             onClick={() => {
-                                this.createDB('cashbook');
+                                this.createDB('cashBook');
                             }}
                         >创建数据库
                         </Button>

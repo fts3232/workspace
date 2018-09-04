@@ -1,3 +1,4 @@
+import React from 'react';
 import Component from '../../../components/component';
 
 class Log extends Component {
@@ -14,10 +15,10 @@ class Log extends Component {
     }
 
     appendData(msg) {
-        const data = this.state.data;
+        const { data } = this.state;
         data.push(msg);
         this.setState({ 'data': data }, ()=>{
-            $('.list').scrollTop( $('.list')[0].scrollHeight);
+            document.querySelector('.list').scrollTop( document.querySelector('.list').scrollHeight);
         });
     }
 
@@ -29,10 +30,10 @@ class Log extends Component {
         return (
             <div className={this.classNames('log-wrapper', { 'hidden': !this.state.toggle })}>
                 <h3>运行记录</h3>
-                <div className="list" ref='list'>
+                <div className="list" >
                     {this.state.data.map((v)=>(<p>{v}</p>))}
                 </div>
-                <div className="btn" onClick={this.toggle.bind(this)}>{this.state.toggle ? '收回' : '展开'}</div>
+                <div className="btn" role="button" onClick={this.toggle.bind(this)}>{this.state.toggle ? '收回' : '展开'}</div>
             </div>
         );
     }

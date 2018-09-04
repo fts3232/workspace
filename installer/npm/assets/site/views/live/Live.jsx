@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import superagent from 'superagent';
 import Component from '../../../components/component';
-import Header from './Header';
+import getApiUrl from '../../config/api.js';
 
 class Live extends Component {
     constructor(props) {
@@ -13,11 +12,33 @@ class Live extends Component {
         };
     }
 
+    componentDidMount() {
+        const socket = new WebSocket('ws://localhost:8000/socket');
+        const _this = this;
+        // 打开Socket
+        socket.onopen = function () {
+            console.log('连接成功');
+            _this.getData();
+            // 监听消息
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                _this.refs.header.setState({ 'loading': false, 'data': data.msg });
+            };
+        };
+        // 监听Socket的关闭
+        socket.onclose = function (event) {
+            console.log('Client notified socket has closed', event);
+            // 关闭Socket....
+            // socket.close()
+        };
+        this.socket = socket;
+    }
+
     getData() {
         const _this = this;
         this.setState({ 'loading': true }, () => {
             new Promise((resolve, reject) => {
-                const url = 'http://localhost:8000/getData/live';
+                const url = getApiUrl('/getData/live');
                 superagent.get(url)
                     .end((err, res) => {
                         if (typeof res !== 'undefined' && res.ok) {
@@ -33,6 +54,7 @@ class Live extends Component {
                     _this.setState({ 'loading': false });
                 }
             }).catch((err) => {
+                console.log(err);
                 _this.setState({ 'loading': false });
             });
         });
@@ -43,37 +65,16 @@ class Live extends Component {
         this.socket.send(data);
     }
 
-    componentDidMount() {
-        const socket = new WebSocket('ws://localhost:8000/socket');
-        const _this = this;
-        // 打开Socket 
-        socket.onopen = function (event) {
-            console.log('连接成功');
-            _this.getData();
-            // 监听消息
-            socket.onmessage = function (event) {
-                const data = JSON.parse(event.data);
-                _this.refs.header.setState({ 'loading': false, 'data': data.msg });
-            };
-        };
-        // 监听Socket的关闭
-        socket.onclose = function (event) {
-            console.log('Client notified socket has closed', event);
-            // 关闭Socket.... 
-            // socket.close() 
-        };
-        this.socket = socket;
-    }
-
-    getChildContext() {
-        return {
-            component: this
-        };
+    update() {
+        if (!this.state.loading) {
+            this.setState({ 'loading': true });
+            this.parent().updateData();
+        }
     }
 
     render() {
         const group = [];
-        const data = this.state.data;
+        const { data } = this.state;
         const groupName = {
             'douyu'  : '斗鱼',
             'huya'   : '虎牙',
@@ -83,17 +84,17 @@ class Live extends Component {
         for (const i in data) {
             const items = [];
             for (const j in data[i]) {
-                const room_info = data[i][j][1];
+                const roomInfo = data[i][j][1];
                 items.push(
                     <div className="item">
-                        <a href={data[i][j][0]} target="_blank">
-                            <img src={room_info.screenshot}/>
-                            <span className={this.classNames('state', { 'off': !room_info.state })}>{room_info.state ? '正在直播' : '已下播'}</span>
+                        <a href={data[i][j][0]} target="_blank" rel="noopener noreferrer">
+                            <img src={roomInfo.screenshot} alt={roomInfo.room_name}/>
+                            <span className={this.classNames('state', { 'off': !roomInfo.state })}>{roomInfo.state ? '正在直播' : '已下播'}</span>
                             <div className="msg">
-                                <p><span className="title">{room_info.room_name}</span></p>
+                                <p><span className="title">{roomInfo.room_name}</span></p>
                                 <p>
-                                    <span className="nickname">{room_info.nickname}</span>
-                                    <span className="category">{room_info.category}</span>
+                                    <span className="nickname">{roomInfo.nickname}</span>
+                                    <span className="category">{roomInfo.category}</span>
                                 </p>
                             </div>
                         </a>
@@ -110,17 +111,15 @@ class Live extends Component {
             );
         }
         return (
-            <div ref="app" className="live-list-page">
-                <Header ref="header"/>
+            <div className="live-list-page">
+                <div className="header">
+                    <button className={this.classNames({ 'loading': this.state.loading })} onClick={this.update.bind(this)}>{this.state.loading ? '加载中' : '更新数据'}</button>
+                </div>
                 {group}
             </div>
         );
     }
 }
-
-Live.childContextTypes = {
-    component: PropTypes.any
-};
 
 Live.propTypes = {};
 

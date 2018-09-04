@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import Component from '../../../components/component';
 
 class Header extends Component {
@@ -45,7 +47,7 @@ class Header extends Component {
     render() {
         return (
             <div className="header">
-                <input ref='input'/>
+                <input/>
                 <button onClick={this.search.bind(this)}>搜索</button>
                 <button onClick={this.scan.bind(this)}>扫描</button>
                 <button onClick={this.spider.bind(this)}>爬取</button>
@@ -56,10 +58,10 @@ class Header extends Component {
 }
 
 Header.contextTypes = {
-    component: React.PropTypes.any
+    component: PropTypes.any
 };
 
-Header.PropTypes = {
+Header.propTypes = {
     
 };
 

@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import Component from '../../../components/component';
 
 class Dialog extends Component {
@@ -9,13 +11,18 @@ class Dialog extends Component {
         };
     }
 
-    parent() {
-        return this.context.component;
+    onClose() {
+        $(this.refs.dialog).hide();
+        $('body').css({ overflow: 'auto' });
+    }
+
+    onCloseDownload() {
+        $(this.refs.download).hide();
     }
 
     enlargeImage(src, i) {
         const _this = this;
-        if (src.indexOf('cover.jpg') == -1) {
+        if (src.indexOf('cover.jpg') === -1) {
             this.setState({ 'thumb_index': i });
         }
         $(this.refs.big_image).find('img').attr('src', src);
@@ -27,14 +34,6 @@ class Dialog extends Component {
         $('body').css({ overflow: 'hidden' });
     }
 
-    onClose() {
-        $(this.refs.dialog).hide();
-        $('body').css({ overflow: 'auto' });
-    }
-
-    onCloseDownload() {
-        $(this.refs.download).hide();
-    }
 
     downloadShow() {
         $(this.refs.download).show();
@@ -54,11 +53,15 @@ class Dialog extends Component {
 
     setInfo() {
         const identifier = prompt('输入番号', '');
-        if (identifier != null && identifier != '') {
+        if (identifier !== null && identifier !== '') {
             this.parent().socketSend('update-movie', { 'identifier': identifier, 'movie_id': this.state.data.MOVIE_ID });
             this.parent().refs.log.resetData();
             this.parent().refs.log.setState({ 'toggle': true });
         }
+    }
+
+    parent() {
+        return this.context.component;
     }
 
     searchStar(id) {
@@ -78,7 +81,7 @@ class Dialog extends Component {
     thumbPrev(e) {
         e.stopPropagation();
         let currentIndex = this.state.thumb_index;
-        if (currentIndex == 0) {
+        if (currentIndex === 0) {
             currentIndex = this.state.data.SAMPLE.length - 1;
         } else {
             currentIndex -= 1;
@@ -91,7 +94,7 @@ class Dialog extends Component {
     thumbNext(e) {
         e.stopPropagation();
         let currentIndex = this.state.thumb_index;
-        if (currentIndex == this.state.data.SAMPLE.length - 1) {
+        if (currentIndex === this.state.data.SAMPLE.length - 1) {
             currentIndex = 0;
         } else {
             currentIndex += 1;
@@ -102,12 +105,12 @@ class Dialog extends Component {
     }
 
     render() {
-        const data = this.state.data;
+        const { data } = this.state;
         let star = [];
-        if (typeof data.STAR !== 'undefined' && data.STAR != '' && data.STAR != null) {
+        if (typeof data.STAR !== 'undefined' && data.STAR !== '' && data.STAR !== null) {
             data.STAR.map((v)=>{
                 star.push(
-                    <div className="star-item" onClick={this.searchStar.bind(this, v.STAR_ID)}>
+                    <div className="star-item" role="button" onClick={this.searchStar.bind(this, v.STAR_ID)}>
                         <img src={`http://localhost:8000/static/Star/${  v.STAR_NAME  }.jpg`}/>
                         <span className="tag">{v.STAR_NAME}</span>
                     </div>
@@ -117,7 +120,7 @@ class Dialog extends Component {
             star = (<span>暂无演员信息</span>);
         }               
         return (
-            <div className="dialog" ref="dialog">
+            <div className="dialog">
                 <div className="wrapper">
                     <div className="close" onClick={this.onClose.bind(this)}>X</div>
                     <h3>{data.TITLE}</h3>
@@ -129,14 +132,14 @@ class Dialog extends Component {
                             <p>番号：{data.IDENTIFIER}</p>
                             <p>类别：</p>
                             <div className="tag-box">
-                                {typeof data.TAG !== 'undefined' && data.TAG != '' && data.TAG != null && data.TAG.map((v)=>(<span className="tag" onClick={this.searchTag.bind(this, v.TAG_ID)}>{v.TAG_NAME}</span>))}
+                                {typeof data.TAG !== 'undefined' && data.TAG !== '' && data.TAG !== null && data.TAG.map((v)=>(<span className="tag" onClick={this.searchTag.bind(this, v.TAG_ID)}>{v.TAG_NAME}</span>))}
                             </div>
                             <div className="button-box">
                                 <button onClick={this.downloadShow.bind(this)}>下载</button>
-                                {data.PLAY == true && (
+                                {data.PLAY === true && (
                                     <button onClick={this.play.bind(this, data.IDENTIFIER)}>播放</button>
                                 )}
-                                {data.PLAY == true && (
+                                {data.PLAY === true && (
                                     <div className="row">
                                         <button className="set-info" onClick={this.setInfo.bind(this)}>设置资料来源</button>
                                         <button onClick={this.openDir.bind(this, data.IDENTIFIER)}>打开文件夹</button>
@@ -179,10 +182,10 @@ class Dialog extends Component {
 }
 
 Dialog.contextTypes = {
-    component: React.PropTypes.any
+    component: PropTypes.any
 };
 
-Dialog.PropTypes = {
+Dialog.propTypes = {
 
 };
 

@@ -53,7 +53,8 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => [
-                \PDO::ATTR_TIMEOUT => 30
+                \PDO::ATTR_TIMEOUT => 30,
+                \PDO::ATTR_CAS => \PDO::CASE_NATURAL
             ]
         ],
 

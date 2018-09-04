@@ -9,12 +9,14 @@ class Message extends Component {
         this.state = {
             leave: false
         };
+        this.timeout = null;
+        this.onClose = this.onClose.bind(this);
     }
 
     componentDidMount() {
         const { duration, willUnmount } = this.props;
         if (duration !== 0) {
-            setTimeout(()=>{
+            this.timeout = setTimeout(()=>{
                 this.setState({ leave: true }, ()=>{
                     setTimeout(()=>{
                         willUnmount();
@@ -22,6 +24,16 @@ class Message extends Component {
                 });
             }, duration);
         }
+    }
+
+    onClose() {
+        const { willUnmount } = this.props;
+        clearTimeout(this.timeout);
+        this.setState({ leave: true }, ()=>{
+            setTimeout(()=>{
+                willUnmount();
+            }, 300);
+        });
     }
 
     render() {
@@ -49,6 +61,7 @@ class Message extends Component {
                 <div className="message-notice-content">
                     <div className={this.classNames('message-custom-content', `message-${ type }`)}>
                         <Icon name={iconName}/><span>{content}</span>
+                        <Icon name="close" className="close" onClick={this.onClose}/>
                     </div>
                 </div>
             </div>

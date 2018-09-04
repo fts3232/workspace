@@ -26,12 +26,6 @@ class Input extends Component {
         });
     }
 
-    setValue(value) {
-        this.setState({ 'value': value }, ()=>{
-            setData(name, value);
-        });
-    }
-
     render() {
         const { type, readonly, placeholder, name, id } = this.props;
         const { value } = this.state;
