@@ -28,6 +28,7 @@ class CashBook extends Model
     protected function get($offset, $size)
     {
         $sql = "SELECT
+<<<<<<< HEAD
                     a.ROW_ID,
                     a.TYPE,
                     a.AMOUNT,
