@@ -35,6 +35,15 @@ class CashBook extends Model
                     a.DESCRIPTION,
                     a.CREATED_AT,
                     group_concat(b.TAG_NAME) AS TAGS
+=======
+                    ROW_ID,
+                    IF(TYPE = 1,'支出','收入') AS TYPE,
+                    AMOUNT,
+                    TAGS,
+                    DATE,
+                    DESCRIPTION,
+                    CREATED_AT
+>>>>>>> 17606a55f295c8a1f4d0f36971d558fca8beba13
                 FROM
                     CASH_BOOK
                 AS a
