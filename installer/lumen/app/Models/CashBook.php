@@ -28,7 +28,6 @@ class CashBook extends Model
     protected function get($offset, $size)
     {
         $sql = "SELECT
-<<<<<<< HEAD
                     a.ROW_ID,
                     a.TYPE,
                     a.AMOUNT,
@@ -36,19 +35,12 @@ class CashBook extends Model
                     a.DESCRIPTION,
                     a.CREATED_AT,
                     group_concat(b.TAG_NAME) AS TAGS
-=======
-                    ROW_ID,
-                    IF(TYPE = 1,'支出','收入') AS TYPE,
-                    AMOUNT,
-                    TAGS,
-                    DATE,
-                    DESCRIPTION,
-                    CREATED_AT
->>>>>>> 17606a55f295c8a1f4d0f36971d558fca8beba13
                 FROM
                     CASH_BOOK
                 AS a
-                LEFT JOIN CASH_BOOK_TAGS b ON FIND_IN_SET(b.TAG_ID,a.TAGS)";
+                LEFT JOIN CASH_BOOK_TAGS b ON FIND_IN_SET(b.TAG_ID,a.TAGS)
+                GROUP BY a.ROW_ID
+                ORDER BY a.DATE DESC, a.ROW_ID DESC";
         return $this->select($sql, ['OFFSET' => $offset, 'SIZE' => $size]);
     }
 

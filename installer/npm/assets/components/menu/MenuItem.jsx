@@ -20,7 +20,7 @@ class MenuItem extends Component {
 
     componentDidMount() {
         const { selectedKey, open } = this.context;
-        if (selectedKey === this.uniqueId) {
+        if (selectedKey === this.uniqueId && open) {
             open();
         }
     }

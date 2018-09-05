@@ -33,14 +33,17 @@ class App extends Component {
         );
     }
 
-    getCurrentMenu(menus) {
+    getCurrentMenu(menus, number = 0) {
         let selectedKey = 0;
         menus.forEach((menu, i) => {
-            if (menu.path === location.pathname || location.pathname.indexOf(menu.path) !== -1) {
-                selectedKey = i + 1;
-            }
             if (typeof menu.child !== 'undefined') {
-                selectedKey = this.getCurrentMenu(menu.child);
+                selectedKey = this.getCurrentMenu(menu.child, number);
+                number += menu.child.length;
+            } else {
+                number++;
+            }
+            if (menu.path === location.pathname || location.pathname.indexOf(menu.path) !== -1) {
+                selectedKey = number;
             }
         });
         return selectedKey;

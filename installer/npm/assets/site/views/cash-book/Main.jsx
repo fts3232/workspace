@@ -41,7 +41,7 @@ class Main extends Component {
                     }
                 });
         }).then((data) => {
-            if (data.status) {
+            if (data.status && data.list) {
                 this.setState({ data: data.list, total: data.count });
             }
             console.log(data);
