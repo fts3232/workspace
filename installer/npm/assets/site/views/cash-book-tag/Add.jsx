@@ -21,30 +21,13 @@ class Add extends Component {
     }
 
     componentDidMount() {
-        new Promise((resolve, reject) => {
-            const url = getApiUrl('/api/cashBookTags/get');
-            const data = { all: true };
-            superagent.get(url)
-                .query(data)
-                .end((err, res) => {
-                    if (typeof res !== 'undefined' && res.ok) {
-                        resolve(JSON.parse(res.text));
-                    } else {
-                        reject(err);
-                    }
-                });
-        }).then((data) => {
-            if (data.status) {
-                this.setState({ tag: data.list });
-            }
-            console.log(data);
-        });
+        this.setState({ 'tag': { 1: '车费', 2: '饭钱', 3: '游戏', 4: '魔兽世界' } });
     }
 
     onSubmit(formData) {
         console.log(formData);
         new Promise((resolve, reject) => {
-            const url = getApiUrl('/api/cashBook/add');
+            const url = getApiUrl('/api/cashBookTags/add');
             superagent.post(url)
                 .type('form')
                 .send(formData)
@@ -66,22 +49,13 @@ class Add extends Component {
     }
 
     render() {
-        const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }, { 'name': '添加', 'path': '/cash-book/add' }];
+        const breadcrumb = [{ 'name': '标签', 'path': '/cash-book-tag' }, { 'name': '添加', 'path': '/cash-book-tag/add' }];
         const validateRule = {
-            'date'  : 'required',
-            'tags'  : 'required',
-            'amount': 'required|int'
+            'name': 'required'
         };
         const validateMsg = {
-            'date': {
+            'name': {
                 'required': '日期不能为空'
-            },
-            'tags': {
-                'required': '标签不能为空'
-            },
-            'amount': {
-                'required': '金额不能为空',
-                'number'  : '金额格式不正确'
             }
         };
         const { tag } = this.state;
@@ -96,24 +70,12 @@ class Add extends Component {
                     <Col span={12}>
                         <Panel>
                             <Form onSubmit={this.onSubmit} validateRule={validateRule} validateMsg={validateMsg}>
-                                <FormItem label="日期" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <DatePicker name="date" id="form-date"/>
-                                </FormItem>
-                                <FormItem label="标签" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Select data={tag} placeholder="请输入标签" name="tags" id="form-tag" multiple/>
-                                </FormItem>
-                                <FormItem label="类型" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Select data={{ 1: '支出', 2: '收入' }} placeholder="请输入类型" name="type" id="form-type"/>
-                                </FormItem>
-                                <FormItem label="金额" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Input name="amount" placeholder="请输入金额" id="form-amount"/>
-                                </FormItem>
-                                <FormItem label="描述" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
-                                    <Textarea name="description" placeholder="请输入描述" id="form-description"/>
+                                <FormItem label="名称" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
+                                    <Input name="name" placeholder="请输入标签名称" id="form-name"/>
                                 </FormItem>
                                 <FormItem wrapperCol={{ span: 12 }} className="text-right">
                                     <Button type="info">添加</Button>
-                                    <Link to="/cash-book">
+                                    <Link to="/cash-book-tag">
                                         <Button>返回</Button>
                                     </Link>
                                 </FormItem>

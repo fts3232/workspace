@@ -16,7 +16,7 @@ class Table extends Component {
                     <tbody>
                         {data.map((v, i) => (
                             <tr key={i}>
-                                {Object.values(colunm).map((key, ii) => (<td key={ii}>{v[key]}</td>))}
+                                {Object.values(colunm).map((key, ii) => (<td key={ii}>{typeof key === 'function' ? key(v) : v[key]}</td>))}
                             </tr>
                         ))}
                     </tbody>

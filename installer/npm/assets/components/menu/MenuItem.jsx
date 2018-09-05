@@ -18,6 +18,13 @@ class MenuItem extends Component {
         this.onClick = this.onClick.bind(this);
     }
 
+    componentDidMount() {
+        const { selectedKey, open } = this.context;
+        if (selectedKey === this.uniqueId) {
+            open();
+        }
+    }
+
     onClick() {
         const { changeSelectedKey } = this.context;
         changeSelectedKey(this.uniqueId);
@@ -27,7 +34,7 @@ class MenuItem extends Component {
         const { children } = this.props;
         const { selectedKey } = this.context;
         return (
-            <li role="menuitem" className={this.classNames('menu-item', { 'menu-item-selected': selectedKey === this.uniqueId })} onClick={this.onClick}>
+            <li role="menuitem" style={this.style()} className={this.classNames('menu-item', { 'menu-item-selected': selectedKey === this.uniqueId })} onClick={this.onClick}>
                 {children}
             </li>
         );
@@ -40,7 +47,8 @@ MenuItem.defaultProps = {};// 设置默认属性
 
 MenuItem.contextTypes = {
     selectedKey      : PropTypes.number,
-    changeSelectedKey: PropTypes.func
+    changeSelectedKey: PropTypes.func,
+    open             : PropTypes.func
 };
 
 // 导出组件

@@ -28,18 +28,17 @@ class CashBook extends Model
     protected function get($offset, $size)
     {
         $sql = "SELECT
-                    ROW_ID,
-                    TYPE,
-                    AMOUNT,
-                    TAGS,
-                    DATE,
-                    DESCRIPTION,
-                    CREATED_AT
+                    a.ROW_ID,
+                    a.TYPE,
+                    a.AMOUNT,
+                    a.DATE,
+                    a.DESCRIPTION,
+                    a.CREATED_AT,
+                    group_concat(b.TAG_NAME) AS TAGS
                 FROM
                     CASH_BOOK
-                ORDER BY
-                    CREATED_AT DESC
-                LIMIT :OFFSET,:SIZE";
+                AS a
+                LEFT JOIN CASH_BOOK_TAGS b ON FIND_IN_SET(b.TAG_ID,a.TAGS)";
         return $this->select($sql, ['OFFSET' => $offset, 'SIZE' => $size]);
     }
 

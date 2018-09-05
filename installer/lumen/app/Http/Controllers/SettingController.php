@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CashBook;
+use App\Models\CashBookTags;
 use App\Models\JavBus;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,8 @@ class SettingController extends Controller
         switch ($type) {
             case 'cashBook':
                 $ret = CashBook::createTable();
+                $ret2 = CashBookTags::createTable();
+                $return = ['status'=>$ret && $ret2,'msg'=>$ret && $ret2 ? '创建成功':'创建失败'];
                 break;
             case 'javBus':
                 $ret = JavBus::createTable();
@@ -32,7 +35,6 @@ class SettingController extends Controller
             default:
                 $return = ['status'=>false,'msg'=>'参数错误'];
         }
-        isset($ret) && $return = ['status'=>$ret,'msg'=>$ret ? '创建成功':'创建失败'];
         return response()->json($return);
     }
 }

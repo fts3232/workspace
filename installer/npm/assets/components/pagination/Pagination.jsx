@@ -44,15 +44,17 @@ class Pagination extends Component {
         }
         return (
             <div className={this.classNames('pagination')}>
-                <ul>
-                    <li role="menuitem" className={currentPage === 1 ? 'disabled' : null} onClick={()=>{ const i = currentPage - 1;this.changePage(i); }}>
-                        <Link to={`?page=${ currentPage - 1 }`}>上一页</Link>
-                    </li>
-                    {li}
-                    <li role="menuitem" className={currentPage === totalPage ? 'disabled' : null} onClick={()=>{ const i = currentPage + 1; this.changePage(i); }}>
-                        <Link to={`?page=${ currentPage + 1 }`}>下一页</Link>
-                    </li>
-                </ul>
+                {totalPage > 0 && (
+                    <ul>
+                        <li role="menuitem" className={currentPage === 1 ? 'disabled' : null} onClick={()=>{ const i = currentPage - 1;this.changePage(i); }}>
+                            <Link to={`?page=${ currentPage - 1 }`}>上一页</Link>
+                        </li>
+                        {li}
+                        <li role="menuitem" className={currentPage === totalPage ? 'disabled' : null} onClick={()=>{ const i = currentPage + 1; this.changePage(i); }}>
+                            <Link to={`?page=${ currentPage + 1 }`}>下一页</Link>
+                        </li>
+                    </ul>
+                )}
             </div>
         );
     }

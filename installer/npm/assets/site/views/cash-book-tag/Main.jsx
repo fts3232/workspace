@@ -8,7 +8,6 @@ import Breadcrumb from '../../../components/breadcrumb';
 import Panel from '../../../components/panel';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
-import Tag from '../../../components/tag';
 import getApiUrl from '../../config/api.js';
 
 class Main extends Component {
@@ -29,7 +28,7 @@ class Main extends Component {
 
     queryData() {
         new Promise((resolve, reject) => {
-            const url = getApiUrl('/api/cashBook/get');
+            const url = getApiUrl('/api/cashBookTags/get');
             const data = { page: this.state.page, size: this.size };
             superagent.get(url)
                 .query(data)
@@ -54,25 +53,22 @@ class Main extends Component {
         });
     }
 
+    showModal() {
+
+    }
+
     render() {
         const colunm = {
-            'ID': 'ROW_ID',
-            '日期': 'DATE',
-            '类型': 'TYPE',
-            '金额': 'AMOUNT',
-            '标签': (data)=>{
-                const tags = data.TAGS.split(',');
-                return (
-                    <div>
-                        {tags.map((tag)=>(
-                            <Tag>{tag}</Tag>
-                        ))}
-                    </div>
-                );
-            },
-            '描述': 'DESCRIPTION'
+            'ID': 'TAG_ID',
+            '名称': 'TAG_NAME',
+            '操作': (data) => (
+                <div>
+                    <Button type="info">修改</Button>
+                    <Button type="danger" onClick={this.showModal}>删除</Button>
+                </div>
+            )
         };
-        const breadcrumb = [{ 'name': '账簿', 'path': '/cash-book' }];
+        const breadcrumb = [{ 'name': '标签', 'path': '/cash-book-tag' }];
         const { page, data, total } = this.state;
         return (
             <Row>
@@ -82,7 +78,7 @@ class Main extends Component {
                 <Col span={12}>
                     <Panel>
                         <div className="margin-bottom-10">
-                            <Link to="/cash-book/add">
+                            <Link to="/cash-book-tag/add">
                                 <Button type="info">添加</Button>
                             </Link>
                         </div>

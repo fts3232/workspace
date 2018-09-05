@@ -10,20 +10,45 @@ import Icon from '../components/icon';
 
 import NotFound from './views/not-found';
 
-import navs from './config/nav.js';
+import navMenu from './config/navMenu.js';
 
 const { Header, Footer, Sider, Content } = Layout;
-const { Item } = Menu;
+const { Item, SubMenu } = Menu;
 
 class App extends Component {
-    render() {
-        const history = createBrowserHistory();
+    getMenu(menu, key, depth = 0) {
+        if (typeof menu.child !== 'undefined') {
+            return (
+                <SubMenu title={<span><Icon name={menu.icon}/><span>{menu.name}</span></span>} key={key}>
+                    {menu.child.map((child, k) => this.getMenu(child, k, depth + 1))}
+                </SubMenu>
+            );
+        }
+        return (
+            <Item style={depth > 0 && { paddingLeft: depth * 48 }} key={key}>
+                <Link to={menu.path}>
+                    {typeof menu.icon !== 'undefined' && <Icon name={menu.icon}/>}<span>{menu.name}</span>
+                </Link>
+            </Item>
+        );
+    }
+
+    getCurrentMenu(menus) {
         let selectedKey = 0;
-        navs.forEach((v, i) => {
-            if (v.path === location.pathname || location.pathname.indexOf(v.path) !== -1) {
+        menus.forEach((menu, i) => {
+            if (menu.path === location.pathname || location.pathname.indexOf(menu.path) !== -1) {
                 selectedKey = i + 1;
             }
+            if (typeof menu.child !== 'undefined') {
+                selectedKey = this.getCurrentMenu(menu.child);
+            }
         });
+        return selectedKey;
+    }
+
+    render() {
+        const history = createBrowserHistory();
+        const selectedKey = this.getCurrentMenu(navMenu);
         return (
             <Router history={history}>
                 <Layout className='app'>
@@ -31,13 +56,7 @@ class App extends Component {
                     <Layout>
                         <Sider collapsible>
                             <Menu selectedKey={selectedKey}>
-                                {navs.map((nav, key) => (
-                                    <Item key={key}>
-                                        <Link to={nav.path}>
-                                            <Icon name={nav.icon}/><span>{nav.name}</span>
-                                        </Link>
-                                    </Item>
-                                ))}
+                                {navMenu.map((menu, key) => this.getMenu(menu, key))}
                             </Menu>
                         </Sider>
                         <Layout>
