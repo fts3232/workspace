@@ -9,6 +9,7 @@ import Panel from '../../../components/panel';
 import Button from '../../../components/button';
 import { Col, Row } from '../../../components/grid';
 import getApiUrl from '../../config/api.js';
+import Modal from '../../../components/modal';
 
 class Main extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class Main extends Component {
         };
         this.size = 10;
         this.pageChange = this.pageChange.bind(this);
+        this.showDeleteModal = this.showDeleteModal.bind(this);
     }
 
     componentDidMount() {
@@ -53,8 +55,8 @@ class Main extends Component {
         });
     }
 
-    showModal() {
-
+    showDeleteModal() {
+        Modal.delete('删除', '是否确定删除当前记录', 0);
     }
 
     render() {
@@ -63,8 +65,8 @@ class Main extends Component {
             '名称': 'TAG_NAME',
             '操作': (data) => (
                 <div>
-                    <Button type="info">修改</Button>
-                    <Button type="danger" onClick={this.showModal}>删除</Button>
+                    <Button type="info" onClick={this.showDeleteModal}>修改</Button>
+                    <Button type="danger" onClick={this.showDeleteModal}>删除</Button>
                 </div>
             )
         };
