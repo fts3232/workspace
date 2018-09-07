@@ -45,4 +45,29 @@ class CashBookTagsController extends Controller
         }
         return response()->json($return);
     }
+
+    public function edit(Request $request)
+    {
+        $return = ['status' => true, 'msg' => '修改成功'];
+        $data = [
+            'ID' => $request->input('id'),
+            'NAME' => $request->input('name'),
+        ];
+        if (!CashBookTags::edit($data)) {
+            $return = ['status' => false, 'msg' => '修改失败'];
+        }
+        return response()->json($return);
+    }
+
+    public function delete(Request $request)
+    {
+        $return = ['status' => true, 'msg' => '删除成功'];
+        $data = [
+            'ID' => $request->input('id')
+        ];
+        if (!CashBookTags::deleteTag($data)) {
+            $return = ['status' => false, 'msg' => '删除失败'];
+        }
+        return response()->json($return);
+    }
 }

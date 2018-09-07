@@ -2,38 +2,47 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import Modal from './Modal.jsx';
 
-const notice = (type, title, content, duration) => {
+const notice = (props) => {
     const div = document.createElement('div');
     const willUnmount = () => {
         ReactDOM.unmountComponentAtNode(div);
         document.body.removeChild(div);
     };
+    let modal = null;
     // react-router
     ReactDOM.render((
-        <Modal type={type} title={title} content={content} willUnmount={willUnmount}/>
+        <Modal {...props} willUnmount={willUnmount} ref={(component)=>{ modal = component; }}/>
     ), div);
 
     document.body.appendChild(div);
+    return modal;
 };
 
-Modal.delete = (title, content, duration) => {
-    notice('delete', title, content, duration);
+Modal.show = (props) => notice(props);
+
+Modal.confirm = (props) => {
+    props = Object.assign({ 'type': 'confirm', 'okText': '是', 'cancelText': '否' }, props);
+    return notice(props);
 };
 
-Modal.success = (title, content, duration) => {
-    notice('success', title, content, duration);
+Modal.success = (props) => {
+    props = Object.assign( { 'type': 'success', 'okText': '知道了' }, props);
+    return notice( title, content, duration, 'success');
 };
 
-Modal.error = (title, content, duration) => {
-    notice('error', title, content, duration);
+Modal.error = (props) => {
+    props = Object.assign( { 'type': 'error', 'okText': '知道了' }, props);
+    return notice(title, content, duration, 'error');
 };
 
-Modal.info = (title, content, duration) => {
-    notice('info', title, content, duration);
+Modal.info = (props) => {
+    props = Object.assing( { 'type': 'info', 'okText': '知道了' }, props);
+    return notice(title, content, duration, 'info');
 };
 
-Modal.warning = (title, content, duration) => {
-    notice('warning', title, content, duration);
+Modal.warning = (props) => {
+    props = Object.assign({ 'type': 'warning', 'okText': '知道了' }, props);
+    return notice(title, content, duration, 'warning');
 };
 
 export default Modal;

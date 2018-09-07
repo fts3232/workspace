@@ -4,7 +4,6 @@ import React from 'react';
 
 class Component extends React.Component {
     getParams(key, defaultValue = null) {
-        const { location } = this.props;
         let { search } = location;
         if (search !== '') {
             search = search.substring(1);

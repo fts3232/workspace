@@ -34,7 +34,7 @@ class App extends Component {
     }
 
     getCurrentMenu(menus, number = 0) {
-        let selectedKey = 0;
+        let selectedKey = 1;
         menus.forEach((menu, i) => {
             if (typeof menu.child !== 'undefined') {
                 selectedKey = this.getCurrentMenu(menu.child, number);

@@ -12,6 +12,7 @@ class Modal extends Component {
         };
         this.timeout = null;
         this.onClose = this.onClose.bind(this);
+        this.onCancel = this.onCancel.bind(this);
     }
 
     componentDidMount() {
@@ -37,33 +38,57 @@ class Modal extends Component {
         });
     }
 
+    onCancel() {
+        const { onCancel } = this.props;
+        this.onClose();
+        onCancel();
+    }
+
     render() {
-        const { type, title, content, okText, cancelText } = this.props;
+        const { type, title, content, okText, cancelText, onOk, onCancel } = this.props;
         const { leave } = this.state;
         let icon;
+        let okButtonType;
         switch (type) {
-            case 'delete':
-                icon = 'question-circle';
             case 'confirm':
                 icon = 'question-circle';
+                okButtonType = 'danger';
+                break;
+            case 'info':
+                icon = 'info-circle';
+                okButtonType = 'info';
+                break;
+            case 'success':
+                icon = 'check-circle';
+                okButtonType = 'info';
+                break;
+            case 'error':
+                icon = 'close-circle';
+                okButtonType = 'info';
+                break;
+            case 'warning':
+                icon = 'warning-circle';
+                okButtonType = 'info';
+                break;
+            default:
+                okButtonType = 'info';
+                break;
         }
         return (
             <div>
                 <div className={this.classNames('modal-mask', { 'move-up-leave': leave, 'move-in-leave': !leave })} onClick={this.onClose}/>
-                <div className="modal-wrap">
-                    <div className={this.classNames('modal', { 'move-up-leave': leave, 'move-in-leave': !leave })}>
-                        <div className="modal-content">
-                            <Icon name="close" className="close" onClick={this.onClose}/>
-                            <div className="modal-header">
-                                <Icon name={icon}/>{title}
-                            </div>
-                            <div className="modal-body">
-                                {content}
-                            </div>
-                            <div className="modal-footer">
-                                <Button type="info">{okText}</Button>
-                                <Button onClick={this.onClose}>{cancelText}</Button>
-                            </div>
+                <div className={this.classNames('modal', { 'move-up-leave': leave, 'move-in-leave': !leave }, { [`modal-type-${ type }`]: type })}>
+                    <div className="modal-content">
+                        <Icon name="close" className="close" onClick={this.onClose}/>
+                        <div className="modal-header">
+                            {icon && (<Icon name={icon}/>)}<span className="modal-header-title">{title}</span>
+                        </div>
+                        <div className="modal-body">
+                            {content}
+                        </div>
+                        <div className="modal-footer">
+                            <Button type={okButtonType} onClick={onOk}>{okText}</Button>
+                            {(type === 'confirm' || type === null) && (<Button onClick={this.onCancel}>{cancelText}</Button>)}
                         </div>
                     </div>
                 </div>
@@ -73,11 +98,13 @@ class Modal extends Component {
 }
 
 Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
-    type       : PropTypes.oneOf(['warning', 'success', 'error', 'info', 'success', 'confirm']).isRequired,
+    type       : PropTypes.oneOf([null, 'warning', 'success', 'error', 'info', 'confirm']),
     content    : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onClose    : PropTypes.func,
+    onCancel   : PropTypes.func,
+    onOk       : PropTypes.func,
     willUnmount: PropTypes.func.isRequired,
-    header     : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    title      : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     cancelText : PropTypes.string,
     okText     : PropTypes.string,
     onConfirm  : PropTypes.func,
@@ -85,8 +112,11 @@ Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报
     duration   : PropTypes.number
 };
 Modal.defaultProps = {
+    type      : null,
     okText    : '确认',
-    cancelText: '取消',
+    cancelText: '返回',
+    onCancel  : ()=>{},
+    onOk      : ()=>{},
     duration  : 0
 };// 设置默认属性
 

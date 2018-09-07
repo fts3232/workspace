@@ -74,4 +74,21 @@ class CashBookTags extends Model
                     )";
         return $this->insert($sql, $data);
     }
+
+    protected function edit($data)
+    {
+        $sql = "UPDATE CASH_BOOK_TAGS
+                SET TAG_NAME = :NAME
+                WHERE
+                    TAG_ID = :ID";
+        return $this->update($sql, $data);
+    }
+
+    protected function deleteTag($data)
+    {
+        $sql = "DELETE FROM CASH_BOOK_TAGS
+                WHERE
+                    TAG_ID = :ID";
+        return $this->delete($sql, $data);
+    }
 }

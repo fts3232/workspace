@@ -17,6 +17,8 @@ $app->group(['prefix' => '/api'], function ($app) {
     $app->post('/cashBook/add', 'CashBookController@add');
     $app->get('/cashBookTags/get', 'CashBookTagsController@get');
     $app->post('/cashBookTags/add', 'CashBookTagsController@add');
+    $app->post('/cashBookTags/edit', 'CashBookTagsController@edit');
+    $app->post('/cashBookTags/delete', 'CashBookTagsController@delete');
     //setting
     $app->post('/setting/createDB', 'SettingController@createDB');
 });
