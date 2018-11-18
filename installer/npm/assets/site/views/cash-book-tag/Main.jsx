@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import superagent from 'superagent';
 import Component from '../../../components/component';
 import Table from '../../../components/table';
@@ -32,15 +31,15 @@ class Main extends Component {
                         reject(err);
                     }
                 });
-        }).then((data) => {
-            if (data.status) {
+        }).then((res) => {
+            if (res.status) {
                 Message.success('修改成功', 3000);
                 this.modal.onClose();
                 this.table.reload();
             } else {
                 Message.error('修改失败', 3000);
             }
-            console.log(data);
+            console.log(res);
         });
     }
 
@@ -57,15 +56,15 @@ class Main extends Component {
                         reject(err);
                     }
                 });
-        }).then((data) => {
-            if (data.status) {
+        }).then((res) => {
+            if (res.status) {
                 Message.success('添加成功', 3000);
                 this.modal.onClose();
                 this.table.reload();
             } else {
                 Message.error('添加失败', 3000);
             }
-            console.log(data);
+            console.log(res);
         });
     }
 
@@ -81,7 +80,7 @@ class Main extends Component {
         const props = {
             'title'  : '编辑',
             'content': (
-                <Form ref={(form)=>this.editForm = form} onSubmit={this.onEditSubmit.bind(this)} validateRule={validateRule} validateMsg={validateMsg}>
+                <Form ref={(form)=>{ this.editForm = form; }} onSubmit={this.onEditSubmit.bind(this)} validateRule={validateRule} validateMsg={validateMsg}>
                     <FormItem label="名称" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
                         <Input name="name" placeholder="请输入标签名称" id="form-name" value={data.TAG_NAME}/>
                     </FormItem>
@@ -107,7 +106,7 @@ class Main extends Component {
         const props = {
             'title'  : '添加',
             'content': (
-                <Form ref={(form)=>this.addForm = form} onSubmit={this.onAddSubmit.bind(this)} validateRule={validateRule} validateMsg={validateMsg}>
+                <Form ref={(form)=> { this.addForm = form; }} onSubmit={this.onAddSubmit.bind(this)} validateRule={validateRule} validateMsg={validateMsg}>
                     <FormItem label="名称" labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}>
                         <Input name="name" placeholder="请输入标签名称" id="form-name"/>
                     </FormItem>
@@ -137,15 +136,15 @@ class Main extends Component {
                                 reject(err);
                             }
                         });
-                }).then((data) => {
-                    if (data.status) {
+                }).then((res) => {
+                    if (res.status) {
                         Message.success('删除成功', 3000);
                         this.modal.onClose();
                         this.table.reload();
                     } else {
                         Message.error('删除失败', 3000);
                     }
-                    console.log(data);
+                    console.log(res);
                 });
             }
         };
@@ -153,7 +152,7 @@ class Main extends Component {
     }
 
     render() {
-        const colunm = {
+        const column = {
             'ID': 'TAG_ID',
             '名称': 'TAG_NAME',
             '操作': (data) => (
@@ -174,7 +173,7 @@ class Main extends Component {
                         <div className="margin-bottom-10">
                             <Button type="info" onClick={()=>{ this.showAddModal(); }}>添加</Button>
                         </div>
-                        <Table dataSource={getApiUrl('/api/cashBookTags/get')} colunm={colunm} ref={(table)=>{ this.table = table; }}/>
+                        <Table dataSource={getApiUrl('/api/cashBookTags/get')} column={column} ref={(table)=>{ this.table = table; }}/>
                     </Panel>
                 </Col>
             </Row>

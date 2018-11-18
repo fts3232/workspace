@@ -1,138 +1,207 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import superagent from 'superagent';
-import Dialog from './Dialog.jsx';
-import Header from './Header.jsx';
-import Log from './Log.jsx';
-import Tag from './Tag.jsx';
 import Component from '../../../components/component';
 import getApiUrl from '../../config/api.js';
+import Button from '../../../components/button';
+import { Form, Input } from '../../../components/form';
+import Breadcrumb from '../../../components/breadcrumb';
+import { Col, Row } from '../../../components/grid';
+import Panel from '../../../components/panel';
+import Modal from '../../../components/modal';
 
 class List extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data       : [],
-            title      : false,
-            rows_height: [],
-            end        : false,
-            page       : 1,
-            getData    : false,
-            star       : false,
-            tag        : false,
-            canPlay    : false
+            data      : [],
+            rowsHeight: [],
+            page      : 1,
+            canPlay   : false,
+            loading   : false,
+            showLog   : false,
+            showTag   : false
         };
+        this.socket = null;
     }
 
     componentDidMount() {
-        const _this = this;
-        const socket = new WebSocket('ws://localhost:8000/socket');
-        // 打开Socket 
-        socket.onopen = function(event) { 
+        /* const socket = new WebSocket('ws://localhost:8001/socket');
+        // 打开Socket
+        socket.onopen = () => {
             console.log('连接成功');
             // 监听消息
-            socket.onmessage = function(event) { 
+            socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
+                // console.log(data);
                 if (data.event === 'scan' || data.event === 'spider') {
-                    _this.refs.log.appendData(data.msg);
+                    const { log } = this.state;
+                    log.push(data.msg);
+                    this.setState({ 'log': log });
                 } else if (data.event === 'play' && data.msg === '播放失败') {
                     alert(data.msg);
                 } else if (data.event === 'openDir' && data.msg === '打开失败') {
                     alert(data.msg);
                 }
-            }; 
+            };
+            socket.onerror = (event) => {
+                console.log(event);
+            };
         };
-       
-        // 监听Socket的关闭
-        socket.onclose = function(event) { 
-            console.log('Client notified socket has closed', event); 
-            // 关闭Socket.... 
-            // socket.close() 
-        }; 
-        this.socket = socket;
-        this.getData();
-        $(window).resize(()=>{
-            this.setState({ rows_height: [] }, ()=>{
-                const items = $(_this.refs.waterfall).find('.item');
-                _this.waterfall(items);
+        socket.onclose = (event) => {
+            console.log('Client notified socket has closed', event);
+            // 关闭Socket....
+            // socket.close()
+        };
+        this.socket = socket; */
+        window.onresize = () => {
+            this.setState({ rowsHeight: [] }, ()=>{
+                this.waterfall();
             });
-            
-        });
-        $(window).scroll(()=>{
+        };
+        /* window.scroll = ()=>{
             const scrollTop = $(window).scrollTop();
             const scrollHeight = $('html').get(0).scrollHeight;
             const height = $(window).height();
             if (scrollHeight <= height + scrollTop && !_this.state.end) {
                 _this.getData();
             }
-        });
-    }
-
-    getChildContext() {
-        return {
-            component: this
-        };
-    }
-
-    onClick(val) {
-        const obj = this.refs.dialog;
-        obj.show();
-        obj.setState({ data: val });
+        }; */
+        this.getData();
     }
 
     getData() {
-        const _this = this;
-        const { title, star, tag, page, canPlay } = this.state;
+        const { searchKey, searchValue, page, canPlay, loading } = this.state;
         let { data } = this.state;
-        if (_this.state.getData === false) {
-            this.setState({ 'getData': true }, ()=>{
-                new Promise((resolve, reject)=>{
-                    let url = getApiUrl(`/getData/av?p=${ page }&size=24`);
-                    if (canPlay === true)
-                        url += '&canPlay=1';
-                    if (title !== false)
-                        url += `&title=${  title }`;
-                    else if (star !== false)
-                        url += `&star=${  star }`;
-                    else if (tag !== false)
-                        url += `&tag=${  tag }`;
+        const query = { page, size: 24, searchKey, searchValue, canPlay };
 
-                    superagent.get(url)
-                        .end((err, res) => {
-                            if (typeof res !== 'undefined' && res.ok) {
-                                resolve(JSON.parse(res.text));
-                            } else {
-                                reject(err);
-                            }
-                        });
-                }).then((returnData)=>{
-                    if (returnData !== '') {
-                        data = data.concat(returnData);
-                        _this.setState({ 'data': data, page: page + 1 }, ()=>{
-                            const _this = this;
-                            const length = $('.waterfall .item:not(.active) img').length;
-                            let i = 0;
-                            $('.waterfall .item:not(.active) img').on('load error', () => {
-                                i += 1;
-                                if (i === length) {
-                                    const items = $(_this.refs.waterfall).find('.item:not(.active)');
-                                    page === 1 ? _this.waterfall(items) : _this.updateWaterfall(items);
-                                }
-                            });
-                        });
-                        if (canPlay === true && title !== false || star !== false || tag !== false) {
-                            _this.setState({ 'end': true, 'getData': false });
+        const url = getApiUrl('/api/av/get');
+        if (loading === false) {
+            new Promise((resolve, reject)=>{
+                superagent.get(url)
+                    .query(query)
+                    .end((err, res) => {
+                        if (typeof res !== 'undefined' && res.ok) {
+                            resolve(JSON.parse(res.text));
                         } else {
-                            _this.setState({ 'getData': false });
+                            reject(err);
                         }
-                    } else {
-                        _this.setState({ 'end': true, 'getData': false });
-                    }
-                }).catch((err)=>{
-                    _this.setState({ 'end': true, 'getData': false });
-                });
+                    });
+            }).then((res)=>{
+                if (res.status) {
+                    data = data.concat(res.list);
+                    this.setState({ 'data': data, page: page + 1 }, ()=>{
+                        const items = document.querySelectorAll('.waterfall .item:not(.active) img');
+                        const { length } = items;
+                        for (let i = 0; i < length; i++) {
+                            items[i].onerror = () => {
+                                if (i === length - 1 ) {
+                                    page === 1 ? this.waterfall() : this.updateWaterfall();
+                                }
+                            };
+                            items[i].onload = () => {
+                                if (i === length - 1 ) {
+                                    page === 1 ? this.waterfall() : this.updateWaterfall();
+                                }
+                            };
+                        }
+                    });
+                } else {
+                    this.setState({ 'loading': false });
+                }
+            }).catch((err)=>{
+                console.log(err);
+                this.setState({ 'loading': false });
             });
         }
+    }
+
+    getCanPlay() {
+        const { canPlay } = this.state;
+        this.setState({ 'canPlay': !canPlay, 'data': [], 'page': 1, 'loading': false, rowsHeight: []  }, ()=>{
+            this.getData();
+        });
+    }
+
+    deleteVideo(video) {
+        const url = getApiUrl('/api/av/delete');
+        const query = { path: video.path };
+        new Promise((resolve, reject) => {
+            superagent.get(url)
+                .query(query)
+                .end((err, res) => {
+                    if (typeof res !== 'undefined' && res.ok) {
+                        resolve(JSON.parse(res.text));
+                    } else {
+                        reject(err);
+                    }
+                });
+        }).then((res) => {
+            if (res.status) {
+                const { data } = this.state;
+                const index = data.indexOf(video);
+                data.splice(index, 1);
+                this.setState({ data, rowsHeight: [] }, ()=>{
+                    this.modal.onClose();
+                    this.waterfall();
+                });
+                return false;
+            }  
+            alert(res.msg);
+            
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    waterfall() {
+        const { space } =  this.props;
+        let width = document.querySelector('.panel').offsetWidth - space * 2;
+        if (width > document.body.offsetWidth - document.querySelector('.layout-sider').offsetWidth) {
+            width = document.body.offsetWidth - document.querySelector('.layout-sider').offsetWidth - space * 2;
+        }
+        const cols = Math.floor(width / (document.querySelector('.waterfall .item').offsetWidth + space));
+        width = cols * (document.querySelector('.waterfall .item').offsetWidth + space);
+        document.querySelector('.waterfall').style.width = `${ width }px`;
+        const { rowsHeight } = this.state;
+        for (let i = 0;i < cols;i++) {
+            rowsHeight.push(0);
+        }
+        this.updateWaterfall();
+    }
+
+    updateWaterfall() {
+        const items = document.querySelectorAll('.waterfall .item');
+        const { rowsHeight } = this.state;
+        let left = 0;
+        const { length } = items;
+        const cols = rowsHeight.length;
+        const { space } = this.props;
+        for (let i = 0;i < length;i++) {
+            const col = i % cols;
+            left = col * (document.querySelector('.waterfall .item').offsetWidth + space);
+            items[i].style.position = 'absolute';
+            items[i].style.top = `${ rowsHeight[col]  }px`;
+            items[i].style.left = `${ left  }px`;
+            if (items[i].className.indexOf('active') === -1) {
+                items[i].className = items[i].className !== null ? `${ items[i].className } active` : 'active';
+            }
+            rowsHeight[col] += items[i].offsetHeight + space;
+        }
+        const rowsHeightMax = Math.max.apply(this, rowsHeight);
+        document.querySelector('.waterfall').style.height = `${ rowsHeightMax }px`;
+        this.setState({ rowsHeight });
+
+    }
+
+    search(key, value) {
+        this.setState({ 'searchKey': key, 'searchValue': value, loading: false, rowsHeight: [], data: [], page: 1 }, ()=>{
+            this.getData();
+        });
+    }
+
+    top() {
+        document.querySelector('.layout-content').scrollTo(0, 0);
     }
 
     socketSend(event, msg = '') {
@@ -140,103 +209,78 @@ class List extends Component {
         this.socket.send(data);
     }
 
-    waterfall(items) {
-        const space =  this.props.space;
-        const width = $('body').width() - space * 2;
-        const cols = Math.floor(width / (items.outerWidth() + space));
-        $(this.refs.app).css({ 'width': cols * (items.outerWidth() + space) });
-        const rows_height = this.state.rows_height;
-        for (let i = 0;i < cols;i++) {
-            rows_height.push(0);
-        }
-        this.updateWaterfall(items);
+    showModal(data) {
+        const props = {
+            'title'     : data.title,
+            'className' : 'movie',
+            'showButton': false,
+            'content'   : (
+                <div>
+                    <Row gutter={15}>
+                        <Col span={9} className="box">
+                            <img src={data.cover} alt={data.title}/>
+                        </Col>
+                        <Col span={3}>
+                            <div className="info">
+                                <p>番号：{data.title}</p>
+                                <div className="button-box">
+                                    <a href={`Video://${  data.video }`}><Button>播放</Button></a>
+                                    <Button onClick={this.deleteVideo.bind(this, data)}>删除</Button>
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
+            )
+        };
+        this.modal = Modal.show(props);
     }
 
-    updateWaterfall(items) {
-        const rows_height = this.state.rows_height;
-        let col = 0;
-        let left = 0;
-        const length = items.length;
-        const cols = rows_height.length;
-        const space = this.props.space;
-        for (let i = 0;i < length;i++) {
-            const row_height_min = Math.min.apply(this, rows_height);
-            for (let i = 0;i < cols;i++) {
-                if (rows_height[i] === row_height_min) {
-                    col = i;
-                    break;
-                }
-            }
-            left = col * (items.outerWidth() + space);
-            rows_height[col] += items.eq(i).outerHeight(true) + space;
-            items.eq(i).css({ 'position': 'absolute', 'top': row_height_min, 'left': left });
-        }
-        this.setState({ rows_height });
-        items.addClass('active');
-
+    showLog() {
+        this.setState({ 'showLog': !this.state.showLog });
     }
 
-    search(data) {
-        const _this = this;
-        if (typeof data.title !== 'undefined') {
-            this.setState({ 'title': data.title, 'tag': false, 'star': false, 'data': [], 'page': 1, 'end': false, rows_height: [] }, ()=>{
-                _this.getData();
-            });
-        } else if (typeof data.star !== 'undefined') {
-            this.setState({ 'star': data.star, 'tag': false, 'title': false, 'data': [], 'page': 1, 'end': false, rows_height: [] }, ()=>{
-                _this.getData();
-            });
-        } else if (typeof data.tag !== 'undefined') {
-            this.setState({ 'tag': data.tag, 'star': false, 'title': false, 'data': [], 'page': 1, 'end': false, rows_height: [] }, ()=>{
-                _this.getData();
-            });
-        }
-    }
-
-    top() {
-        document.querySelector('html').scrollTop = 0;
+    showTag() {
+        this.setState({ 'showTag': !this.state.showTag });
     }
 
     render() {
+        const breadcrumb = [{ 'name': 'AV', 'path': '/av' }];
         return (
-            <div className="list-page">
-                <Header/>
-                <div className="waterfall">
-                    {this.state.data.map((val)=>(
-                        <div className="item" role="button" onClick={this.onClick.bind(this, val)}>
-                            <img src={val.IMAGE ? `http://localhost:8000/static/Movie/${ val.IDENTIFIER }/cover.jpg` : 'http://localhost:8000/static/now_printing.jpg'} title={val.IMAGE ? val.TITLE : '暂无图片'} alt={val.IDENTIFIER}/>
-                            <div className="box">
-                                <p className="title">
-                                    {val.TITLE}
-                                </p>
-                                <div className="tag">
-                                    {val.PLAY ? (
-                                        <span className="can-play">可播放</span>
-                                    ) : null}
-                                    {val.LINK.length > 0 ? (
-                                        <span className="can-download">可下载</span>
-                                    ) : null}
-                                </div>
-                                <div className="info">
-                                    <span className="identifier">{val.IDENTIFIER}</span>
-                                    <span className="publish-time">{val.PUBLISH_TIME}</span>
-                                </div>
-                            </div>
+            <Row className="list-page">
+                <Col span={12}>
+                    <Breadcrumb data={breadcrumb}/>
+                </Col>
+                <Col span={12}>
+                    <Panel>
+                        <div className="header margin-bottom-10">
+                            <Form onSubmit={(data)=>{ this.search('title', data.title); }}>
+                                <Input name='title'/>
+                                <Button>搜索</Button>
+                            </Form>
                         </div>
-                    ))}
-                </div>
-                <Dialog/>
-                <Log/>
-                <Tag/>
-                <div className="top" role="button" onClick={this.top.bind(this)}>Top</div>
-            </div>
+                        <div className="waterfall">
+                            {this.state.data.map((val, i)=>(
+                                <div className="item" role="button" onClick={this.showModal.bind(this, val)} key={i}>
+                                    <img src={val.cover} title={val.title} alt={val.title}/>
+                                    <div className="box">
+                                        <p className="title">
+                                            {val.title}
+                                        </p>
+                                        <div className="info">
+                                            <span className="identifier">{val.title}</span> / <span className="publish-time">{val.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="top" role="button" onClick={this.top.bind(this)}>Top</div>
+                    </Panel>
+                </Col>
+            </Row>
         );
     }
 }
-
-List.childContextTypes = {
-    component: PropTypes.any
-};
 
 List.propTypes = {
     space: PropTypes.number

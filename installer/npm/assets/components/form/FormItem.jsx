@@ -42,7 +42,7 @@ class FormItem extends Component {
         const { children, label, labelCol, wrapperCol, className } = this.props;
         const { error } = this.state;
         return (
-            <Row className={this.classNames('form-group', { 'has-error': error })}>
+            <Row className={this.classNames('form-group', { 'has-error': error })} gutter={15}>
                 {label !== '' ? (
                     <Col {...labelCol} className="label-control">
                         <label htmlFor={this.getChildProps('id')}>{label}</label>

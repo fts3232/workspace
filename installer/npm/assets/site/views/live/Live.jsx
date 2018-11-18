@@ -16,17 +16,17 @@ class Live extends Component {
         const socket = new WebSocket('ws://localhost:8000/socket');
         const _this = this;
         // 打开Socket
-        socket.onopen = function () {
+        socket.onopen = () => {
             console.log('连接成功');
             _this.getData();
             // 监听消息
-            socket.onmessage = function (event) {
+            socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 _this.refs.header.setState({ 'loading': false, 'data': data.msg });
             };
         };
         // 监听Socket的关闭
-        socket.onclose = function (event) {
+        socket.onclose = (event) => {
             console.log('Client notified socket has closed', event);
             // 关闭Socket....
             // socket.close()
@@ -60,15 +60,11 @@ class Live extends Component {
         });
     }
 
-    updateData() {
-        const data = JSON.stringify({ 'event': 'updateLive', 'msg': '' });
-        this.socket.send(data);
-    }
-
     update() {
         if (!this.state.loading) {
             this.setState({ 'loading': true });
-            this.parent().updateData();
+            const data = JSON.stringify({ 'event': 'updateLive', 'msg': '' });
+            this.socket.send(data);
         }
     }
 

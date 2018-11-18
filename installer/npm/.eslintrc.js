@@ -98,6 +98,10 @@ module.exports = {
         'react/prop-types'                     : 0,
         'react/destructuring-assignment'       : 0,
         'react/no-access-state-in-setstate'    : 0,
-        'no-case-declarations'                 : 0
+        'no-case-declarations'                 : 0,
+        'no-alert' : 0,
+        'no-unused-expressions':0,
+        'guard-for-in':0,
+        "no-restricted-syntax":0
     },
 };

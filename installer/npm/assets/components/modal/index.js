@@ -27,22 +27,22 @@ Modal.confirm = (props) => {
 
 Modal.success = (props) => {
     props = Object.assign( { 'type': 'success', 'okText': '知道了' }, props);
-    return notice( title, content, duration, 'success');
+    return notice( props);
 };
 
 Modal.error = (props) => {
     props = Object.assign( { 'type': 'error', 'okText': '知道了' }, props);
-    return notice(title, content, duration, 'error');
+    return notice( props);
 };
 
 Modal.info = (props) => {
     props = Object.assing( { 'type': 'info', 'okText': '知道了' }, props);
-    return notice(title, content, duration, 'info');
+    return notice( props);
 };
 
 Modal.warning = (props) => {
     props = Object.assign({ 'type': 'warning', 'okText': '知道了' }, props);
-    return notice(title, content, duration, 'warning');
+    return notice( props);
 };
 
 export default Modal;

@@ -19,6 +19,11 @@ $app->group(['prefix' => '/api'], function ($app) {
     $app->post('/cashBookTags/add', 'CashBookTagsController@add');
     $app->post('/cashBookTags/edit', 'CashBookTagsController@edit');
     $app->post('/cashBookTags/delete', 'CashBookTagsController@delete');
+    //av
+    $app->get('/av/get', 'AVController@get');
+    $app->get('/av/getPic', 'AVController@getPic');
+    $app->get('/av/delete', 'AVController@delete');
+    $app->post('/av/setting/url', 'AVController@setting');
     //setting
     $app->post('/setting/createDB', 'SettingController@createDB');
 });

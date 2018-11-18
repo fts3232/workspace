@@ -13,11 +13,14 @@ class Pagination extends Component {
 
     changePage(page) {
         const { onChange } = this.props;
-        this.setState({
-            currentPage: page
-        }, ()=>{
-            onChange(page);
-        });
+        const { currentPage } = this.state;
+        if (page !== currentPage) {
+            this.setState({
+                currentPage: page
+            }, () => {
+                onChange(page);
+            });
+        }
     }
 
     render() {
@@ -38,7 +41,13 @@ class Pagination extends Component {
         for (let i = start; i <= end; i++) {
             li.push(
                 <li role="menuitem" className={i === currentPage ? 'active' : null} key={i}>
-                    <Link to={`?page=${ i }`} onClick={()=>{ this.changePage(i); }}>{i}</Link>
+                    <Link
+                        to={`?page=${ i }`}
+                        onClick={() => {
+                            this.changePage(i);
+                        }}
+                    >{i}
+                    </Link>
                 </li>
             );
         }
@@ -46,11 +55,25 @@ class Pagination extends Component {
             <div className={this.classNames('pagination')}>
                 {totalPage > 0 && (
                     <ul>
-                        <li role="menuitem" className={currentPage === 1 ? 'disabled' : null} onClick={()=>{ const i = currentPage - 1;this.changePage(i); }}>
+                        <li
+                            role="menuitem"
+                            className={currentPage === 1 ? 'disabled' : null}
+                            onClick={() => {
+                                const i = currentPage - 1;
+                                this.changePage(i);
+                            }}
+                        >
                             <Link to={`?page=${ currentPage - 1 }`}>上一页</Link>
                         </li>
                         {li}
-                        <li role="menuitem" className={currentPage === totalPage ? 'disabled' : null} onClick={()=>{ const i = currentPage + 1; this.changePage(i); }}>
+                        <li
+                            role="menuitem"
+                            className={currentPage === totalPage ? 'disabled' : null}
+                            onClick={() => {
+                                const i = currentPage + 1;
+                                this.changePage(i);
+                            }}
+                        >
                             <Link to={`?page=${ currentPage + 1 }`}>下一页</Link>
                         </li>
                     </ul>

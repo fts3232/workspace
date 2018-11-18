@@ -44,11 +44,7 @@ class Loader extends Component {
 
     render() {
         const { lazyComponent } = this.state;
-        return (
-            <div>
-                {lazyComponent}
-            </div>
-        );
+        return lazyComponent || null;
     }
 }
 

@@ -1,27 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Component from '../component';
 import Icon from '../icon';
 
 class Loading extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            leave: false
-        };
-        this.timeout = null;
-    }
-
-    destory() {
-        const { willUnmount } = this.props;
-        clearTimeout(this.timeout);
-        this.setState({ leave: true }, ()=>{
-            setTimeout(()=>{
-                willUnmount();
-            }, 300);
-        });
-    }
-
     render() {
         return (
             <div className="loading">

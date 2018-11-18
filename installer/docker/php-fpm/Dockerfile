@@ -11,20 +11,16 @@
 #
 # Note: Base Image name format {image-tag}-{php-version}
 #
-
 FROM php:5.6-fpm-alpine
 
-LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
-
-USER root
+LABEL maintainer="tianshuo Feng <550610606@qq.com>"
 
 RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.8/main" >> /etc/apk/repositories
 
 RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.8/community" >> /etc/apk/repositories
 
-RUN apk add --no-cache coreutils libpng-dev zlib-dev autoconf gcc make g++ openssl openssl-dev
-RUN docker-php-ext-install -j$(nproc) gd pdo_mysql
-
+RUN apk add --no-cache coreutils libpng-dev zlib-dev autoconf gcc make g++ openssl openssl-dev libmcrypt-dev
+RUN docker-php-ext-install -j$(nproc) gd pdo_mysql mcrypt
 #RUN apk update
 # mongodb
 RUN pecl install mongodb \

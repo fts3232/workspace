@@ -3,9 +3,8 @@
         width: 100% * $i / 12;
         position: relative;
         min-height: 1px;
-        padding-right: 15px;
-        padding-left: 15px;
         display: inline-block;
+        vertical-align: top;
     }
 
     .col-offset-#{$i} {

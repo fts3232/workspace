@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import superagent from 'superagent';
 import Component from '../../../components/component';
 import Table from '../../../components/table';
 import Breadcrumb from '../../../components/breadcrumb';
@@ -11,12 +10,8 @@ import Tag from '../../../components/tag';
 import getApiUrl from '../../config/api.js';
 
 class Main extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const colunm = {
+        const column = {
             'ID': 'ROW_ID',
             '日期': 'DATE',
             '类型': 'TYPE',
@@ -25,8 +20,8 @@ class Main extends Component {
                 const tags = data.TAGS !== null ? data.TAGS.split(',') : [];
                 return (
                     <div>
-                        {tags.map((tag)=>(
-                            <Tag>{tag}</Tag>
+                        {tags.map((tag, i)=>(
+                            <Tag key={i}>{tag}</Tag>
                         ))}
                     </div>
                 );
@@ -46,7 +41,7 @@ class Main extends Component {
                                 <Button type="info">添加</Button>
                             </Link>
                         </div>
-                        <Table dataSource={getApiUrl('/api/cashBook/get')} colunm={colunm}/>
+                        <Table dataSource={getApiUrl('/api/cashBook/get')} column={column}/>
                     </Panel>
                 </Col>
             </Row>

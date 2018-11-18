@@ -40,7 +40,8 @@ class CashBook extends Model
                 AS a
                 LEFT JOIN CASH_BOOK_TAGS b ON FIND_IN_SET(b.TAG_ID,a.TAGS)
                 GROUP BY a.ROW_ID
-                ORDER BY a.DATE DESC, a.ROW_ID DESC";
+                ORDER BY a.DATE DESC, a.ROW_ID DESC
+                LIMIT :OFFSET, :SIZE";
         return $this->select($sql, ['OFFSET' => $offset, 'SIZE' => $size]);
     }
 

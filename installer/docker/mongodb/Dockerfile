@@ -1,10 +1,9 @@
 FROM mongo:latest
 
-LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
+LABEL maintainer="tianshuo Feng <550610606@qq.com>"
 
 #COPY mongo.conf /usr/local/etc/mongo/mongo.conf
-
-VOLUME /data/db /data/configdb
+RUN touch /var/log/mongo.log
 
 CMD ["mongod"]
 

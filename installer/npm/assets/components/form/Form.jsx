@@ -29,20 +29,6 @@ class Form extends Component {
         };
     }
 
-    submit() {
-        let result;
-        if (this.form.fireEvent) {
-            // IE浏览器
-            result = this.form.fireEvent('onsubmit');
-        } else {
-            // FIREFOX\CHROME等标准浏览器
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('submit', false, true);
-            result = this.form.dispatchEvent(evt);
-        }
-        return result;
-    }
-
     onSubmit(e) {
         e.preventDefault();
         const { onSubmit, validateRule, validateMsg } = this.props;
@@ -61,6 +47,20 @@ class Form extends Component {
             ));
         }
         return false;
+    }
+
+    submit() {
+        let result;
+        if (this.form.fireEvent) {
+            // IE浏览器
+            result = this.form.fireEvent('onsubmit');
+        } else {
+            // FIREFOX\CHROME等标准浏览器
+            const evt = document.createEvent('HTMLEvents');
+            evt.initEvent('submit', false, true);
+            result = this.form.dispatchEvent(evt);
+        }
+        return result;
     }
 
     render() {

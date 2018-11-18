@@ -45,7 +45,7 @@ class Modal extends Component {
     }
 
     render() {
-        const { type, title, content, okText, cancelText, onOk, onCancel } = this.props;
+        const { type, title, content, okText, cancelText, onOk, showButton } = this.props;
         const { leave } = this.state;
         let icon;
         let okButtonType;
@@ -76,7 +76,7 @@ class Modal extends Component {
         }
         return (
             <div>
-                <div className={this.classNames('modal-mask', { 'move-up-leave': leave, 'move-in-leave': !leave })} onClick={this.onClose}/>
+                <div role='button' className={this.classNames('modal-mask', { 'move-up-leave': leave, 'move-in-leave': !leave })} onClick={this.onClose}/>
                 <div className={this.classNames('modal', { 'move-up-leave': leave, 'move-in-leave': !leave }, { [`modal-type-${ type }`]: type })}>
                     <div className="modal-content">
                         <Icon name="close" className="close" onClick={this.onClose}/>
@@ -86,10 +86,12 @@ class Modal extends Component {
                         <div className="modal-body">
                             {content}
                         </div>
-                        <div className="modal-footer">
-                            <Button type={okButtonType} onClick={onOk}>{okText}</Button>
-                            {(type === 'confirm' || type === null) && (<Button onClick={this.onCancel}>{cancelText}</Button>)}
-                        </div>
+                        {showButton ? (
+                            <div className="modal-footer">
+                                <Button type={okButtonType} onClick={onOk}>{okText}</Button>
+                                {(type === 'confirm' || type === null) && (<Button onClick={this.onCancel}>{cancelText}</Button>)}
+                            </div>)
+                            : null}
                     </div>
                 </div>
             </div>
@@ -100,7 +102,6 @@ class Modal extends Component {
 Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
     type       : PropTypes.oneOf([null, 'warning', 'success', 'error', 'info', 'confirm']),
     content    : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    onClose    : PropTypes.func,
     onCancel   : PropTypes.func,
     onOk       : PropTypes.func,
     willUnmount: PropTypes.func.isRequired,
@@ -108,8 +109,8 @@ Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报
     cancelText : PropTypes.string,
     okText     : PropTypes.string,
     onConfirm  : PropTypes.func,
-    onCancel   : PropTypes.func,
-    duration   : PropTypes.number
+    duration   : PropTypes.number,
+    showButton : PropTypes.bool
 };
 Modal.defaultProps = {
     type      : null,
@@ -117,7 +118,9 @@ Modal.defaultProps = {
     cancelText: '返回',
     onCancel  : ()=>{},
     onOk      : ()=>{},
-    duration  : 0
+    onConfirm : ()=>{},
+    duration  : 0,
+    showButton: true
 };// 设置默认属性
 
 // 导出组件
