@@ -37,7 +37,7 @@ class AVController extends Controller
                 $ext = strtolower(pathinfo($originPath)['extension']);
                 if (in_array($ext, ['jpg', 'gif', 'png'])) {
                     $paths['cover'] = 'http://localhost/pic/'.str_replace('E:\download','',$path);
-                } elseif (in_array($ext, ['avi', 'mp4'])) {
+                } elseif (in_array($ext, ['avi', 'mp4', 'mkv'])) {
                     $paths['video'] = $path;
                 }
             }
