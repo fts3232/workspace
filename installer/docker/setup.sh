@@ -11,10 +11,14 @@ echo '.....修改ssh端口完成'
 ##### 添加用户 #####
 USER_NAME="developer"
 USER_PASSWORD="developer"
+GROUP_NAME="developer"
+USER_ID=1000
+GROUP_ID=1000
 if id -u $USER_NAME >/dev/null 2>&1; then
     echo ".....用户已存在"
 else
-    useradd $USER_NAME
+    groupadd -g $GROUP_ID $GROUP_NAME
+    useradd -u $USER_ID -g $GROUP_NAME -m $USER_NAME
     echo $USER_PASSWORD | passwd --stdin $USER_NAME
     echo '.....添加用戶完成'
 fi
@@ -150,3 +154,7 @@ END_TEXT
     systemctl restart docker
     echo '.....安裝docker完成'
 fi
+
+################# 设置目录权限 #################
+#chown -R developer:developer /root/docker
+#chmod -R 754 /root/docker

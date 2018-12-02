@@ -11,24 +11,29 @@
 #
 # Note: Base Image name format {image-tag}-{php-version}
 #
-FROM php:5.6-fpm-alpine
+FROM php:5.6-fpm
 
 LABEL maintainer="tianshuo Feng <550610606@qq.com>"
 
-RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.8/main" >> /etc/apk/repositories
+USER root
 
-RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.8/community" >> /etc/apk/repositories
+# 替换国内源
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
-RUN apk add --no-cache coreutils libpng-dev zlib-dev autoconf gcc make g++ openssl openssl-dev libmcrypt-dev
-RUN docker-php-ext-install -j$(nproc) gd pdo_mysql mcrypt
-#RUN apk update
+RUN apt-get update
+
+RUN apt-get update && apt-get install -y \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+libpng-dev \
+libmcrypt-dev \
+&& docker-php-ext-install -j$(nproc) iconv \
+&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+&& docker-php-ext-install -j$(nproc) gd pdo_mysql mcrypt
+
 # mongodb
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
-
-# mongo
-RUN pecl install mongo \
-    && docker-php-ext-enable mongo
 
 # redis
 RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz \
@@ -42,11 +47,11 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/3.
 RUN pecl install xdebug-2.4.1 \
     && docker-php-ext-enable xdebug
 
-# del
-RUN apk del coreutils zlib-dev autoconf gcc make g++
-
 # del install pack
-RUN rm -rf /tmp
+RUN rm -rf /tmp/* /var/tmp/*
+
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
 
 CMD ["php-fpm"]
 
