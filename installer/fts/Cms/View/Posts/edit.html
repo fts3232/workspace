@@ -209,7 +209,7 @@
         </if>
     </div>
 </div>
-<script src="https://cdn.bootcss.com/tinymce/4.7.13/tinymce.min.js"></script>
+<script src="https://cdn.bootcss.com/tinymce/5.0.0/tinymce.min.js"></script>
 <script>
     $(function () {
         //创建栏目
@@ -218,12 +218,12 @@
         tinymce.init({
             selector               : '#textarea',
             height                 : 500,
-            theme                  : 'modern',
+            theme                  : 'silver',
             images_upload_url      : '{:U("uploadImage")}',
             relative_urls          : false,
             convert_urls           : false,
             images_upload_base_path: '/',
-            plugins                : 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help',
+            plugins                : 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help',
             toolbar1               : 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
             image_advtab           : true,
         });

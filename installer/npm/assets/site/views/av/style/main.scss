@@ -200,6 +200,9 @@
     }
     & .button-box{
         margin-top: 10px;
+        & button{
+            margin-right:5px;
+        }
     }
     & .thumb {
         img {

@@ -148,9 +148,10 @@ class List extends Component {
                 return false;
             }  
             alert(res.msg);
-            
+            return true;
         }).catch((err) => {
             console.log(err);
+            return true;
         });
     }
 
@@ -225,7 +226,7 @@ class List extends Component {
                                 <p>番号：{data.title}</p>
                                 <div className="button-box">
                                     <a href={`Video://${  data.video }`}><Button>播放</Button></a>
-                                    <Button onClick={this.deleteVideo.bind(this, data)}>删除</Button>
+                                    <Button onClick={this.showDeleteConfirm.bind(this, data)}>删除</Button>
                                 </div>
                             </div>
                         </Col>
@@ -234,6 +235,15 @@ class List extends Component {
             )
         };
         this.modal = Modal.show(props);
+    }
+
+    showDeleteConfirm(data) {
+        const props = {
+            'title'    : '删除',
+            'content'  : '是否删除该影片',
+            'onConfirm': () => this.deleteVideo(data)
+        };
+        return Modal.confirm(props);
     }
 
     showLog() {

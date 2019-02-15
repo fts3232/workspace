@@ -112,7 +112,7 @@ class Main extends Component {
                     </FormItem>
                 </Form>
             ),
-            'onOk': ()=>{
+            'onConfirm': ()=>{
                 this.addForm.submit();
             }
         };

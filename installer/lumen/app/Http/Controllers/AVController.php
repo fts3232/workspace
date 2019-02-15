@@ -18,8 +18,7 @@ class AVController extends Controller
         //
     }
 
-    private function openDir($dir)
-    {
+    private function scaleDir($dir){
         $paths = [];
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
@@ -29,11 +28,24 @@ class AVController extends Controller
             $path = $this->join(iconv('gbk', 'utf-8', $dir), $name);
             if (is_dir($originPath) && $name != '.' && $name != '..') {
                 $data['title'] = $name;
-                $data['time'] = date("Y-m-d H:i:s", filectime($originPath));
                 $data['path'] = $path;
+                $data['time'] = date("Y-m-d H:i:s", filectime($originPath));
                 $data = array_merge($data, $this->openDir($originPath));
                 $paths[] = $data;
-            } elseif (is_file($originPath)) {
+            }
+        }
+        return $paths;
+    }
+
+    private function openDir($dir)
+    {
+        $paths = [];
+        $dirHandler = opendir($dir);
+        while (($name = readdir($dirHandler)) !== false) {
+            $originPath = $this->join($dir, $name);
+            $name = iconv('gbk', 'utf-8', $name);
+            $path = $this->join(iconv('gbk', 'utf-8', $dir), $name);
+            if (is_file($originPath)) {
                 $ext = strtolower(pathinfo($originPath)['extension']);
                 if (in_array($ext, ['jpg', 'gif', 'png'])) {
                     $paths['cover'] = 'http://localhost/pic/'.str_replace('E:\download','',$path);
@@ -98,7 +110,7 @@ class AVController extends Controller
         $value = $request->input('searchValue');
         $offset = ($page - 1) * $size;
         $dir = 'E:\download';
-        $dirs = $this->openDir($dir);
+        $dirs = $this->scaleDir($dir);
         array_multisort(array_column($dirs,'time'),SORT_DESC,$dirs);
         return response()->json(['status' => true, 'list' => $dirs]);
     }

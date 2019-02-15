@@ -145,11 +145,7 @@ else
     service docker start
     curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
-    cat > /etc/docker/daemon.json << END_TEXT
-{
-  "registry-mirrors": ["http://hub-mirror.c.163.com"]
-}
-END_TEXT
+    curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://f1361db2.m.daocloud.io
     systemctl daemon-reload
     systemctl restart docker
     echo '.....安裝docker完成'

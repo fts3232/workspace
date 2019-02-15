@@ -13,6 +13,7 @@ class Modal extends Component {
         this.timeout = null;
         this.onClose = this.onClose.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.onConfirm = this.onConfirm.bind(this);
     }
 
     componentDidMount() {
@@ -38,6 +39,12 @@ class Modal extends Component {
         });
     }
 
+    onConfirm() {
+        const { onConfirm } = this.props;
+        this.onClose();
+        onConfirm();
+    }
+
     onCancel() {
         const { onCancel } = this.props;
         this.onClose();
@@ -45,7 +52,7 @@ class Modal extends Component {
     }
 
     render() {
-        const { type, title, content, okText, cancelText, onOk, showButton } = this.props;
+        const { type, title, content, okText, cancelText, showButton } = this.props;
         const { leave } = this.state;
         let icon;
         let okButtonType;
@@ -75,7 +82,7 @@ class Modal extends Component {
                 break;
         }
         return (
-            <div>
+            <div style={{ position: 'absolute', top: '0', width: '100%', height: '100%' }}>
                 <div role='button' className={this.classNames('modal-mask', { 'move-up-leave': leave, 'move-in-leave': !leave })} onClick={this.onClose}/>
                 <div className={this.classNames('modal', { 'move-up-leave': leave, 'move-in-leave': !leave }, { [`modal-type-${ type }`]: type })}>
                     <div className="modal-content">
@@ -88,7 +95,7 @@ class Modal extends Component {
                         </div>
                         {showButton ? (
                             <div className="modal-footer">
-                                <Button type={okButtonType} onClick={onOk}>{okText}</Button>
+                                <Button type={okButtonType} onClick={this.onConfirm}>{okText}</Button>
                                 {(type === 'confirm' || type === null) && (<Button onClick={this.onCancel}>{cancelText}</Button>)}
                             </div>)
                             : null}
@@ -103,7 +110,6 @@ Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报
     type       : PropTypes.oneOf([null, 'warning', 'success', 'error', 'info', 'confirm']),
     content    : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onCancel   : PropTypes.func,
-    onOk       : PropTypes.func,
     willUnmount: PropTypes.func.isRequired,
     title      : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     cancelText : PropTypes.string,
@@ -117,7 +123,6 @@ Modal.defaultProps = {
     okText    : '确认',
     cancelText: '返回',
     onCancel  : ()=>{},
-    onOk      : ()=>{},
     onConfirm : ()=>{},
     duration  : 0,
     showButton: true
