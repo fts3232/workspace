@@ -1,0 +1,4 @@
+*.conf
+!default.conf
+!php-upstream.conf
+!laravel.conf
