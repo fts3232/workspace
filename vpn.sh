@@ -25,4 +25,4 @@ fi
 #wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
 
 ###### 通过脚本安装V2Ray #####
-bash <(curl -s -L https://raw.githubusercontent.com/fts3232/workspace/master/V2.sh)
+bash <(curl -s -L https://git.io/v2ray.sh)
