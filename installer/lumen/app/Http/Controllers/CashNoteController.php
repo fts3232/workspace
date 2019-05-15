@@ -36,7 +36,7 @@ class CashNoteController extends Controller
             'TYPE' => $request->input('type'),
             'CATEGORY' => $request->input('category'),
             'REMARK' => $request->input('remark'),
-            'CREATED_TIME' => $request->input('date'),
+            'DATE' => $request->input('date'),
         ];
         if (!CashNote::add($data)) {
             $return = ['status' => false, 'msg' => '添加失败'];

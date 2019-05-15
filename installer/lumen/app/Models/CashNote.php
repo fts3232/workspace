@@ -59,20 +59,20 @@ class CashNote extends Model
 
     protected function add($data)
     {
-        $sql = "INSERT INTO CASH_BOOK (
+        $sql = "INSERT INTO CASH_NOTE (
                     AMOUNT,
                     TYPE,
-                    TAGS,
-                    DESCRIPTION,
+                    CATEGORY,
+                    REMARK,
                     DATE,
-                    CREATED_AT
+                    CREATED_TIME
                 )
                 VALUES
                     (
                         :AMOUNT,
                         :TYPE,
-                        :TAGS,
-                        :DESCRIPTION,
+                        :CATEGORY,
+                        :REMARK,
                         :DATE,
                         NOW()
                     )";

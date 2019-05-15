@@ -14,7 +14,7 @@
 $app->group(['prefix' => '/api'], function ($app) {
     //cashbook
     $app->get('/cashBook/get', 'CashBookController@get');
-    $app->post('/cashBook/add', 'CashBookController@add');
+    $app->post('/cashNote/add', 'CashNoteController@add');
     $app->get('/cashBookTags/get', 'CashBookTagsController@get');
     $app->post('/cashBookTags/add', 'CashBookTagsController@add');
     $app->post('/cashBookTags/edit', 'CashBookTagsController@edit');
