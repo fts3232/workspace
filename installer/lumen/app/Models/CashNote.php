@@ -9,52 +9,157 @@ class CashNote extends Model
     protected function createTable()
     {
         $sql = "CREATE TABLE `CASH_NOTE` (
-                  `ROW_ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-                  `TYPE` TINYINT(4) NOT NULL COMMENT '类型 1：支出 2：收入',
-                  `AMOUNT` INT(11) NOT NULL COMMENT '金额',
-                  `CATEGORY` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '标签',
-                  `DESCRIPTION` TEXT COLLATE utf8_unicode_ci COMMENT 'my comment',
-                  `DATE` DATE NOT NULL COMMENT '收入支出时间',
-                  `CREATED_AT` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-                  PRIMARY KEY (`ROW_ID`),
-                  KEY `cash_book_date_index` (`DATE`),
-                  KEY `cash_book_type_index` (`TYPE`),
-                  KEY `cash_book_tags_index` (`TAGS`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                    `ROW_ID` INT (10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+                    `TYPE` TINYINT (1) NOT NULL COMMENT '类型 0：支出 1：收入',
+                    `AMOUNT` DECIMAL (10, 2) NOT NULL COMMENT '金额',
+                    `CATEGORY` VARCHAR (10) NOT NULL COMMENT '项目',
+                    `REMARK` TEXT  COMMENT '备注',
+                    `DATE` DATE NOT NULL COMMENT '收入支出时间',
+                    `CREATED_TIME` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                    PRIMARY KEY (`ROW_ID`),
+                    KEY `cash_book_date_index` (`DATE`),
+                    KEY `cash_book_type_index` (`TYPE`),
+                    KEY `cash_book_tags_index` (`CATEGORY`)
+                ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci;";
         $ret = $this->db->statement($sql);
         return $ret === true;
     }
 
-    protected function get($offset, $size)
+    protected function getMonthData()
     {
+        $returnData = ['income' => array_fill(0, 11, '0.00'), 'cost' => array_fill(0, 11, '0.00')];
         $sql = "SELECT
-                    a.ROW_ID,
-                    a.TYPE,
-                    a.AMOUNT,
-                    a.DATE,
-                    a.DESCRIPTION,
-                    a.CREATED_AT,
-                    group_concat(b.TAG_NAME) AS TAGS
+                    TYPE,
+                    SUM(AMOUNT) AS SUM,
+                    CONCAT(
+                        YEAR (DATE),
+                        '-',
+                        LPAD(MONTH(DATE), 2, '0')
+                    ) AS MONTH
                 FROM
-                    CASH_BOOK
-                AS a
-                LEFT JOIN CASH_BOOK_TAGS b ON FIND_IN_SET(b.TAG_ID,a.TAGS)
-                GROUP BY a.ROW_ID
-                ORDER BY a.DATE DESC, a.ROW_ID DESC
-                LIMIT :OFFSET, :SIZE";
-        return $this->select($sql, ['OFFSET' => $offset, 'SIZE' => $size]);
+                    CASH_NOTE
+                WHERE
+                    PERIOD_DIFF(
+                        date_format(now(), '%Y%m'),
+                        date_format(DATE, '%Y%m')
+                    ) >= 0
+                AND PERIOD_DIFF(
+                    date_format(now(), '%Y%m'),
+                    date_format(DATE, '%Y%m')
+                ) <= 11
+                GROUP BY
+                    TYPE,
+                    MONTH
+                ORDER BY
+                    MONTH ASC";
+        $result = $this->select($sql);
+        $monthData = [];
+        $currentMonth = date('Y-m');
+        for ($i = 1; $i <= 12; $i++) {
+            $monthData[] = $currentMonth;
+            $currentMonth = date('Y-m', strtotime("-{$i} month"));
+
+        }
+        $monthData = array_reverse($monthData);
+        if ($result) {
+            foreach ($result as $v) {
+                $key = array_search($v->MONTH, $monthData);
+                if ($key !== false) {
+                    if ($v->TYPE == 1) {
+                        $returnData['income'][$key] = $v->SUM;
+                    } else {
+                        $returnData['cost'][$key] = $v->SUM;
+                    }
+
+                }
+            }
+        }
+        return $returnData;
     }
 
-    protected function getCount()
+    protected function getTotalExpenditure()
     {
+        $sql = "SELECT
+                    SUM(AMOUNT) AS SUM
+                FROM
+                    CASH_NOTE
+                WHERE
+                    TYPE = 0";
+        $result = $this->find($sql);
+        return $result ? $result->SUM : '0.00';
+    }
+
+    protected function getGrossIncome()
+    {
+        $sql = "SELECT
+                    SUM(AMOUNT) AS SUM
+                FROM
+                    CASH_NOTE
+                WHERE
+                    TYPE = 1";
+        $result = $this->find($sql);
+        return $result ? $result->SUM : '0.00';
+    }
+
+    protected function fetch($page, $size, $search = [])
+    {
+        $where = $this->getWhere($search);
+        $offset = ($page - 1) * $size;
+        $sql = "SELECT
+                    ROW_ID,
+                    TYPE,
+                    CATEGORY,
+                    AMOUNT,
+                    DATE,
+                    REMARK
+                FROM
+                    CASH_NOTE
+                {$where['string']}
+                ORDER BY DATE DESC, ROW_ID DESC
+                LIMIT :OFFSET, :SIZE";
+        $where['data']['OFFSET'] = $offset;
+        $where['data']['SIZE'] = $size;
+        return $this->select($sql, $where['data']);
+    }
+
+    protected function getCount($search = [])
+    {
+        $where = $this->getWhere($search);
         $sql = "SELECT
                     COUNT(*) AS TOTAL
                 FROM
-                    CASH_BOOK";
-        $result = $this->find($sql);
+                    CASH_NOTE
+                {$where['string']}";
+        $result = $this->find($sql, $where['data']);
         $count = false;
         $result && $count = $result->TOTAL;
         return $count;
+    }
+
+    protected function getPieData($search = [])
+    {
+        $returnData = ['income' => [], 'cost' => []];
+        $where = $this->getWhere($search);
+        $sql = "SELECT
+                    TYPE,
+                    CATEGORY,
+                    SUM(AMOUNT) AS SUM
+                FROM
+                    CASH_NOTE
+                {$where['string']}
+                GROUP BY
+                    CATEGORY";
+        $result = $this->select($sql, $where['data']);
+        if ($result) {
+            foreach ($result as $k => $v) {
+                if ($v->TYPE == 1) {
+                    $returnData['income'][] = ['value' => $v->SUM, 'name' => $v->CATEGORY];
+                } else {
+                    $returnData['cost'][] = ['value' => $v->SUM, 'name' => $v->CATEGORY];
+                }
+            }
+        }
+        return $returnData;
     }
 
     protected function add($data)
@@ -77,5 +182,26 @@ class CashNote extends Model
                         NOW()
                     )";
         return $this->insert($sql, $data);
+    }
+
+    protected function getWhere($search)
+    {
+        $where = [];
+        $whereData = [];
+        foreach ($search as $k=>$v) {
+            switch ($k) {
+                case 'date':
+                    $where[] = "date_format(DATE, '%Y-%m') = :DATE";
+                    $whereData['DATE'] = $v;
+                    break;
+            }
+        }
+        $where = implode(' AND ', $where);
+        if (!empty($where)) {
+            $where = 'WHERE ' . $where;
+        } else {
+            $where = '';
+        }
+        return ['string' => $where, 'data' => $whereData];
     }
 }

@@ -18,14 +18,40 @@ class CashNoteController extends Controller
     }
 
     //
-    public function get(Request $request)
+    public function fetch(Request $request)
     {
-        $page = $request->input('page', 1);
-        $size = $request->input('size', 10);
-        $offset = ($page - 1) * $size;
-        $list = CashNote::get($offset, $size);
-        $count = CashNote::getCount();
-        return response()->json(['status'=>true,'list' => $list, 'count' => $count]);
+        $returnData = [];
+        $getMonthData = $request->input('getMonthData', 0);
+        $getTotalExpenditure = $request->input('getTotalExpenditure', 0);
+        $getGrossIncome = $request->input('getGrossIncome', 0);
+        $getRows = $request->input('getRows', 0);
+        $getPieData = $request->input('getPieData', 0);
+        $date = $request->input('date', false);
+        $search = [];
+        if ($date) {
+            $search = ['date' => $date];
+        }
+        if ($getMonthData) {
+            $returnData['monthData'] = CashNote::getMonthData();
+        }
+        if ($getTotalExpenditure) {
+            $returnData['totalExpenditure'] = CashNote::getTotalExpenditure();
+        }
+        if ($getGrossIncome) {
+            $returnData['grossIncome'] = CashNote::getGrossIncome();
+        }
+        if ($getRows) {
+            $page = $request->input('page', 1);
+            $size = $request->input('size', 10);
+            $returnData['rows'] = CashNote::fetch($page, $size, $search);
+            $returnData['count'] = CashNote::getCount($search);
+        }
+        if ($getPieData) {
+            $returnData['pieData'] = CashNote::getPieData($search);
+        }
+        /*$list = CashNote::get($offset, $size);
+        $count = CashNote::getCount();*/
+        return response()->json($returnData);
     }
 
     public function add(Request $request)

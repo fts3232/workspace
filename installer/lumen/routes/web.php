@@ -13,12 +13,8 @@
 
 $app->group(['prefix' => '/api'], function ($app) {
     //cashbook
-    $app->get('/cashBook/get', 'CashBookController@get');
+    $app->get('/cashNote/fetch', 'CashNoteController@fetch');
     $app->post('/cashNote/add', 'CashNoteController@add');
-    $app->get('/cashBookTags/get', 'CashBookTagsController@get');
-    $app->post('/cashBookTags/add', 'CashBookTagsController@add');
-    $app->post('/cashBookTags/edit', 'CashBookTagsController@edit');
-    $app->post('/cashBookTags/delete', 'CashBookTagsController@delete');
     //av
     $app->get('/av/get', 'AVController@get');
     $app->get('/av/getPic', 'AVController@getPic');
