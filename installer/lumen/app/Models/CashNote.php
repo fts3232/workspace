@@ -86,7 +86,7 @@ class CashNote extends Model
                 WHERE
                     TYPE = 0";
         $result = $this->find($sql);
-        return $result ? $result->SUM : '0.00';
+        return $result && !empty($result->SUM) ? $result->SUM : '0.00';
     }
 
     protected function getGrossIncome()
@@ -98,7 +98,7 @@ class CashNote extends Model
                 WHERE
                     TYPE = 1";
         $result = $this->find($sql);
-        return $result ? $result->SUM : '0.00';
+        return $result && !empty($result->SUM) ? $result->SUM : '0.00';
     }
 
     protected function fetch($page, $size, $search = [])
