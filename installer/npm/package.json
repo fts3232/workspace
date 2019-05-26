@@ -7,7 +7,7 @@
     "npm-check-updates:install": "cnpm install -g npm-check-updates",
     "start": "cross-env PORT=3001 nodemon --exec babel-node server.js",
     "start:dev": "webpack-dev-server --config=webpack/webpack.config.babel.js --mode=development --build-path=../build --src-path=../assets",
-    "build": "webpack --mode=production --public-path=http://localhost:8080/workspace/installer/npm/build/ --build-path=../build --src-path=../assets --config=webpack/webpack.config.babel.js",
+    "build": "webpack --mode=production --public-path=http://test.av.com/ --build-path=../build --src-path=../assets --config=webpack/webpack.config.babel.js",
     "build:server": "webpack --is-server-render=true --mode=production --public-path=/ --build-path=../build --src-path=../assets --config=webpack/webpack.config.babel.js",
     "prettier": "prettier --single-quote --tab-width 4 --trailing-comma es5 --write **/*.js",
     "eslint": "eslint --fix server.js"
