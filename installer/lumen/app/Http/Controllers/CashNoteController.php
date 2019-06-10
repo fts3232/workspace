@@ -27,9 +27,13 @@ class CashNoteController extends Controller
         $getRows = $request->input('getRows', 0);
         $getPieData = $request->input('getPieData', 0);
         $date = $request->input('date', false);
+        $category = $request->input('category', false);
         $search = [];
         if ($date) {
-            $search = ['date' => $date];
+            $search['date'] = $date;
+        }
+        if ($category) {
+            $search['category'] = $category;
         }
         if ($getMonthData) {
             $returnData['monthData'] = CashNote::getMonthData();

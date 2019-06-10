@@ -155,9 +155,9 @@ class CashNote extends Model
         if ($result) {
             foreach ($result as $k => $v) {
                 if ($v->TYPE == 1) {
-                    $returnData['income'][] = ['value' => $v->SUM, 'name' => $v->CATEGORY];
+                    $returnData['income'][] = ['value' => $v->SUM, 'category' => $v->CATEGORY];
                 } else {
-                    $returnData['cost'][] = ['value' => $v->SUM, 'name' => $v->CATEGORY];
+                    $returnData['cost'][] = ['value' => $v->SUM, 'category' => $v->CATEGORY];
                 }
             }
         }
@@ -199,6 +199,10 @@ class CashNote extends Model
                 case 'type':
                     $where[] = "TYPE = :TYPE";
                     $whereData['TYPE'] = $v;
+                    break;
+                case 'category':
+                    $where[] = "CATEGORY = :CATEGORY";
+                    $whereData['CATEGORY'] = $v;
                     break;
             }
         }
