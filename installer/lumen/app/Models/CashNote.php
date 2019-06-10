@@ -77,27 +77,29 @@ class CashNote extends Model
         return $returnData;
     }
 
-    protected function getTotalExpenditure()
+    protected function getTotalExpenditure($search = [])
     {
+        $search['type'] = 0;
+        $where = $this->getWhere($search);
         $sql = "SELECT
                     SUM(AMOUNT) AS SUM
                 FROM
                     CASH_NOTE
-                WHERE
-                    TYPE = 0";
-        $result = $this->find($sql);
+                {$where['string']}";
+        $result = $this->find($sql, $where['data']);
         return $result && !empty($result->SUM) ? $result->SUM : '0.00';
     }
 
-    protected function getGrossIncome()
+    protected function getGrossIncome($search = [])
     {
+        $search['type'] = 1;
+        $where = $this->getWhere($search);
         $sql = "SELECT
                     SUM(AMOUNT) AS SUM
                 FROM
                     CASH_NOTE
-                WHERE
-                    TYPE = 1";
-        $result = $this->find($sql);
+                {$where['string']}";
+        $result = $this->find($sql, $where['data']);
         return $result && !empty($result->SUM) ? $result->SUM : '0.00';
     }
 
@@ -188,11 +190,15 @@ class CashNote extends Model
     {
         $where = [];
         $whereData = [];
-        foreach ($search as $k=>$v) {
+        foreach ($search as $k => $v) {
             switch ($k) {
                 case 'date':
                     $where[] = "date_format(DATE, '%Y-%m') = :DATE";
                     $whereData['DATE'] = $v;
+                    break;
+                case 'type':
+                    $where[] = "TYPE = :TYPE";
+                    $whereData['TYPE'] = $v;
                     break;
             }
         }

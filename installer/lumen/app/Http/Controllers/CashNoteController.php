@@ -35,10 +35,10 @@ class CashNoteController extends Controller
             $returnData['monthData'] = CashNote::getMonthData();
         }
         if ($getTotalExpenditure) {
-            $returnData['totalExpenditure'] = CashNote::getTotalExpenditure();
+            $returnData['totalExpenditure'] = CashNote::getTotalExpenditure($search);
         }
         if ($getGrossIncome) {
-            $returnData['grossIncome'] = CashNote::getGrossIncome();
+            $returnData['grossIncome'] = CashNote::getGrossIncome($search);
         }
         if ($getRows) {
             $page = $request->input('page', 1);
