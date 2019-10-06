@@ -69,7 +69,7 @@ class App extends Component {
                                         path="/"
                                         exact
                                         render={() => (
-                                            <Redirect to="/cash-book"/>
+                                            <Redirect to="/av"/>
                                         )}
                                     />
                                     <Route exact strict path="/:controller/:action?" component={Loader}/>

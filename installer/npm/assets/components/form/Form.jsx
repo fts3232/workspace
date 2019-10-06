@@ -64,9 +64,9 @@ class Form extends Component {
     }
 
     render() {
-        const { children, action } = this.props;
+        const { children, action, id } = this.props;
         return (
-            <form type={action} className={this.classNames('form')} onSubmit={this.onSubmit} ref={(form)=>{ this.form = form; }}>
+            <form id={id} type={action} className={this.classNames('form')} onSubmit={this.onSubmit} ref={(form)=>{ this.form = form; }}>
                 {children}
             </form>
         );

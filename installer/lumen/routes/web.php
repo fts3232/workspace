@@ -19,6 +19,8 @@ $app->group(['prefix' => '/api'], function ($app) {
     $app->get('/av/get', 'AVController@get');
     $app->get('/av/getPic', 'AVController@getPic');
     $app->get('/av/delete', 'AVController@delete');
+    $app->get('/av/openPath', 'AVController@openPath');
+    $app->post('/av/setCover', 'AVController@setCover');
     $app->post('/av/setting/url', 'AVController@setting');
     //setting
     $app->post('/setting/createDB', 'SettingController@createDB');

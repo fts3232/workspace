@@ -55,7 +55,7 @@ class List extends Component {
         };
         this.socket = socket; */
         window.onresize = () => {
-            this.setState({ rowsHeight: [] }, ()=>{
+            this.setState({ rowsHeight: [] }, () => {
                 this.waterfall();
             });
         };
@@ -77,7 +77,7 @@ class List extends Component {
 
         const url = getApiUrl('/api/av/get');
         if (loading === false) {
-            new Promise((resolve, reject)=>{
+            new Promise((resolve, reject) => {
                 superagent.get(url)
                     .query(query)
                     .end((err, res) => {
@@ -87,20 +87,20 @@ class List extends Component {
                             reject(err);
                         }
                     });
-            }).then((res)=>{
+            }).then((res) => {
                 if (res.status) {
                     data = data.concat(res.list);
-                    this.setState({ 'data': data, page: page + 1 }, ()=>{
+                    this.setState({ 'data': data, page: page + 1 }, () => {
                         const items = document.querySelectorAll('.waterfall .item:not(.active) img');
                         const { length } = items;
                         for (let i = 0; i < length; i++) {
                             items[i].onerror = () => {
-                                if (i === length - 1 ) {
+                                if (i === length - 1) {
                                     page === 1 ? this.waterfall() : this.updateWaterfall();
                                 }
                             };
                             items[i].onload = () => {
-                                if (i === length - 1 ) {
+                                if (i === length - 1) {
                                     page === 1 ? this.waterfall() : this.updateWaterfall();
                                 }
                             };
@@ -109,7 +109,7 @@ class List extends Component {
                 } else {
                     this.setState({ 'loading': false });
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err);
                 this.setState({ 'loading': false });
             });
@@ -118,9 +118,44 @@ class List extends Component {
 
     getCanPlay() {
         const { canPlay } = this.state;
-        this.setState({ 'canPlay': !canPlay, 'data': [], 'page': 1, 'loading': false, rowsHeight: []  }, ()=>{
+        this.setState({ 'canPlay': !canPlay, 'data': [], 'page': 1, 'loading': false, rowsHeight: [] }, () => {
             this.getData();
         });
+    }
+
+    setCover(video, value) {
+        const url = getApiUrl('/api/av/setCover');
+        new Promise((resolve, reject) => {
+            superagent.post(url)
+                .field('cover', value)
+                .field('path', video.path)
+                .end((err, res) => {
+                    if (typeof res !== 'undefined' && res.ok) {
+                        resolve(JSON.parse(res.text));
+                    } else {
+                        reject(err);
+                    }
+                });
+        }).then((res) => {
+            if (res.status) {
+                const { data } = this.state;
+                const index = data.indexOf(video);
+                data[index].cover = `${ res.cover  }?random=${  Math.random() }`;
+                this.setState({ data, rowsHeight: [] }, () => {
+                    this.waterfall();
+                });
+                return false;
+            }
+            alert(res.msg);
+            return true;
+        }).catch((err) => {
+            console.log(err);
+            return true;
+        });
+    }
+
+    triggerCoverInput() {
+        this.coverInput.focus();
     }
 
     deleteVideo(video) {
@@ -141,12 +176,12 @@ class List extends Component {
                 const { data } = this.state;
                 const index = data.indexOf(video);
                 data.splice(index, 1);
-                this.setState({ data, rowsHeight: [] }, ()=>{
+                this.setState({ data, rowsHeight: [] }, () => {
                     this.modal.onClose();
                     this.waterfall();
                 });
                 return false;
-            }  
+            }
             alert(res.msg);
             return true;
         }).catch((err) => {
@@ -156,7 +191,7 @@ class List extends Component {
     }
 
     waterfall() {
-        const { space } =  this.props;
+        const { space } = this.props;
         let width = document.querySelector('.panel').offsetWidth - space * 2;
         if (width > document.body.offsetWidth - document.querySelector('.layout-sider').offsetWidth) {
             width = document.body.offsetWidth - document.querySelector('.layout-sider').offsetWidth - space * 2;
@@ -165,7 +200,7 @@ class List extends Component {
         width = cols * (document.querySelector('.waterfall .item').offsetWidth + space);
         document.querySelector('.waterfall').style.width = `${ width }px`;
         const { rowsHeight } = this.state;
-        for (let i = 0;i < cols;i++) {
+        for (let i = 0; i < cols; i++) {
             rowsHeight.push(0);
         }
         this.updateWaterfall();
@@ -178,7 +213,7 @@ class List extends Component {
         const { length } = items;
         const cols = rowsHeight.length;
         const { space } = this.props;
-        for (let i = 0;i < length;i++) {
+        for (let i = 0; i < length; i++) {
             const col = i % cols;
             left = col * (document.querySelector('.waterfall .item').offsetWidth + space);
             items[i].style.position = 'absolute';
@@ -196,7 +231,7 @@ class List extends Component {
     }
 
     search(key, value) {
-        this.setState({ 'searchKey': key, 'searchValue': value, loading: false, rowsHeight: [], data: [], page: 1 }, ()=>{
+        this.setState({ 'searchKey': key, 'searchValue': value, loading: false, rowsHeight: [], data: [], page: 1 }, () => {
             this.getData();
         });
     }
@@ -208,6 +243,23 @@ class List extends Component {
     socketSend(event, msg = '') {
         const data = JSON.stringify({ 'event': event, 'msg': msg });
         this.socket.send(data);
+    }
+
+    openDir(path) {
+        new Promise((resolve, reject) => {
+            superagent.get(getApiUrl('/api/av/openPath'))
+                .query({ 'path': path })
+                .end((err, res) => {
+                    if (typeof res !== 'undefined' && res.ok) {
+                        resolve(JSON.parse(res.text));
+                    } else {
+                        reject(err);
+                    }
+                });
+        }).then(() => true).catch((err) => {
+            console.log(err);
+            return true;
+        });
     }
 
     showModal(data) {
@@ -226,6 +278,22 @@ class List extends Component {
                                 <p>番号：{data.title}</p>
                                 <div className="button-box">
                                     <a href={`Video://${  data.video }`}><Button>播放</Button></a>
+                                    <Button onClick={this.triggerCoverInput.bind(this)}>
+                                        <span>设置封面</span>
+                                        <Form id="cover">
+                                            <Input
+                                                ref={(c) => {
+                                                    this.coverInput = c;
+                                                }}
+                                                onChange={(value) => {
+                                                    this.setCover(data, value);
+                                                }}
+                                                name='cover'
+                                                type='file'
+                                                style={{ 'display': 'none' }}
+                                            />
+                                        </Form>
+                                    </Button>
                                     <Button onClick={this.showDeleteConfirm.bind(this, data)}>删除</Button>
                                 </div>
                             </div>
@@ -264,13 +332,16 @@ class List extends Component {
                 <Col span={12}>
                     <Panel>
                         <div className="header margin-bottom-10">
-                            <Form onSubmit={(data)=>{ this.search('title', data.title); }}>
+                            <Form onSubmit={(data) => {
+                                this.search('title', data.title);
+                            }}
+                            >
                                 <Input name='title'/>
                                 <Button>搜索</Button>
                             </Form>
                         </div>
                         <div className="waterfall">
-                            {this.state.data.map((val, i)=>(
+                            {this.state.data.map((val, i) => (
                                 <div className="item" role="button" onClick={this.showModal.bind(this, val)} key={i}>
                                     <img src={val.cover} title={val.title} alt={val.title}/>
                                     <div className="box">

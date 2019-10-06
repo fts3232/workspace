@@ -18,20 +18,34 @@ class Input extends Component {
     }
 
     onChange(e) {
-        const { name } = this.props;
+        const { name, onChange, type } = this.props;
         const { setData } = this.context;
-        const { value } = e.target;
-        this.setState({ 'value': value }, ()=>{
+        let value ;
+        if (type === 'file') {
+            [value] = e.target.files;
+        } else {
+            ({ value } = e.target);
+        }
+        this.setState({ 'value': value }, () => {
             setData(name, value);
+            if (onChange !== undefined) {
+                onChange(value);
+            }
         });
     }
 
+    focus() {
+        this.input.click();
+    }
+
     render() {
-        const { type, readonly, placeholder, name, id } = this.props;
+        const { type, readonly, placeholder, name, id, style } = this.props;
         const { value } = this.state;
         return (
             <input
+                ref={(c) => { this.input = c; }}
                 id={id}
+                style={style}
                 className={this.classNames('form-control')}
                 name={name}
                 type={type}
@@ -49,12 +63,14 @@ Input.propTypes = {// 属性校验器，表示改属性必须是bool，否则报
     type       : PropTypes.string,
     placeholder: PropTypes.string,
     readonly   : PropTypes.bool,
-    value      : PropTypes.string
+    value      : PropTypes.string,
+    style      : PropTypes.object
 };
 Input.defaultProps = {
     type       : 'text',
     value      : '',
     readonly   : false,
+    style      : {},
     placeholder: ''
 };// 设置默认属性
 

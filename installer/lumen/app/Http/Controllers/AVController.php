@@ -18,7 +18,8 @@ class AVController extends Controller
         //
     }
 
-    private function scaleDir($dir){
+    private function scaleDir($dir, $filename = null)
+    {
         $paths = [];
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
@@ -27,11 +28,13 @@ class AVController extends Controller
             $name = iconv('gbk', 'utf-8', $name);
             $path = $this->join(iconv('gbk', 'utf-8', $dir), $name);
             if (is_dir($originPath) && $name != '.' && $name != '..') {
-                $data['title'] = $name;
-                $data['path'] = $path;
-                $data['time'] = date("Y-m-d H:i:s", filectime($originPath));
-                $data = array_merge($data, $this->openDir($originPath));
-                $paths[] = $data;
+                if ((!empty($filename) && strstr($name, $filename) !== false) || empty($filename)) {
+                    $data['title'] = $name;
+                    $data['path'] = $path;
+                    $data['time'] = date("Y-m-d H:i:s", filectime($originPath));
+                    $data = array_merge($data, $this->openDir($originPath));
+                    $paths[] = $data;
+                }
             }
         }
         return $paths;
@@ -48,7 +51,7 @@ class AVController extends Controller
             if (is_file($originPath)) {
                 $ext = strtolower(pathinfo($originPath)['extension']);
                 if (in_array($ext, ['jpg', 'gif', 'png'])) {
-                    $paths['cover'] = 'http://localhost/pic/'.str_replace('E:\download','',$path);
+                    $paths['cover'] = 'http://localhost/pic/' . str_replace('E:\download', '', $path);
                 } elseif (in_array($ext, ['avi', 'mp4', 'mkv'])) {
                     $paths['video'] = $path;
                 }
@@ -75,7 +78,8 @@ class AVController extends Controller
         ]);
     }
 
-    private function deleteDir($dir){
+    private function deleteDir($dir)
+    {
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
             $originPath = $this->join($dir, $name);
@@ -89,13 +93,14 @@ class AVController extends Controller
         return true;
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $return = ['status' => true];
-        try{
+        try {
             $path = $request->input('path');
             $path = iconv('utf-8', 'gbk', $path);
             $this->deleteDir($path);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $return = ['status' => false, 'msg' => '删除失败'];
         }
         return response()->json($return);
@@ -107,11 +112,11 @@ class AVController extends Controller
         $page = $request->input('page', 1);
         $size = $request->input('size', 10);
         $key = $request->input('searchKey');
-        $value = $request->input('searchValue');
+        $value = $request->input('searchValue', null);
         $offset = ($page - 1) * $size;
         $dir = 'E:\download';
-        $dirs = $this->scaleDir($dir);
-        array_multisort(array_column($dirs,'time'),SORT_DESC,$dirs);
+        $dirs = $this->scaleDir($dir, $value);
+        array_multisort(array_column($dirs, 'time'), SORT_DESC, $dirs);
         return response()->json(['status' => true, 'list' => $dirs]);
     }
 
@@ -120,5 +125,18 @@ class AVController extends Controller
         $url = $request->input('url');
         $result = Setting::add('javbus_url', $url);
         return response()->json(['status' => $result]);
+    }
+
+    public function setCover(Request $request){
+        $path = $request->input('path');
+        $cover = $request->file('cover');
+        $cover->move($path, 'cover.jpg');
+        return response()->json(['status' => true, 'cover' =>  'http://localhost/pic/' . str_replace('E:\download', '', $path).'/cover.jpg']);
+    }
+
+    public function openPath(Request $request){
+        $path = $request->input('path');
+        passthru("start {$path}");
+        return response()->json(['status' => true]);
     }
 }
