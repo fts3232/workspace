@@ -277,7 +277,7 @@ class List extends Component {
                             <div className="info">
                                 <p>番号：{data.title}</p>
                                 <div className="button-box">
-                                    <a href={`Video://${  data.video }`}><Button>播放</Button></a>
+                                    <a href={`potplayer://${  data.video }`}><Button>播放</Button></a>
                                     <Button onClick={this.triggerCoverInput.bind(this)}>
                                         <span>设置封面</span>
                                         <Form id="cover">
