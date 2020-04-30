@@ -131,7 +131,7 @@ class AVController extends Controller
         $path = $request->input('path');
         $cover = $request->file('cover');
         $cover->move($path, 'cover.jpg');
-        return response()->json(['status' => true, 'cover' =>  'http://localhost/pic/' . str_replace('E:\download', '', $path).'/cover.jpg']);
+        return response()->json(['status' => true, 'cover' =>  'http://localhost/movie/' . str_replace('E:\download', '', $path).'/cover.jpg']);
     }
 
     public function openPath(Request $request){
