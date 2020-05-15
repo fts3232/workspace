@@ -32,6 +32,8 @@ module.exports = {
         'no-undef'                             : ['error', {"typeof": false}],
         // 需要使用箭头函数进行回调
         'prefer-arrow-callback'                : 'warn',
+        // 定义变量没有使用
+        'no-unused-vars'                       : 'warn',
         // 禁止var定义
         'no-var'                               : 'error',
         // func 最大参数数量
@@ -99,9 +101,9 @@ module.exports = {
         'react/destructuring-assignment'       : 0,
         'react/no-access-state-in-setstate'    : 0,
         'no-case-declarations'                 : 0,
-        'no-alert' : 0,
-        'no-unused-expressions':0,
-        'guard-for-in':0,
-        "no-restricted-syntax":0
+        'no-alert'                             : 0,
+        'no-unused-expressions'                : 0,
+        'guard-for-in'                         : 0,
+        "no-restricted-syntax"                 : 0
     },
 };

@@ -43,7 +43,7 @@ class Validator {
 
     int(name) {
         const { value } = this;
-        if (typeof value[name] !== 'undefined' && !Number.isInteger(parseInt(value[name], 0))) {
+        if (typeof value[name] !== 'undefined' && !Number.isInteger(parseInt(value[name], 2))) {
             return false;
         }
         return true;
