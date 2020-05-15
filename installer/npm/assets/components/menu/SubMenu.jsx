@@ -40,7 +40,7 @@ class SubMenu extends Component {
     }
 }
 
-SubMenu.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+SubMenu.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired
 };
 SubMenu.defaultProps = {};// 设置默认属性

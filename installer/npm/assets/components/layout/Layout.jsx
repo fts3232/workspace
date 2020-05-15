@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Component from '../component';
 
-const propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+const propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     hasSider: PropTypes.bool
 };
 const defaultProps = {

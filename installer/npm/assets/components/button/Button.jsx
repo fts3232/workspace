@@ -21,7 +21,7 @@ class Button extends Component {
     }
 }
 
-Button.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Button.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     type   : PropTypes.string,
     onClick: PropTypes.func
 };

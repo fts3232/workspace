@@ -82,7 +82,7 @@ class Sider extends Component {
     }
 }
 
-Sider.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Sider.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     collapsed     : PropTypes.bool, // 当前收起状态
     collapsible   : PropTypes.bool, // 是否可收起
     collapsedWidth: PropTypes.number, // 收起宽度

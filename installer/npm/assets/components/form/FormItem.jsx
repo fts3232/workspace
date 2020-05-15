@@ -57,7 +57,7 @@ class FormItem extends Component {
     }
 }
 
-FormItem.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+FormItem.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     label     : PropTypes.string,
     labelCol  : PropTypes.object,
     wrapperCol: PropTypes.object.isRequired

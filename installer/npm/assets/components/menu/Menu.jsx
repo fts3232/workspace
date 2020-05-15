@@ -30,7 +30,7 @@ class Menu extends Component {
     }
 }
 
-Menu.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Menu.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     selectedKey: PropTypes.number
 };
 Menu.defaultProps = {

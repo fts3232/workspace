@@ -33,7 +33,7 @@ class Textarea extends Component {
     }
 }
 
-Textarea.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Textarea.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     rows       : PropTypes.number,
     name       : PropTypes.string.isRequired,
     placeholder: PropTypes.string,

@@ -58,7 +58,7 @@ class Input extends Component {
     }
 }
 
-Input.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Input.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     name       : PropTypes.string.isRequired,
     type       : PropTypes.string,
     placeholder: PropTypes.string,

@@ -25,7 +25,7 @@ class Row extends Component {
 Row.childContextTypes = {
     gutter: PropTypes.number
 };
-Row.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Row.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     children: PropTypes.any,
     gutter  : PropTypes.number
 };

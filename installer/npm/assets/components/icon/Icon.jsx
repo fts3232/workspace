@@ -20,7 +20,7 @@ class Icon extends Component {
     }
 }
 
-Icon.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Icon.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     name   : PropTypes.string.isRequired,
     onClick: PropTypes.func
 };

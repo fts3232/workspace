@@ -34,13 +34,15 @@ let getClientConfig = function(options) {
         optimization: {
             minimizer: [
                 new UglifyJs({
+                    exclude: /\.min\.js$/, // 过滤掉以".min.js"结尾的文件，我们认为这个后缀本身就是已经压缩好的代码，没必要进行二次压缩
+                    parallel: true, // 开启并行压缩，充分利用cpu
+                    extractComments: false, // 移除注释
                     uglifyOptions: {
                         output: {
                             comments: false, // remove all comments
                         },
-                        compress: {
-                            warnings: false,
-                        },
+                        compress: {},
+                        warnings: false,
                     },
                 }),
                 new OptimizeCSSAssetsPlugin({

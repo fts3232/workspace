@@ -8,6 +8,8 @@ import webpack from 'webpack';
 import PrerenderSPAPlugin from 'prerender-spa-plugin';
 
 import { ReactLoadablePlugin } from 'react-loadable/webpack';
+//复制文件
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 let getPlugin = options => {
     let plugin = [];
@@ -64,6 +66,15 @@ let getPlugin = options => {
         });
         plugin.push(prerender);
     }
+
+    //复制文件
+    let copy = new CopyWebpackPlugin([
+        {
+            from: __dirname + '/../.htaccess',
+            to  : __dirname + '/../build'
+        }
+    ]);
+    plugin.push(copy);
 
     return plugin;
 };

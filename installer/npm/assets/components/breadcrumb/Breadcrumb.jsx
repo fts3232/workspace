@@ -20,7 +20,7 @@ class Breadcrumb extends Component {
     }
 }
 
-Breadcrumb.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Breadcrumb.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     data: PropTypes.array.isRequired
 };
 Breadcrumb.defaultProps = {};// 设置默认属性

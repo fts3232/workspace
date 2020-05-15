@@ -73,7 +73,7 @@ class Form extends Component {
     }
 }
 
-Form.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Form.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     action      : PropTypes.string,
     name        : PropTypes.string,
     onSubmit    : PropTypes.func,

@@ -69,7 +69,7 @@ class Message extends Component {
     }
 }
 
-Message.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Message.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     type       : PropTypes.oneOf(['warning', 'success', 'error', 'info']).isRequired,
     content    : PropTypes.string.isRequired,
     willUnmount: PropTypes.func.isRequired,

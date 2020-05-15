@@ -122,7 +122,7 @@ class Select extends Component {
     }
 }
 
-Select.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Select.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     data       : PropTypes.object.isRequired,
     name       : PropTypes.string.isRequired,
     value      : PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),

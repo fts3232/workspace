@@ -97,7 +97,8 @@ class Modal extends Component {
                             <div className="modal-footer">
                                 <Button type={okButtonType} onClick={this.onConfirm}>{okText}</Button>
                                 {(type === 'confirm' || type === null) && (<Button onClick={this.onCancel}>{cancelText}</Button>)}
-                            </div>)
+                            </div>
+                        )
                             : null}
                     </div>
                 </div>
@@ -106,7 +107,7 @@ class Modal extends Component {
     }
 }
 
-Modal.propTypes = {// 属性校验器，表示改属性必须是bool，否则报错
+Modal.propTypes = { // 属性校验器，表示改属性必须是bool，否则报错
     type       : PropTypes.oneOf([null, 'warning', 'success', 'error', 'info', 'confirm']),
     content    : PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onCancel   : PropTypes.func,
