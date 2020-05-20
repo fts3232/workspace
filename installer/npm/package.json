@@ -1,7 +1,5 @@
 {
   "scripts": {
-    "build:dev": "webpack --mode=development --build-path=build --src-path=assets",
-    "build:pro": "webpack --mode=production --build-path=build --src-path=assets",
     "module:update": "ncu -a",
     "cnpm:install": "npm install -g cnpm --registry=https://registry.npm.taobao.org",
     "npm-check-updates:install": "cnpm install -g npm-check-updates",
@@ -15,10 +13,14 @@
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.9.6",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.9.4",
+    "@babel/plugin-transform-runtime": "^7.9.6",
     "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
     "@babel/register": "^7.9.0",
     "autoprefixer": "^9.3.1",
     "babel-eslint": "10.0.1",
