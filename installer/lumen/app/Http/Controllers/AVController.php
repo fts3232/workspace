@@ -25,8 +25,8 @@ class AVController extends Controller
         while (($name = readdir($dirHandler)) !== false) {
             $data = [];
             $originPath = $this->join($dir, $name);
-            $name = iconv('gbk', 'utf-8', $name);
-            $path = $this->join(iconv('gbk', 'utf-8', $dir), $name);
+            $name = iconv(mb_detect_encoding($name), 'utf-8', $name);
+            $path = $this->join(iconv(mb_detect_encoding($dir), 'utf-8', $dir), $name);
             if (is_dir($originPath) && $name != '.' && $name != '..') {
                 if ((!empty($filename) && strstr($name, $filename) !== false) || empty($filename)) {
                     $data['title'] = $name;
@@ -46,8 +46,8 @@ class AVController extends Controller
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
             $originPath = $this->join($dir, $name);
-            $name = iconv('gbk', 'utf-8', $name);
-            $path = $this->join(iconv('gbk', 'utf-8', $dir), $name);
+            $name = iconv(mb_detect_encoding($name), 'utf-8', $name);
+            $path = $this->join(iconv(mb_detect_encoding($dir), 'utf-8', $dir), $name);
             if (is_file($originPath)) {
                 $ext = strtolower(pathinfo($originPath)['extension']);
                 if (in_array($ext, ['jpg', 'gif', 'png'])) {

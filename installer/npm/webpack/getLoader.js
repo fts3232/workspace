@@ -121,7 +121,7 @@ let getLoader = otpions => {
                 use: cssLoader,
             },
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(js|jsx|ts|tsx)$/,
                 loader: [
                     'babel-loader',
                     {

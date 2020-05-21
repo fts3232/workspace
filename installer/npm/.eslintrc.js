@@ -96,6 +96,7 @@ module.exports = {
         'react/no-multi-comp'                  : 0,
         //禁止全局变量
         'no-restricted-globals'                : 0,
+        'react/jsx-filename-extension'         : ['warn', {'extensions': ['.ts', '.jsx', '.js', 'tsx']}],
         'react/no-unused-prop-types'           : 0,
         'react/prop-types'                     : 0,
         'react/destructuring-assignment'       : 0,
