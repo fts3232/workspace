@@ -18,16 +18,24 @@ class AVController extends Controller
         //
     }
 
+    private function convertEncoding($str)
+    {
+        return iconv(mb_detect_encoding($str, array("ASCII", "GB2312", "GBK", "UTF-8")), 'UTF-8', $str);
+    }
+
     private function scaleDir($dir, $filename = null)
     {
         $paths = [];
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
+            if ($name == '.' || $name == '..') {
+                continue;
+            }
             $data = [];
             $originPath = $this->join($dir, $name);
-            $name = iconv(mb_detect_encoding($name), 'utf-8', $name);
-            $path = $this->join(iconv(mb_detect_encoding($dir), 'utf-8', $dir), $name);
-            if (is_dir($originPath) && $name != '.' && $name != '..') {
+            $name = $this->convertEncoding($name);
+            $path = $this->join($this->convertEncoding($dir), $name);
+            if (is_dir($originPath)) {
                 if ((!empty($filename) && strstr($name, $filename) !== false) || empty($filename)) {
                     $data['title'] = $name;
                     $data['path'] = $path;
@@ -45,9 +53,12 @@ class AVController extends Controller
         $paths = [];
         $dirHandler = opendir($dir);
         while (($name = readdir($dirHandler)) !== false) {
+            if ($name == '.' || $name == '..') {
+                continue;
+            }
             $originPath = $this->join($dir, $name);
-            $name = iconv(mb_detect_encoding($name), 'utf-8', $name);
-            $path = $this->join(iconv(mb_detect_encoding($dir), 'utf-8', $dir), $name);
+            $name = $this->convertEncoding($name);
+            $path = $this->join($this->convertEncoding($dir), $name);
             if (is_file($originPath)) {
                 $ext = strtolower(pathinfo($originPath)['extension']);
                 if (in_array($ext, ['jpg', 'gif', 'png'])) {
@@ -66,16 +77,6 @@ class AVController extends Controller
             $dir = $dir . DIRECTORY_SEPARATOR;
         }
         return $dir . $path;
-    }
-
-    public function getPic(Request $request)
-    {
-        $file = $request->input('file');
-        $file = iconv('utf-8', 'gbk', $file);
-        $content = file_get_contents($file);
-        return response($content, 200, [
-            'Content-Type' => 'image/jpg',
-        ]);
     }
 
     private function deleteDir($dir)
@@ -98,7 +99,6 @@ class AVController extends Controller
         $return = ['status' => true];
         try {
             $path = $request->input('path');
-            $path = iconv('utf-8', 'gbk', $path);
             $this->deleteDir($path);
         } catch (Exception $e) {
             $return = ['status' => false, 'msg' => '删除失败'];
@@ -127,14 +127,16 @@ class AVController extends Controller
         return response()->json(['status' => $result]);
     }
 
-    public function setCover(Request $request){
+    public function setCover(Request $request)
+    {
         $path = $request->input('path');
         $cover = $request->file('cover');
         $cover->move($path, 'cover.jpg');
-        return response()->json(['status' => true, 'cover' =>  'http://localhost/movie/' . str_replace('E:\download', '', $path).'/cover.jpg']);
+        return response()->json(['status' => true, 'cover' => 'http://localhost/movie/' . str_replace('E:\download', '', $path) . '/cover.jpg']);
     }
 
-    public function openPath(Request $request){
+    public function openPath(Request $request)
+    {
         $path = $request->input('path');
         passthru("start {$path}");
         return response()->json(['status' => true]);
