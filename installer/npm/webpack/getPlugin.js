@@ -10,6 +10,12 @@ import PrerenderSPAPlugin from 'prerender-spa-plugin';
 import { ReactLoadablePlugin } from 'react-loadable/webpack';
 //复制文件
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+//虚拟入口
+import MockEntryPlugin from './plugins/MockEntryPlugin';
+//通知
+import NotifyPlugin from './plugins/NotifyPlugin';
+//manifest
+import ManifestPlugin from './plugins/ManifestPlugin';
 
 let getPlugin = options => {
     let plugin = [];
@@ -75,6 +81,15 @@ let getPlugin = options => {
         }
     ]);
     plugin.push(copy);
+
+    //虚拟入口
+    plugin.push(new MockEntryPlugin())
+
+    //通知
+    plugin.push(new NotifyPlugin())
+
+    //生成manifest.json
+    plugin.push(new ManifestPlugin(options.buildPath))
 
     return plugin;
 };
