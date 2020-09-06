@@ -1,6 +1,5 @@
-ARG MYSQL_VERSION=5.6
-FROM mysql:${MYSQL_VERSION}
-
+FROM mysql
+ENV MYSQL_ROOT_PASSWORD root
 USER root
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ARG PUID=1000

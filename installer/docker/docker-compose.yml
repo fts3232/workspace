@@ -22,29 +22,29 @@ services:
     networks:
       - frontend
       - backend
+    links:
+      - php-swoole
     depends_on:
-      - php-fpm
-  php-fpm:
-    build:
-      context: ./containers/php-fpm
-    container_name: 'php-fpm'
+      - php-swoole
+### php #########################################
+  php-swoole:
+    image: 'phpswoole/swoole'
+    container_name: 'php-swoole'
     restart: always
     expose:
-      - "9000"
+      - "${PHP_SWOOLE_PORT}"
     networks:
       - backend
     volumes:
       - ${PHP_INI_PATH}:/usr/local/etc/php/php.ini:ro
       - ${NGINX_WWW_PATH}:/usr/share/nginx/html
-      - ${PHP_FPM_CONF_PATH}:/etc/php-fpm.d:ro
-      - ${PHP_FPM_LOG_PATH}:/var/log/php-fpm
       - ${MYSQL_SOCK_PATH}:/var/run/mysqld
+### mysql #########################################
   mysql:
-    image: 'mysql:5.7'
+    build:
+          context: ./containers/mysql
     container_name: 'mysql'
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - ${MYSQL_CONF_PATH}:/etc/mysql/my.cnf:ro
       - ${MYSQL_DATA_PATH}:/var/lib/mysql
@@ -54,6 +54,7 @@ services:
       - "${MYSQL_PORT}:3306"
     networks:
       - backend
+### redis #########################################
   redis:
     build:
       context: ./containers/redis
@@ -67,6 +68,7 @@ services:
       - "${REDIS_PORT}:6379"
     networks:
       - backend
+### mongodb #########################################
   mongodb:
     build:
         context: ./containers/mongodb
@@ -79,6 +81,7 @@ services:
       - "${MONGODB_PORT}:27017"
     networks:
       - backend
+### fluentd #########################################
   fluentd:
     build: ./containers/fluentd
     container_name: 'fluentd'
