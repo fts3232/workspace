@@ -28,7 +28,8 @@ services:
       - php-swoole
 ### php #########################################
   php-swoole:
-    image: 'phpswoole/swoole'
+    build:
+      context: ./containers/php
     container_name: 'php-swoole'
     restart: always
     expose:
@@ -36,8 +37,8 @@ services:
     networks:
       - backend
     volumes:
-      - ${PHP_INI_PATH}:/usr/local/etc/php/php.ini:ro
-      - ${NGINX_WWW_PATH}:/usr/share/nginx/html
+      - ${PHP_INI_PATH}:/usr/local/etc/php/conf.d
+      - ${NGINX_WWW_PATH}:/var/www
       - ${MYSQL_SOCK_PATH}:/var/run/mysqld
 ### mysql #########################################
   mysql:

@@ -27,7 +27,7 @@ class CashNote extends Model
 
     protected function getMonthData()
     {
-        $returnData = ['income' => array_fill(0, 11, '0.00'), 'cost' => array_fill(0, 11, '0.00')];
+        $returnData = ['income' => [], 'cost' => [],'invest' => [],'key'=>[]];
         $sql = "SELECT
                     TYPE,
                     SUM(AMOUNT) AS SUM,
@@ -38,39 +38,24 @@ class CashNote extends Model
                     ) AS MONTH
                 FROM
                     CASH_NOTE
-                WHERE
-                    PERIOD_DIFF(
-                        date_format(now(), '%Y%m'),
-                        date_format(DATE, '%Y%m')
-                    ) >= 0
-                AND PERIOD_DIFF(
-                    date_format(now(), '%Y%m'),
-                    date_format(DATE, '%Y%m')
-                ) <= 11
                 GROUP BY
                     TYPE,
                     MONTH
                 ORDER BY
                     MONTH ASC";
         $result = $this->select($sql);
-        $monthData = [];
-        $currentMonth = date('Y-m');
-        for ($i = 1; $i <= 12; $i++) {
-            $monthData[] = $currentMonth;
-            $currentMonth = date('Y-m', strtotime("-{$i} month"));
-
-        }
-        $monthData = array_reverse($monthData);
         if ($result) {
             foreach ($result as $v) {
-                $key = array_search($v->MONTH, $monthData);
-                if ($key !== false) {
-                    if ($v->TYPE == 1) {
-                        $returnData['income'][$key] = $v->SUM;
-                    } else {
-                        $returnData['cost'][$key] = $v->SUM;
-                    }
-
+                $key = $v->MONTH;
+                if(!in_array($key,$returnData['key'])){
+                    $returnData['key'][] = $key;
+                }
+                if ($v->TYPE == 1) {
+                    $returnData['income'][] = [$key,$v->SUM];
+                } elseif ($v->TYPE == 2) {
+                    $returnData['invest'][] = [$key,$v->SUM];
+                } else {
+                    $returnData['cost'][] = [$key,$v->SUM];
                 }
             }
         }
@@ -140,7 +125,7 @@ class CashNote extends Model
 
     protected function getPieData($search = [])
     {
-        $returnData = ['income' => [], 'cost' => []];
+        $returnData = ['income' => [], 'cost' => [],'invest'=>[]];
         $where = $this->getWhere($search);
         $sql = "SELECT
                     TYPE,
@@ -156,6 +141,8 @@ class CashNote extends Model
             foreach ($result as $k => $v) {
                 if ($v->TYPE == 1) {
                     $returnData['income'][] = ['value' => $v->SUM, 'category' => $v->CATEGORY];
+                } elseif ($v->TYPE == 2) {
+                    $returnData['invest'][] = ['value' => $v->SUM, 'category' => $v->CATEGORY];
                 } else {
                     $returnData['cost'][] = ['value' => $v->SUM, 'category' => $v->CATEGORY];
                 }

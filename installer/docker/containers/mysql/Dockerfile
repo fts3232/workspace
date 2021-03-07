@@ -1,5 +1,5 @@
 FROM mysql
-ENV MYSQL_ROOT_PASSWORD root
+ENV MYSQL_ROOT_PASSWORD 'tian.32'
 USER root
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ARG PUID=1000

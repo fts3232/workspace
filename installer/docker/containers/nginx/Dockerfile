@@ -13,4 +13,4 @@ RUN groupadd -g ${PGID} docker && \
     useradd -u ${PUID} -g docker -m docker && \
     usermod -p "*" docker
 
-CMD ["nginx"]
+CMD ["nginx", "-g", "daemon off;"]
